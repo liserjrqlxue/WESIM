@@ -1,0 +1,23 @@
+name	mem	type	next	prior
+filter	10	lane	bwaMem	
+bwaMem	10	lane	merge	filter
+merge	10	sample	dupMark	bwaMem
+dupMark	10	sample	realign	merge
+realign	10	sample	BQSR	dupMakr
+BQSR	10	sample	pReads	realign
+pReads	10	sample		BQSR
+dSurvey	10	sample	dReport	pReads
+HC	10	sample	fIndel	pReads
+UG	10	sample	fSnv	pReads
+fSnv	10	sample	combVcf	UG
+fIndel	10	sample	combVcf	HC
+combVcf	10	sample	annotat	
+annotat	10	sample	eReport	combVcf
+eDepth1	10	sample	eDepth2	pReads
+dDepth2	10	batch	eDepth3	eDepth1
+eDepth3	10	sample	eDepth4	eDepth2
+eDepth4	10	batch	eReport	eDepth3
+CNVkit1	10	sample	CNVkit2	pReads
+CNVkit2	10	batch	eReport	CNVkit1
+SMA	10	batch	eReport	pReads
+eReport	10	sample		

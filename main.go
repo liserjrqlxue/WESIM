@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 )
 
@@ -112,6 +113,8 @@ func main() {
 		samples = append(samples, k)
 	}
 
+	stepList := simple_util.File2MapMap("allSteps.tsv", "name", "\t")
+
 	// step0 create workdir
 	err := os.MkdirAll(*workdir, 755)
 	simple_util.CheckErr(err)
@@ -119,26 +122,32 @@ func main() {
 	createSampleDir(*workdir, sampleDirList, samples...)
 
 	var allSteps []PStep
-	// step1 filter fq
-	var step1 = newPStep("step1.filter")
-	step1.First = 1
-	step1.NextStep = []string{"step2.bwaMem"}
-	step1.addLaneJobs(infoList, *workdir, 10)
-	allSteps = append(allSteps, step1)
+	var stepMap = make(map[string]PStep)
+	for name, item := range stepList {
+		var step = newPStep(name)
+		mem, err := strconv.Atoi(item["mem"])
+		simple_util.CheckErr(err)
+		if item["type"] == "lane" {
+			step.addLaneJobs(infoList, *workdir, mem)
+		} else if item["type"] == "sample" {
+			step.addSampleJobs(samples, *workdir, mem)
+		}
+		step.PriorStep = append(step.PriorStep, strings.Split(item["prior"], ",")...)
+		step.NextStep = append(step.NextStep, strings.Split(item["next"], ",")...)
 
-	// step2 bwa mem
-	var step2 = newPStep("step2.bwaMem")
-	step2.PriorStep = []string{step1.Name}
-	step1.NextStep = []string{step2.Name}
-	step2.addLaneJobs(infoList, *workdir, 10)
-	allSteps = append(allSteps, step2)
+		stepMap[name] = step
+	}
 
-	// step3 merge bam
-	var step3 = newPStep("step3.merge")
-	step3.PriorStep = []string{step2.Name}
-	step2.NextStep = []string{step3.Name}
-	step3.addSampleJobs(samples, *workdir, 10)
-	allSteps = append(allSteps, step3)
+	for name, step := range stepMap {
+		switch name {
+		case "filter":
+			step.First = 1
+			allSteps = append(allSteps, step)
+		default:
+			allSteps = append(allSteps, step)
+		}
+	}
+
 	log.Printf("%+v\n", allSteps)
 	simple_util.Json2File("allSteps.json", allSteps)
 }
