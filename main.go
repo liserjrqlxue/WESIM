@@ -120,52 +120,24 @@ func main() {
 
 	var allSteps []PStep
 	// step1 filter fq
-	var step1 = PStep{
-		Name:  "step1.filter",
-		first: 1,
-	}
-	step1.nextStep = []string{"step2.bwaMem"}
-	var step1Jobs []PJob
-	for sampleID, item := range infoList {
-		for _, lane := range item.LaneInfo {
-			var job = newPJob(10)
-			job.sh = filepath.Join(*workdir, sampleID, "shell", strings.Join([]string{"filter", lane.laneName, "sh"}, "."))
-			step1Jobs = append(step1Jobs, job)
-		}
-	}
-	step1.jobSh = step1Jobs
+	var step1 = newPStep("step1.filter")
+	step1.First = 1
+	step1.NextStep = []string{"step2.bwaMem"}
+	step1.addLaneJobs(infoList, *workdir, 10)
 	allSteps = append(allSteps, step1)
 
 	// step2 bwa mem
-	var step2 = PStep{
-		Name: "step2.bwaMem",
-	}
-	step2.priorStep = []string{"step1.filter"}
-	step2.nextStep = []string{"step3.merge"}
-	var step2Jobs []PJob
-	for sampleID, item := range infoList {
-		for _, lane := range item.LaneInfo {
-			var job = newPJob(10)
-			job.sh = filepath.Join(*workdir, sampleID, "shell", strings.Join([]string{"bwaMem", lane.laneName, "sh"}, "."))
-			step2Jobs = append(step2Jobs, job)
-		}
-	}
-	step2.jobSh = step2Jobs
+	var step2 = newPStep("step2.bwaMem")
+	step2.PriorStep = []string{step1.Name}
+	step1.NextStep = []string{step2.Name}
+	step2.addLaneJobs(infoList, *workdir, 10)
 	allSteps = append(allSteps, step2)
 
 	// step3 merge bam
-	var step3 = PStep{
-		Name: "step3.merge",
-	}
-	step2.priorStep = []string{"step2.bwaMem"}
-	step2.nextStep = []string{"step3.dupMark"}
-	var step3Jobs []PJob
-	for _, sampleID := range samples {
-		var job = newPJob(10)
-		job.sh = filepath.Join(*workdir, sampleID, "shell", strings.Join([]string{"merge", "sh"}, "."))
-		step3Jobs = append(step3Jobs, job)
-	}
-	step3.jobSh = step3Jobs
+	var step3 = newPStep("step3.merge")
+	step3.PriorStep = []string{step2.Name}
+	step2.NextStep = []string{step3.Name}
+	step3.addSampleJobs(samples, *workdir, 10)
 	allSteps = append(allSteps, step3)
 	log.Printf("%+v\n", allSteps)
 	simple_util.Json2File("allSteps.json", allSteps)
