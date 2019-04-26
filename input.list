@@ -1,0 +1,5 @@
+main_sample_num	library_num	index_num	pooling_library_num	product_code	FQ_path	platform	lane_code	chip_code	sequencer	hybrid_library_num	gender	proband_number	relationship
+18S3254644	18L3254644-101	101	MGISEQ-200019SZ0000448	DX1515	/path1/to/lane1.read1.fq.gz,/path/to/lane2.read2.fq.gz	MGISEQ-2000	1	CL100112775	1001170068	BGIV419SZ001042	M	19D0118446	proband
+18S3254644	18L3254644-101	101	MGISEQ-200019SZ0000448	DX1515	/path1/to/lane2.read1.fq.gz,/path/to/lane2.read2.fq.gz	MGISEQ-2000	2	CL100112775	1001170068	BGIV419SZ001042	M	19D0118446	proband
+18S3254645	18L3254645-102	102	MGISEQ-200019SZ0000448	DX1515	/path2/to/lane1.read1.fq.gz,/path/to/lane2.read2.fq.gz	MGISEQ-2000	1	CL100112775	1001170068	BGIV419SZ001042	M	19D0118446	father
+18S3254645	18L3254645-102	102	MGISEQ-200019SZ0000448	DX1515	/path2/to/lane2.read1.fq.gz,/path/to/lane2.read2.fq.gz	MGISEQ-2000	2	CL100112775	1001170068	BGIV419SZ001042	M	19D0118446	father
