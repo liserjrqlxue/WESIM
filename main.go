@@ -22,18 +22,23 @@ var (
 var (
 	input = flag.String(
 		"input",
-		exPath+pSep+"input.list",
+		filepath.Join(exPath, "test", "input.list"),
 		"input samples info",
 	)
 	workdir = flag.String(
 		"workdir",
-		exPath+pSep+"workdir",
+		filepath.Join(exPath, "test", "workdir"),
 		"workdir",
 	)
 	pipeline = flag.String(
 		"pipeline",
 		filepath.Join(exPath, "..", "pipeline"),
 		"pipeline dir",
+	)
+	stepsCfg = flag.String(
+		"stepscfg",
+		filepath.Join(exPath, "etc", "allSteps.tsv"),
+		"steps config",
 	)
 )
 
@@ -117,13 +122,13 @@ func main() {
 		sampleInfo.LaneInfo = append(sampleInfo.LaneInfo, lane)
 		infoList[sampleID] = sampleInfo
 	}
-	log.Printf("%+v\n", infoList)
+	//log.Printf("%+v\n", infoList)
 	var samples []string
 	for k := range infoList {
 		samples = append(samples, k)
 	}
 
-	stepList, _ := simple_util.File2MapArray("allSteps.tsv", "\t", nil)
+	stepList, _ := simple_util.File2MapArray(*stepsCfg, "\t", nil)
 
 	// step0 create workdir
 	err := os.MkdirAll(*workdir, 755)
@@ -152,7 +157,7 @@ func main() {
 		}
 	}
 
-	simple_util.Json2File("allSteps.json", allSteps)
+	simple_util.Json2File(filepath.Join(*workdir, "allSteps.json"), allSteps)
 }
 
 func createSubDir(workdir string, subDirList []string) {
