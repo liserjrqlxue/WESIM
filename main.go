@@ -76,6 +76,7 @@ var subDirList = []string{
 	"ExomeDepth",
 	"CNVkit",
 	"SMA",
+	"shell",
 }
 
 var sampleDirList = []string{

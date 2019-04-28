@@ -51,6 +51,9 @@ func newPJob(mem int) (job PJob) {
 	job.ComputingFlag = "cpu"
 	return
 }
+func (job *PJob) addBatchSh(workdir, sampleID, tag string) {
+	job.Sh = filepath.Join(workdir, "shell", strings.Join([]string{tag, "sh"}, "."))
+}
 
 func (job *PJob) addSampleSh(workdir, sampleID, tag string) {
 	job.Sh = filepath.Join(workdir, sampleID, "shell", strings.Join([]string{tag, "sh"}, "."))
@@ -131,7 +134,7 @@ func (step *PStep) createJobs(infoList map[string]info, stepInfo map[string]stri
 			createShell(job.Sh, script, appendArgs...)
 		case "batch":
 			var job = newPJob(stepMem)
-			job.addSampleSh(workdir, sampleID, step.Name)
+			job.addBatchSh(workdir, sampleID, step.Name)
 			stepJobs = append(stepJobs, job)
 			var appendArgs []string
 			appendArgs = append(appendArgs, workdir, pipeline)
