@@ -116,6 +116,19 @@ func (step *PStep) createJobs(infoList map[string]info, stepInfo map[string]stri
 			var job = newPJob(stepMem)
 			job.addSampleSh(workdir, sampleID, step.Name)
 			stepJobs = append(stepJobs, job)
+			var appendArgs []string
+			appendArgs = append(appendArgs, workdir, pipeline, sampleID)
+			for _, arg := range stepArgs {
+				switch arg {
+				case "laneName":
+					for _, lane := range item.LaneInfo {
+						appendArgs = append(appendArgs, lane.laneName)
+					}
+				case "gender":
+					appendArgs = append(appendArgs, item.Gender)
+				}
+			}
+			createShell(job.Sh, script, appendArgs...)
 		}
 	}
 	step.JobSh = &stepJobs

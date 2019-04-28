@@ -62,6 +62,7 @@ type laneInfo struct {
 
 type info struct {
 	SampleID string
+	Gender   string
 	LaneInfo []laneInfo
 }
 
@@ -96,6 +97,7 @@ func main() {
 	var infoList = make(map[string]info)
 	for _, item := range sampleList {
 		var sampleID = item["main_sample_num"]
+		var gender = item["gender"]
 		var laneCode = item["lane_code"]
 		var fqPath = item["FQ_path"]
 		var pe = strings.Split(fqPath, ",")
@@ -110,6 +112,7 @@ func main() {
 		sampleInfo, ok := infoList[sampleID]
 		if !ok {
 			sampleInfo.SampleID = sampleID
+			sampleInfo.Gender = gender
 		}
 		sampleInfo.LaneInfo = append(sampleInfo.LaneInfo, lane)
 		infoList[sampleID] = sampleInfo
