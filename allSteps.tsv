@@ -1,5 +1,5 @@
-name	mem	type	next	prior
-filter	10	lane	bwaMem	
+name	mem	type	next	prior	args
+filter	10	lane	bwaMem		laneName,fq1,fq2
 bwaMem	10	lane	merge	filter
 merge	10	sample	dupMark	bwaMem
 dupMark	10	sample	realign	merge

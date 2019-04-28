@@ -1,11 +1,13 @@
 package main
 
 import (
+	"github.com/liserjrqlxue/simple-util"
 	"path/filepath"
+	"strconv"
 	"strings"
 )
 
-type pipeline struct {
+type Pipeline struct {
 	pipelineName string
 	version      string
 	steps        *[]PStep
@@ -77,6 +79,67 @@ func (step *PStep) addLaneJobs(infoList map[string]info, workdir string, mem int
 		}
 	}
 	step.JobSh = &stepJobs
+}
+
+func (step *PStep) createJobs(infoList map[string]info, stepInfo map[string]string, workdir, pipeline string) {
+	var stepJobs []PJob
+	stepName := stepInfo["name"]
+	stepType := stepInfo["type"]
+	stepMem, err := strconv.Atoi(stepInfo["mem"])
+	simple_util.CheckErr(err)
+	stepArgs := strings.Split(stepInfo["args"], ",")
+
+	script := filepath.Join(pipeline, stepName+".sh")
+
+	for sampleID, item := range infoList {
+		switch stepType {
+		case "lane":
+			for _, lane := range item.LaneInfo {
+				var job = newPJob(stepMem)
+				job.addLaneSh(workdir, sampleID, lane.laneName, step.Name)
+				stepJobs = append(stepJobs, job)
+				var appendArgs []string
+				appendArgs = append(appendArgs, workdir, pipeline, sampleID)
+				for _, arg := range stepArgs {
+					switch arg {
+					case "laneName":
+						appendArgs = append(appendArgs, lane.laneName)
+					case "fq1":
+						appendArgs = append(appendArgs, lane.fq1)
+					case "fq2":
+						appendArgs = append(appendArgs, lane.fq2)
+					}
+				}
+				createShell(job.Sh, script, appendArgs...)
+			}
+		case "sample":
+			var job = newPJob(stepMem)
+			job.addSampleSh(workdir, sampleID, step.Name)
+			stepJobs = append(stepJobs, job)
+		}
+	}
+	step.JobSh = &stepJobs
+}
+
+func (step *PStep) createLaneShell(infoList map[string]info, item map[string]string, workDir, pipelineDir string) {
+	for sampleID, info := range infoList {
+		args := strings.Split(item["args"], ",")
+		for _, lane := range info.LaneInfo {
+			var appendArgs []string
+			appendArgs = append(appendArgs, workDir, pipelineDir, sampleID)
+			for _, arg := range args {
+				switch arg {
+				case "laneName":
+					appendArgs = append(appendArgs, lane.laneName)
+				case "fq1":
+					appendArgs = append(appendArgs, lane.fq1)
+				case "fq2":
+					appendArgs = append(appendArgs, lane.fq2)
+				}
+			}
+
+		}
+	}
 }
 
 func flowSteps(steps ...*PStep) {

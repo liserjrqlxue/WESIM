@@ -2,11 +2,11 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"github.com/liserjrqlxue/simple-util"
 	"log"
 	"os"
 	"path/filepath"
-	"strconv"
 	"strings"
 )
 
@@ -29,6 +29,11 @@ var (
 		"workdir",
 		exPath+pSep+"workdir",
 		"workdir",
+	)
+	pipeline = flag.String(
+		"pipeline",
+		exPath+pSep+"pipeline",
+		"pipeline dir",
 	)
 )
 
@@ -128,13 +133,7 @@ func main() {
 	var stepMap = make(map[string]*PStep)
 	for _, item := range stepList {
 		var step = newPStep(item["name"])
-		mem, err := strconv.Atoi(item["mem"])
-		simple_util.CheckErr(err)
-		if item["type"] == "lane" {
-			step.addLaneJobs(infoList, *workdir, mem)
-		} else if item["type"] == "sample" {
-			step.addSampleJobs(samples, *workdir, mem)
-		}
+		step.createJobs(infoList, item, *workdir, *pipeline)
 		step.PriorStep = append(step.PriorStep, strings.Split(item["prior"], ",")...)
 		step.NextStep = append(step.NextStep, strings.Split(item["next"], ",")...)
 
@@ -150,7 +149,6 @@ func main() {
 		}
 	}
 
-	log.Printf("%+v\n", allSteps)
 	simple_util.Json2File("allSteps.json", allSteps)
 }
 
@@ -186,6 +184,15 @@ func createLaneDir(workdir string, laneDirList []string, sampleList []map[string
 			simple_util.CheckErr(err)
 		}
 	}
+}
+
+func createShell(fileName, script string, args ...string) {
+	file, err := os.Create(fileName)
+	simple_util.CheckErr(err)
+	defer simple_util.DeferClose(file)
+
+	_, err = fmt.Fprintf(file, "#!/bin/bash\nsh \\\n\t%s \\\n\t%s\n", script, strings.Join(args, " \\\n\t"))
+	simple_util.CheckErr(err)
 }
 
 func checkTitle(title []string) {
