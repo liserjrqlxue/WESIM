@@ -131,7 +131,7 @@ func main() {
 	stepList, _ := simple_util.File2MapArray(*stepsCfg, "\t", nil)
 
 	// step0 create workdir
-	err := os.MkdirAll(*workdir, 755)
+	err := os.MkdirAll(*workdir, 0755)
 	simple_util.CheckErr(err)
 	createSubDir(*workdir, subDirList)
 	createSampleDir(*workdir, sampleDirList, samples...)
