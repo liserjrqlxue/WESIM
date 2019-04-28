@@ -69,13 +69,15 @@ var subDirList = []string{
 
 var sampleDirList = []string{
 	"shell",
-	"filter1",
-	"filter2",
 	"bwa",
 	"coverage",
 	"annotation",
 	filepath.Join("gatk", "UG", "snv"),
 	filepath.Join("gatk", "HC", "short_indel"),
+}
+
+var laneDirList = []string{
+	"filter",
 }
 
 func main() {
@@ -120,6 +122,7 @@ func main() {
 	simple_util.CheckErr(err)
 	createSubDir(*workdir, subDirList)
 	createSampleDir(*workdir, sampleDirList, samples...)
+	createLaneDir(*workdir, laneDirList, sampleList)
 
 	var allSteps []*PStep
 	var stepMap = make(map[string]*PStep)
@@ -162,6 +165,24 @@ func createSampleDir(workdir string, sampleDirList []string, sampleIDs ...string
 	for _, sampleID := range sampleIDs {
 		for _, subdir := range sampleDirList {
 			err := os.MkdirAll(filepath.Join(workdir, sampleID, subdir), 0755)
+			simple_util.CheckErr(err)
+		}
+	}
+}
+
+func createLaneDir(workdir string, laneDirList []string, sampleList []map[string]string) {
+	for _, item := range sampleList {
+		var sampleID = item["main_sample_num"]
+		var laneCode = item["lane_code"]
+		for _, subdir := range laneDirList {
+			err := os.MkdirAll(
+				filepath.Join(
+					workdir,
+					sampleID,
+					strings.Join([]string{subdir, laneCode}, "."),
+				),
+				0755,
+			)
 			simple_util.CheckErr(err)
 		}
 	}
