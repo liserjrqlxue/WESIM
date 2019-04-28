@@ -89,7 +89,7 @@ func (step *PStep) createJobs(infoList map[string]info, stepInfo map[string]stri
 	simple_util.CheckErr(err)
 	stepArgs := strings.Split(stepInfo["args"], ",")
 
-	script := filepath.Join(pipeline, stepName+".sh")
+	script := filepath.Join(pipeline, "script", stepName+".sh")
 
 	for sampleID, item := range infoList {
 		switch stepType {

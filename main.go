@@ -32,7 +32,7 @@ var (
 	)
 	pipeline = flag.String(
 		"pipeline",
-		exPath+pSep+"pipeline",
+		filepath.Join(exPath, "..", "pipeline"),
 		"pipeline dir",
 	)
 )
