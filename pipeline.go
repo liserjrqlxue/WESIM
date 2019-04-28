@@ -51,10 +51,10 @@ func newPJob(mem int) (job PJob) {
 }
 
 func (job *PJob) addSampleSh(workdir, sampleID, tag string) {
-	job.Sh = filepath.Join(workdir, sampleID, "shell", strings.Join([]string{tag, "sh"}, ","))
+	job.Sh = filepath.Join(workdir, sampleID, "shell", strings.Join([]string{tag, "sh"}, "."))
 }
 func (job *PJob) addLaneSh(workdir, sampleID, laneName, tag string) {
-	job.Sh = filepath.Join(workdir, sampleID, "shell", strings.Join([]string{tag, laneName, "sh"}, ","))
+	job.Sh = filepath.Join(workdir, sampleID, "shell", strings.Join([]string{tag, laneName, "sh"}, "."))
 }
 
 func (step *PStep) addSampleJobs(samples []string, workdir string, mem int) {
