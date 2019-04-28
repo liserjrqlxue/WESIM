@@ -14,7 +14,7 @@ fIndel	10	sample	combVcf	HC
 combVcf	10	sample	annotat	UG,HC	
 annotat	10	sample	eReport	combVcf	
 eDepth1	10	sample	eDepth2	pReads	gender
-dDepth2	10	batch	eDepth3	eDepth1	
+eDepth2	10	batch	eDepth3	eDepth1
 eDepth3	10	sample	eDepth4	eDepth2	gender
 eDepth4	10	batch	eReport	eDepth3	
 CNVkit1	10	sample	CNVkit2	pReads	
