@@ -129,6 +129,17 @@ func (step *PStep) createJobs(infoList map[string]info, stepInfo map[string]stri
 				}
 			}
 			createShell(job.Sh, script, appendArgs...)
+		case "batch":
+			var job = newPJob(stepMem)
+			job.addSampleSh(workdir, sampleID, step.Name)
+			stepJobs = append(stepJobs, job)
+			var appendArgs []string
+			appendArgs = append(appendArgs, workdir, pipeline)
+			for _, arg := range stepArgs {
+				switch arg {
+				}
+			}
+			createShell(job.Sh, script, appendArgs...)
 		}
 	}
 	step.JobSh = &stepJobs

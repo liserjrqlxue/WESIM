@@ -5,7 +5,7 @@ merge	10	sample	dupMark	bwaMem	laneName
 dupMark	10	sample	realign	merge	
 realign	10	sample	BQSR	dupMakr	
 BQSR	10	sample	pReads	realign	
-pReads	10	sample	dSurvey,HC,UG	BQSR	
+pReads	10	sample	dSurvey,HC,UG,eDepth1	BQSR	
 dSurvey	10	sample	dReport	pReads	
 HC	10	sample	fIndel	pReads	
 UG	10	sample	fSnv	pReads	
