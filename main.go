@@ -113,7 +113,7 @@ func main() {
 		samples = append(samples, k)
 	}
 
-	stepList := simple_util.File2MapMap("allSteps.tsv", "name", "\t")
+	stepList, _ := simple_util.File2MapArray("allSteps.tsv", "\t", nil)
 
 	// step0 create workdir
 	err := os.MkdirAll(*workdir, 755)
@@ -121,10 +121,10 @@ func main() {
 	createSubDir(*workdir, subDirList)
 	createSampleDir(*workdir, sampleDirList, samples...)
 
-	var allSteps []PStep
-	var stepMap = make(map[string]PStep)
-	for name, item := range stepList {
-		var step = newPStep(name)
+	var allSteps []*PStep
+	var stepMap = make(map[string]*PStep)
+	for _, item := range stepList {
+		var step = newPStep(item["name"])
 		mem, err := strconv.Atoi(item["mem"])
 		simple_util.CheckErr(err)
 		if item["type"] == "lane" {
@@ -135,16 +135,15 @@ func main() {
 		step.PriorStep = append(step.PriorStep, strings.Split(item["prior"], ",")...)
 		step.NextStep = append(step.NextStep, strings.Split(item["next"], ",")...)
 
-		stepMap[name] = step
+		stepMap[item["name"]] = &step
+		allSteps = append(allSteps, &step)
 	}
 
 	for name, step := range stepMap {
 		switch name {
 		case "filter":
 			step.First = 1
-			allSteps = append(allSteps, step)
 		default:
-			allSteps = append(allSteps, step)
 		}
 	}
 
