@@ -6,7 +6,9 @@ laneName=$4
 
 Workdir=$workdir/$sampleID
 hg19=$pipeline/hg19/hg19_chM_male_mask.fa
-$pipeline/bwa \
+bwa=$pipeline/tools/bwa
+echo Start `date`
+$bwa \
     mem -t 8 -M \
     -R "@RG\tID:$sampleID\tSM:$sampleID\tLB:$laneName\tPL:COMPLETE" \
     $hg19 \
@@ -15,3 +17,4 @@ $pipeline/bwa \
     | samtools view -S -b \
     -o $Workdir/bwa/sampleID.raw.$laneName.bam \
     -
+echo Done `date`
