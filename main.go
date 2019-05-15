@@ -32,7 +32,7 @@ var (
 	)
 	pipeline = flag.String(
 		"pipeline",
-		filepath.Join(exPath, "..", "pipeline"),
+		filepath.Join(exPath, "pipeline"),
 		"pipeline dir",
 	)
 	stepsCfg = flag.String(
