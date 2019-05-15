@@ -6,7 +6,11 @@ laneName=$4
 fq1=$5
 fq2=$6
 Workdir=$workdir/$sampleID
-$pipeline/SOAPnuke filter -o $Workdir \
+SOAPnuke=$pipeline/tools/SOAPnuke
+stat=$pipeline/tools/soapnuke_stat.pl
+
+echo Start SOAPnuke `date`
+$SOAPnuke filter -o $Workdir \
     --fq1 $fq1 \
     --fq2 $fq2 \
     --adapter1 AAGTCGGAGGCCAAGCGGTCTTAGGAAGACAA \
@@ -15,7 +19,10 @@ $pipeline/SOAPnuke filter -o $Workdir \
     --cleanFq2 pe.$laneName.2_filter.fq.gz \
     --nRate 0.05 --lowQual 10  --seqType 0 --qualRate 0.5 -Q 2 -G
 
-perl $pipeline/soapnuke_stat.pl \
+echo Start stat `date`
+perl $soapnuke_stat.pl \
     $Workdir/filter.$laneName/Basic_Statistics_of_Sequencing_Quality.txt \
     $Workdir/filter.$laneName/Statistics_of_Filtered_Reads.txt \
-    >$Workdir/filter1/L01.filter.stat
+    >$Workdir/filter.$laneName/$laneName.filter.stat
+
+echo Done `date`
