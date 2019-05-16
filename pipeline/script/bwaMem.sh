@@ -9,7 +9,7 @@ hg19=$pipeline/hg19/hg19_chM_male_mask.fa
 bwa=$pipeline/tools/bwa
 echo Start bwaMem `date`
 $bwa \
-    mem -t 8 -M \
+    mem -K 100000000 -t 8 -M \
     -R "@RG\tID:$sampleID\tSM:$sampleID\tLB:$laneName\tPL:COMPLETE" \
     $hg19 \
     $Workdir/filter.$laneName/pe.$laneName.1_filter.fq.gz \
