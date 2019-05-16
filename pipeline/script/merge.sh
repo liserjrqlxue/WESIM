@@ -16,7 +16,7 @@ echo Start merge `date`
 $samtools \
     merge \
     -@ 8 \
-    -f $Workdir/sampleID.raw.bam \
+    -f $Workdir/$sampleID.raw.bam \
     $inputBams
 
 echo Done `date`
