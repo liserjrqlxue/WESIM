@@ -7,6 +7,8 @@ WES Integrated machine pipeline
 git clone https://github.com/lh3/bwa.git github.com/lh3/bwa
 cd github.com/lh3/bwa
 make
+cd ../../pipeline/tools
+ln -sf ../../github.com/lh3/bwa/bwa
 
 
 pipeline/tools/bwa index pipeline/hg19/hg19_chM_male_mask.fa
