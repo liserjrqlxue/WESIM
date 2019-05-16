@@ -6,6 +6,7 @@ sampleID=$3
 Workdir=$workdir/$sampleID/bwa
 java=$pipeline/tools/java
 Picard=$pipeline/tools/picard
+samtools=$pipeline/tools/samtools
 
 echo Start MakrDuplicates `date`
 $java -Djava.io.tmpdir=$workdir/javatmp \
@@ -16,6 +17,7 @@ $java -Djava.io.tmpdir=$workdir/javatmp \
     METRICS_FILE=$Workdir/$sampleID.sort.dup.metrics \
     VALIDATION_STRINGENCY=SILENT
 
-$pipeline/samtools index $Workdir/$sampleID.sort.dup.bam
+echo Start index `date`
+$samtools index $Workdir/$sampleID.sort.dup.bam
 
 echo Done `date`
