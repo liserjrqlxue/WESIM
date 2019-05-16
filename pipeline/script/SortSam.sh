@@ -7,6 +7,7 @@ Workdir=$workdir/$sampleID/bwa
 java=$pipeline/tools/java
 Picard=$pipeline/tools/picard
 samtools=$pipeline/tools/samtools
+
 echo Start SortSam `date`
 $java -Djava.io.tmpdir=$workdir/javatmp \
     -jar $Picard/SortSam.jar \
@@ -16,4 +17,5 @@ $java -Djava.io.tmpdir=$workdir/javatmp \
     VALIDATION_STRINGENCY=SILENT
 
 $samtools index $Workdir/$sampleID.sort.bam
+
 echo Done `date`
