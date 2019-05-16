@@ -5,7 +5,8 @@ bwaMem	8	8	lane	merge	filter	laneName
 rmFQ	1	1	lane		bwaMem	laneName
 merge	1	8	sample	SortSam	bwaMem	laneName
 rmBam1	1	1	sample		merge	laneName
-SortSam	10	8	sample	dupMark	merge	
+SortSam	20	1	sample	dupMark	merge	
+rmBam2	1	1	sample		SortSam	
 dupMark	10	4	sample	realign	SortSam	
 realign	10	4	sample	BQSR	dupMakr	
 BQSR	10	4	sample	pReads	realign	
