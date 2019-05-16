@@ -7,7 +7,7 @@ laneName=$4
 Workdir=$workdir/$sampleID
 hg19=$pipeline/hg19/hg19_chM_male_mask.fa
 bwa=$pipeline/tools/bwa
-echo Start `date`
+echo Start bwaMem `date`
 $bwa \
     mem -t 8 -M \
     -R "@RG\tID:$sampleID\tSM:$sampleID\tLB:$laneName\tPL:COMPLETE" \

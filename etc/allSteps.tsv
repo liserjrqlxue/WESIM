@@ -2,7 +2,7 @@ name	mem	thread	type	next	prior	args
 filter	1	4	lane	filStat,bwaMem		laneName,fq1,fq2
 filStat	1	1	lane		filter	laneName
 bwaMem	8	8	lane	merge	filter	laneName
-merge	10	1	sample	SortSam	bwaMem	laneName
+merge	1	8	sample	SortSam	bwaMem	laneName
 SortSam	10	8	sample	dupMark	merge	
 dupMark	10	4	sample	realign	SortSam	
 realign	10	4	sample	BQSR	dupMakr	

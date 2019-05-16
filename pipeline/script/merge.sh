@@ -3,25 +3,20 @@ workdir=$1
 pipeline=$2
 sampleID=$3
 
+Workdir=$workdir/$sampleID/bwa
+samtools=$pipeline/tools/samtools
+
 shift 3
 inputBams=""
 for i in $@;do
-    inputBams="$inputBams $Workdir/bwa/sampleID.raw.$i.bam"
+    inputBams="$inputBams $Workdir/sampleID.raw.$i.bam"
 done
 
-Workdir=$workdir/$sampleID/bwa
-Picard=$pipeline/tools/picard
-
-$pipeline/samtools \
+echo Start merge `date`
+$samtools \
     merge \
+    -@ 8 \
     -f $Workdir/sampleID.raw.bam \
-    $inputBamss
+    $inputBams
 
-$pipeline/java -Djava.io.tmpdir=$workdir/javatmp \
-    -jar $Picard/SortSam.jar \
-    INPUT=$Workdir/bwa/$sampleID.raw.bam \
-    OUTPUT=$Workdir/bwa/$sampleID.sort.bam \
-    SORT_ORDER=coordinate \
-    VALIDATION_STRINGENCY=SILENT
-
-$pipeline/samtools index $Workdir/bwa/$sampleID.sort.bam
+echo Done `date`
