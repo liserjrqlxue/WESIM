@@ -6,8 +6,10 @@ laneName=$4
 
 Workdir=$workdir/$sampleID
 hg19=$pipeline/hg19/hg19_chM_male_mask.fa
-$pipeline/bwa \
-    mem -t 8 -M \
+bwa=$pipeline/tools/bwa
+echo Start bwaMem `date`
+$bwa \
+    mem -K 100000000 -t 8 -M \
     -R "@RG\tID:$sampleID\tSM:$sampleID\tLB:$laneName\tPL:COMPLETE" \
     $hg19 \
     $Workdir/filter.$laneName/pe.$laneName.1_filter.fq.gz \
@@ -15,3 +17,4 @@ $pipeline/bwa \
     | samtools view -S -b \
     -o $Workdir/bwa/sampleID.raw.$laneName.bam \
     -
+echo Done `date`

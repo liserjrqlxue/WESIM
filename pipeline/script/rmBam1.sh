@@ -12,11 +12,7 @@ for i in $@;do
     inputBams="$inputBams $Workdir/sampleID.raw.$i.bam"
 done
 
-echo Start merge `date`
-$samtools \
-    merge \
-    -@ 8 \
-    -f $Workdir/$sampleID.raw.bam \
-    $inputBams
+echo Start rmLaneBam `date`
+rm -rvf $inputBams
 
 echo Done `date`

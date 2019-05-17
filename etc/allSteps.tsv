@@ -1,23 +1,30 @@
-name	mem	type	next	prior	args
-filter	10	lane	bwaMem		laneName,fq1,fq2
-bwaMem	10	lane	merge	filter	laneName
-merge	10	sample	dupMark	bwaMem	laneName
-dupMark	10	sample	realign	merge	
-realign	10	sample	BQSR	dupMakr	
-BQSR	10	sample	pReads	realign	
-pReads	10	sample	dSurvey,HC,UG,eDepth1,CNVkit1,SMA	BQSR	
-dSurvey	10	sample	dReport	pReads	
-HC	10	sample	fIndel	pReads	
-UG	10	sample	fSnv	pReads	
-fSnv	10	sample	combVcf	UG	
-fIndel	10	sample	combVcf	HC	
-combVcf	10	sample	annotat	UG,HC	
-annotat	10	sample	eReport	combVcf	
-eDepth1	10	sample	eDepth2	pReads	gender
-eDepth2	10	batch	eDepth3	eDepth1
-eDepth3	10	sample	eDepth4	eDepth2	gender
-eDepth4	10	batch	eReport	eDepth3	
-CNVkit1	10	sample	CNVkit2	pReads	
-CNVkit2	10	batch	eReport	CNVkit1	
-SMA	10	batch	eReport	pReads	
-eReport	10	sample		annotat,eDepth4,CNVkit2,SMA	
+name	mem	thread	type	next	prior	args
+filter	1	4	lane	filStat,bwaMem		laneName,fq1,fq2
+filStat	1	1	lane		filter	laneName
+bwaMem	8	8	lane	merge	filter	laneName
+rmFQ	1	1	lane		bwaMem	laneName
+merge	1	8	sample	SortSam	bwaMem	laneName
+rmBam1	1	1	sample		merge	laneName
+MDSpark	16	8	sample		merge	
+SortSam	8	2	sample	dupMark	merge	
+rmBam2	1	1	sample		SortSam	
+dupMark	8	2	sample	RTC	SortSam	
+RTC	10	8	sample	IR	dupMark	
+IR	8	1	sample	BQSR	RTC	
+BQSR	10	4	sample	pReads	IR	
+pReads	10	4	sample	dSurvey,HC,UG,eDepth1,CNVkit1,SMA	BQSR	
+dSurvey	10	4	sample	dReport	pReads	
+HC	10	4	sample	fIndel	pReads	
+UG	10	4	sample	fSnv	pReads	
+fSnv	10	4	sample	combVcf	UG	
+fIndel	10	4	sample	combVcf	HC	
+combVcf	10	4	sample	annotat	UG,HC	
+annotat	10	4	sample	eReport	combVcf	
+eDepth1	10	4	sample	eDepth2	pReads	gender
+eDepth2	10	4	batch	eDepth3	eDepth1
+eDepth3	10	4	sample	eDepth4	eDepth2	gender
+eDepth4	10	4	batch	eReport	eDepth3	
+CNVkit1	10	4	sample	CNVkit2	pReads	
+CNVkit2	10	4	batch	eReport	CNVkit1	
+SMA	10	4	batch	eReport	pReads	
+eReport	10	4	sample		annotat,eDepth4,CNVkit2,SMA	
