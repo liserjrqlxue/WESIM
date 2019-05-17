@@ -51,25 +51,9 @@ func newPJob(mem int) (job PJob) {
 	job.ComputingFlag = "cpu"
 	return
 }
-func (job *PJob) addBatchSh(workdir, sampleID, tag string) {
-	job.Sh = filepath.Join(workdir, "shell", strings.Join([]string{tag, "sh"}, "."))
-}
 
-func (job *PJob) addSampleSh(workdir, sampleID, tag string) {
-	job.Sh = filepath.Join(workdir, sampleID, "shell", strings.Join([]string{tag, "sh"}, "."))
-}
 func (job *PJob) addLaneSh(workdir, sampleID, laneName, tag string) {
 	job.Sh = filepath.Join(workdir, sampleID, "shell", strings.Join([]string{tag, laneName, "sh"}, "."))
-}
-
-func (step *PStep) addSampleJobs(samples []string, workdir string, mem int) {
-	var stepJobs []PJob
-	for _, sampleID := range samples {
-		var job = newPJob(mem)
-		job.addSampleSh(workdir, sampleID, step.Name)
-		stepJobs = append(stepJobs, job)
-	}
-	step.JobSh = &stepJobs
 }
 
 func (step *PStep) addLaneJobs(infoList map[string]info, workdir string, mem int) {
@@ -84,7 +68,7 @@ func (step *PStep) addLaneJobs(infoList map[string]info, workdir string, mem int
 	step.JobSh = &stepJobs
 }
 
-func (step *PStep) createJobs(infoList map[string]info, stepInfo map[string]string, workdir, pipeline string) {
+func (step *PStep) createJobs(infoList map[string]info, poolingList map[string]int, stepInfo map[string]string, workdir, pipeline string) {
 	var stepJobs []PJob
 	stepName := stepInfo["name"]
 	stepType := stepInfo["type"]
@@ -94,15 +78,47 @@ func (step *PStep) createJobs(infoList map[string]info, stepInfo map[string]stri
 
 	script := filepath.Join(pipeline, "script", stepName+".sh")
 
-	for sampleID, item := range infoList {
-		switch stepType {
-		case "lane":
+	switch stepType {
+	case "batch":
+		for pooling := range poolingList {
+			var job = newPJob(stepMem)
+			job.Sh = filepath.Join(workdir, pooling, "shell", step.Name+".sh")
+			stepJobs = append(stepJobs, job)
+			var appendArgs []string
+			appendArgs = append(appendArgs, filepath.Join(workdir, pooling), pipeline)
+			for _, arg := range stepArgs {
+				switch arg {
+				}
+			}
+			createShell(job.Sh, script, appendArgs...)
+		}
+	case "sample":
+		for sampleID, item := range infoList {
+			var job = newPJob(stepMem)
+			job.Sh = filepath.Join(workdir, item.PoolingID, sampleID, "shell", step.Name+".sh")
+			stepJobs = append(stepJobs, job)
+			var appendArgs []string
+			appendArgs = append(appendArgs, filepath.Join(workdir, item.PoolingID), pipeline, sampleID)
+			for _, arg := range stepArgs {
+				switch arg {
+				case "laneName":
+					for _, lane := range item.LaneInfo {
+						appendArgs = append(appendArgs, lane.laneName)
+					}
+				case "gender":
+					appendArgs = append(appendArgs, item.Gender)
+				}
+			}
+			createShell(job.Sh, script, appendArgs...)
+		}
+	case "lane":
+		for sampleID, item := range infoList {
 			for _, lane := range item.LaneInfo {
 				var job = newPJob(stepMem)
-				job.addLaneSh(workdir, sampleID, lane.laneName, step.Name)
+				job.Sh = filepath.Join(workdir, item.PoolingID, sampleID, "shell", step.Name+"."+lane.laneName+".sh")
 				stepJobs = append(stepJobs, job)
 				var appendArgs []string
-				appendArgs = append(appendArgs, workdir, pipeline, sampleID)
+				appendArgs = append(appendArgs, filepath.Join(workdir, item.PoolingID), pipeline, sampleID)
 				for _, arg := range stepArgs {
 					switch arg {
 					case "laneName":
@@ -115,34 +131,6 @@ func (step *PStep) createJobs(infoList map[string]info, stepInfo map[string]stri
 				}
 				createShell(job.Sh, script, appendArgs...)
 			}
-		case "sample":
-			var job = newPJob(stepMem)
-			job.addSampleSh(workdir, sampleID, step.Name)
-			stepJobs = append(stepJobs, job)
-			var appendArgs []string
-			appendArgs = append(appendArgs, workdir, pipeline, sampleID)
-			for _, arg := range stepArgs {
-				switch arg {
-				case "laneName":
-					for _, lane := range item.LaneInfo {
-						appendArgs = append(appendArgs, lane.laneName)
-					}
-				case "gender":
-					appendArgs = append(appendArgs, item.Gender)
-				}
-			}
-			createShell(job.Sh, script, appendArgs...)
-		case "batch":
-			var job = newPJob(stepMem)
-			job.addBatchSh(workdir, sampleID, step.Name)
-			stepJobs = append(stepJobs, job)
-			var appendArgs []string
-			appendArgs = append(appendArgs, workdir, pipeline)
-			for _, arg := range stepArgs {
-				switch arg {
-				}
-			}
-			createShell(job.Sh, script, appendArgs...)
 		}
 	}
 	step.JobSh = &stepJobs

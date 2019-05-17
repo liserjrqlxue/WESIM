@@ -14,7 +14,7 @@ import (
 var (
 	ex, _  = os.Executable()
 	exPath = filepath.Dir(ex)
-	pSep   = string(os.PathSeparator)
+	//pSep   = string(os.PathSeparator)
 	//dbPath       = exPath + pSep + "db" + pSep
 	//templatePath = exPath + pSep + "template" + pSep
 )
@@ -66,12 +66,13 @@ type laneInfo struct {
 }
 
 type info struct {
-	SampleID string
-	Gender   string
-	LaneInfo []laneInfo
+	SampleID  string
+	PoolingID string
+	Gender    string
+	LaneInfo  []laneInfo
 }
 
-var subDirList = []string{
+var poolingDirList = []string{
 	"graph_singleBaseDepth",
 	"ExomeDepth",
 	"CNVkit",
@@ -98,10 +99,14 @@ func main() {
 		flag.Usage()
 		os.Exit(0)
 	}
+
+	// parser input list
 	sampleList, title := simple_util.File2MapArray(*input, "\t", nil)
 	checkTitle(title)
+	var poolingList = make(map[string]int)
 	var infoList = make(map[string]info)
 	for _, item := range sampleList {
+		var poolingID = item["pooling_library_num"]
 		var sampleID = item["main_sample_num"]
 		var gender = item["gender"]
 		var laneCode = item["lane_code"]
@@ -119,11 +124,12 @@ func main() {
 		if !ok {
 			sampleInfo.SampleID = sampleID
 			sampleInfo.Gender = gender
+			sampleInfo.PoolingID = poolingID
 		}
 		sampleInfo.LaneInfo = append(sampleInfo.LaneInfo, lane)
 		infoList[sampleID] = sampleInfo
+		poolingList[poolingID]++
 	}
-	//log.Printf("%+v\n", infoList)
 	var samples []string
 	for k := range infoList {
 		samples = append(samples, k)
@@ -134,15 +140,13 @@ func main() {
 	// step0 create workdir
 	err := os.MkdirAll(*workdir, 0755)
 	simple_util.CheckErr(err)
-	createSubDir(*workdir, subDirList)
-	createSampleDir(*workdir, sampleDirList, samples...)
-	createLaneDir(*workdir, laneDirList, sampleList)
+	createWorkdir(*workdir, poolingList, infoList, poolingDirList, sampleDirList, laneDirList)
 
 	var allSteps []*PStep
 	var stepMap = make(map[string]*PStep)
 	for _, item := range stepList {
 		var step = newPStep(item["name"])
-		step.createJobs(infoList, item, *workdir, *pipeline)
+		step.createJobs(infoList, poolingList, item, *workdir, *pipeline)
 		step.PriorStep = append(step.PriorStep, strings.Split(item["prior"], ",")...)
 		step.NextStep = append(step.NextStep, strings.Split(item["next"], ",")...)
 
@@ -157,42 +161,10 @@ func main() {
 		default:
 		}
 	}
-
-	simple_util.Json2File(filepath.Join(*workdir, "allSteps.json"), allSteps)
-}
-
-func createSubDir(workdir string, subDirList []string) {
-	for _, subdir := range subDirList {
-		err := os.MkdirAll(filepath.Join(workdir, subdir), 0755)
-		simple_util.CheckErr(err)
+	for pooling := range poolingList {
+		simple_util.Json2File(filepath.Join(*workdir, pooling, "allSteps.json"), allSteps)
 	}
-}
 
-func createSampleDir(workdir string, sampleDirList []string, sampleIDs ...string) {
-	for _, sampleID := range sampleIDs {
-		for _, subdir := range sampleDirList {
-			err := os.MkdirAll(filepath.Join(workdir, sampleID, subdir), 0755)
-			simple_util.CheckErr(err)
-		}
-	}
-}
-
-func createLaneDir(workdir string, laneDirList []string, sampleList []map[string]string) {
-	for _, item := range sampleList {
-		var sampleID = item["main_sample_num"]
-		var laneCode = item["lane_code"]
-		for _, subdir := range laneDirList {
-			err := os.MkdirAll(
-				filepath.Join(
-					workdir,
-					sampleID,
-					strings.Join([]string{subdir, laneCode}, "."),
-				),
-				0755,
-			)
-			simple_util.CheckErr(err)
-		}
-	}
 }
 
 func createShell(fileName, script string, args ...string) {
