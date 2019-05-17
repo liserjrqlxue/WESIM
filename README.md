@@ -58,4 +58,32 @@ ln -sf ../../github.com/BGI-flexlab/SOAPnuke/
 cd ../..
 
 
+## db
+cd pipeline/tools
+ln -sf /ifs7/B2C_SGD/PROJECT/PP12_Project/analysis_pipeline/HPC_chip/db/aln_db/hg19/dbsnp_138.hg19.vcf
+ln -sf /ifs7/B2C_SGD/PROJECT/PP12_Project/analysis_pipeline/HPC_chip/db/aln_db/hg19/dbsnp_138.hg19.vcf.idx
+cd ../..
+
+wget -m ftp://gsapubftp-anonymous@ftp.broadinstitute.org/bundle/hg19/Mills_and_1000G_gold_standard.indels.hg19.sites.vcf.gz
+wget -m ftp://gsapubftp-anonymous@ftp.broadinstitute.org/bundle/hg19/Mills_and_1000G_gold_standard.indels.hg19.sites.vcf.idx.gz
+gzip -d ftp.broadinstitute.org/bundle/hg19/Mills_and_1000G_gold_standard.indels.hg19.sites.vcf.gz
+gzip -d ftp.broadinstitute.org/bundle/hg19/Mills_and_1000G_gold_standard.indels.hg19.sites.vcf.idx.gz
+
+cd pipeline/hg19
+ln -sf ../../ftp.broadinstitute.org/bundle/hg19/Mills_and_1000G_gold_standard.indels.hg19.sites.vcf
+ln -sf ../../ftp.broadinstitute.org/bundle/hg19/Mills_and_1000G_gold_standard.indels.hg19.sites.vcf.idx
+cd ../..
+
+file=dbsnp_138.hg19.excluding_sites_after_129.vcf
+wget -m ftp://gsapubftp-anonymous@ftp.broadinstitute.org/bundle/hg19/$file.gz
+wget -m ftp://gsapubftp-anonymous@ftp.broadinstitute.org/bundle/hg19/$file.idx.gz
+gzip -d ftp.broadinstitute.org/bundle/hg19/$file.gz
+gzip -d ftp.broadinstitute.org/bundle/hg19/$file.idx.gz
+
+cd pipeline/hg19
+ln -sf ../../ftp.broadinstitute.org/bundle/hg19/$file
+ln -sf ../../ftp.broadinstitute.org/bundle/hg19/$file.idx
+cd ../..
+
+
 ```
