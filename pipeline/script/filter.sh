@@ -9,7 +9,7 @@ Workdir=$workdir/$sampleID
 SOAPnuke=$pipeline/tools/SOAPnuke
 
 echo Start SOAPnuke `date`
-$SOAPnuke filter -o $Workdir/filter.$laneName \
+$SOAPnuke filter -o $Workdir/filter/$laneName \
     --fq1 $fq1 \
     --fq2 $fq2 \
     --adapter1 AAGTCGGAGGCCAAGCGGTCTTAGGAAGACAA \

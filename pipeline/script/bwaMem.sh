@@ -12,8 +12,8 @@ $bwa \
     mem -K 100000000 -t 8 -M \
     -R "@RG\tID:$sampleID\tSM:$sampleID\tLB:$laneName\tPL:COMPLETE" \
     $hg19 \
-    $Workdir/filter.$laneName/pe.$laneName.1_filter.fq.gz \
-    $Workdir/filter.$laneName/pe.$laneName.2_filter.fq.gz \
+    $Workdir/filter/$laneName/pe.$laneName.1_filter.fq.gz \
+    $Workdir/filter/$laneName/pe.$laneName.2_filter.fq.gz \
     | samtools view -S -b \
     -o $Workdir/bwa/sampleID.raw.$laneName.bam \
     -
