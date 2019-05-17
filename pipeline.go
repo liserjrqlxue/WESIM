@@ -61,7 +61,7 @@ func (step *PStep) addLaneJobs(infoList map[string]info, workdir string, mem int
 	for sampleID, item := range infoList {
 		for _, lane := range item.LaneInfo {
 			var job = newPJob(mem)
-			job.addLaneSh(workdir, sampleID, lane.laneName, step.Name)
+			job.addLaneSh(workdir, sampleID, lane.LaneName, step.Name)
 			stepJobs = append(stepJobs, job)
 		}
 	}
@@ -103,7 +103,7 @@ func (step *PStep) createJobs(infoList map[string]info, poolingList map[string]i
 				switch arg {
 				case "laneName":
 					for _, lane := range item.LaneInfo {
-						appendArgs = append(appendArgs, lane.laneName)
+						appendArgs = append(appendArgs, lane.LaneName)
 					}
 				case "gender":
 					appendArgs = append(appendArgs, item.Gender)
@@ -115,18 +115,18 @@ func (step *PStep) createJobs(infoList map[string]info, poolingList map[string]i
 		for sampleID, item := range infoList {
 			for _, lane := range item.LaneInfo {
 				var job = newPJob(stepMem)
-				job.Sh = filepath.Join(workdir, item.PoolingID, sampleID, "shell", step.Name+"."+lane.laneName+".sh")
+				job.Sh = filepath.Join(workdir, item.PoolingID, sampleID, "shell", step.Name+"."+lane.LaneName+".sh")
 				stepJobs = append(stepJobs, job)
 				var appendArgs []string
 				appendArgs = append(appendArgs, filepath.Join(workdir, item.PoolingID), pipeline, sampleID)
 				for _, arg := range stepArgs {
 					switch arg {
 					case "laneName":
-						appendArgs = append(appendArgs, lane.laneName)
+						appendArgs = append(appendArgs, lane.LaneName)
 					case "fq1":
-						appendArgs = append(appendArgs, lane.fq1)
+						appendArgs = append(appendArgs, lane.Fq1)
 					case "fq2":
-						appendArgs = append(appendArgs, lane.fq2)
+						appendArgs = append(appendArgs, lane.Fq2)
 					}
 				}
 				createShell(job.Sh, script, appendArgs...)
@@ -145,11 +145,11 @@ func (step *PStep) createLaneShell(infoList map[string]info, item map[string]str
 			for _, arg := range args {
 				switch arg {
 				case "laneName":
-					appendArgs = append(appendArgs, lane.laneName)
+					appendArgs = append(appendArgs, lane.LaneName)
 				case "fq1":
-					appendArgs = append(appendArgs, lane.fq1)
+					appendArgs = append(appendArgs, lane.Fq1)
 				case "fq2":
-					appendArgs = append(appendArgs, lane.fq2)
+					appendArgs = append(appendArgs, lane.Fq2)
 				}
 			}
 

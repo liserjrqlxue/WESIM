@@ -20,7 +20,7 @@ func createWorkdir(workdir string, poolingList map[string]int, infoList map[stri
 		}
 		for _, laneInfo := range info.LaneInfo {
 			for _, subdir := range laneDirList {
-				err := os.MkdirAll(filepath.Join(workdir, info.PoolingID, sampleID, subdir, laneInfo.laneName), 0755)
+				err := os.MkdirAll(filepath.Join(workdir, info.PoolingID, sampleID, subdir, laneInfo.LaneName), 0755)
 				simple_util.CheckErr(err)
 			}
 		}
