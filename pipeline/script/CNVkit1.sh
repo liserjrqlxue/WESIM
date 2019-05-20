@@ -3,14 +3,22 @@ workdir=$1
 pipeline=$2
 sampleID=$3
 
-bam=$workdir/$sampleID/bwa/$smapleID.final.bam
+bam=$workdir/$sampleID/bwa/$sampleID.final.bam
+export PATH=$pipeline/tools:$PATH
 Workdir=$workdir/CNVkit
 
-time $pipeline/perl \
+echo time perl \
     $pipeline/CNVkit/bin/analyse.pl \
     $pipeline/CNVkit/control/MGISEQ_2000_control/201811/MGISEQ-2000_201811 \
     $bam \
     cbs \
     $Workdir/$sampleID
 
- sh $Workdir/$sampleID.sh
+time perl \
+    $pipeline/CNVkit/bin/analyse.pl \
+    $pipeline/CNVkit/control/MGISEQ_2000_control/201811/MGISEQ-2000_201811 \
+    $bam \
+    cbs \
+    $Workdir/$sampleID
+
+sh $Workdir/$sampleID.sh
