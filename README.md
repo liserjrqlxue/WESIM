@@ -59,16 +59,12 @@ cd ../..
 
 
 ## db
-cd pipeline/tools
-ln -sf /ifs7/B2C_SGD/PROJECT/PP12_Project/analysis_pipeline/HPC_chip/db/aln_db/hg19/dbsnp_138.hg19.vcf
-ln -sf /ifs7/B2C_SGD/PROJECT/PP12_Project/analysis_pipeline/HPC_chip/db/aln_db/hg19/dbsnp_138.hg19.vcf.idx
-cd ../..
 
-for file in dbsnp_138.hg19.excluding_sites_after_129.vcf Mills_and_1000G_gold_standard.indels.hg19.sites.vcf;do
+for file in dbsnp_138.hg19.vcf Mills_and_1000G_gold_standard.indels.hg19.sites.vcf;do
   wget -m ftp://gsapubftp-anonymous@ftp.broadinstitute.org/bundle/hg19/$file.gz
   wget -m ftp://gsapubftp-anonymous@ftp.broadinstitute.org/bundle/hg19/$file.idx.gz
-  gzip -d ftp.broadinstitute.org/bundle/hg19/$file.gz
-  gzip -d ftp.broadinstitute.org/bundle/hg19/$file.idx.gz
+  gzip -dc ftp.broadinstitute.org/bundle/hg19/$file.gz > ftp.broadinstitute.org/bundle/hg19/$file
+  gzip -dc ftp.broadinstitute.org/bundle/hg19/$file.idx.gz > ftp.broadinstitute.org/bundle/hg19/$file.idx
   cd pipeline/hg19
   ln -sf ../../ftp.broadinstitute.org/bundle/hg19/$file
   ln -sf ../../ftp.broadinstitute.org/bundle/hg19/$file.idx
