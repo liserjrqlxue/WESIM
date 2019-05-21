@@ -71,4 +71,11 @@ for file in dbsnp_138.hg19.vcf Mills_and_1000G_gold_standard.indels.hg19.sites.v
   cd ../..
 done
 
+## script
+git clone ssh://git@192.168.136.114:29418/YCB/CNV_anno.git pipeline/CNV_anno
+
+git clone ssh://git@192.168.136.114:29418/liser.jrqlxue/ExomeDepth.git pipeline/ExomeDepth
+cd pipeline/ExomeDepth
+Rscript init.R ../hg19/hg19_chM_male_mask.fa
+cd ../..
 ```
