@@ -2,8 +2,16 @@
 workdir=$1
 pipeline=$2
 
+export PATH=$pipeline/tools:$PATH
 Bin=$pipeline/ExomeDepth
 outdir=$workdir/ExomeDepth
-Rscript $Bin/run.getAllCounts.R $outdir/sample.list.checked A $outdir
-Rscript $Bin/run.getAllCounts.R $outdir/sample.list.checked M $outdir
-Rscript $Bin/run.getAllCounts.R $outdir/sample.list.checked F $outdir
+echo `date` Start ExomeDepth2
+
+echo `date` Rscript $Bin/run.getAllCounts.R $workdir/sample.list A $outdir
+Rscript $Bin/run.getAllCounts.R $workdir/sample.list A $outdir
+echo `date` Rscript $Bin/run.getAllCounts.R $workdir/sample.list M $outdir
+Rscript $Bin/run.getAllCounts.R $workdir/sample.list M $outdir
+echo `date` Rscript $Bin/run.getAllCounts.R $workdir/sample.list F $outdir
+Rscript $Bin/run.getAllCounts.R $workdir/sample.list F $outdir
+
+echo `date` Done 
