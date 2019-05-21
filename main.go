@@ -111,6 +111,10 @@ func main() {
 	var singleWorkdir = filepath.Join(*workdir, "single")
 	var familyWorkdir = filepath.Join(*workdir, "family")
 
+	// write sample.list
+	sampleListFile, err := os.Create(filepath.Join(singleWorkdir, "sample.list"))
+	simple_util.CheckErr(err)
+	defer simple_util.DeferClose(sampleListFile)
 	// parser input list
 	sampleList, title := simple_util.File2MapArray(*input, "\t", nil)
 	checkTitle(title)
@@ -121,6 +125,7 @@ func main() {
 		var sampleID = item["main_sample_num"]
 		var probandID = item["proband_number"]
 		var gender = item["gender"]
+		fmt.Fprintf(sampleListFile, "%s\t%s\n", sampleID, gender)
 		var laneCode = item["lane_code"]
 		var fqPath = item["FQ_path"]
 		var pe = strings.Split(fqPath, ",")
@@ -151,8 +156,7 @@ func main() {
 	stepList, _ := simple_util.File2MapArray(*stepsCfg, "\t", nil)
 
 	// step0 create workdir
-	err := os.MkdirAll(singleWorkdir, 0755)
-	simple_util.CheckErr(err)
+	simple_util.CheckErr(os.MkdirAll(singleWorkdir, 0755))
 	createWorkdir(singleWorkdir, poolingList, infoList, poolingDirList, sampleDirList, laneDirList)
 
 	var allSteps []*PStep
@@ -209,9 +213,10 @@ func main() {
 				log.Printf("can not find poolingID of proband[%s]\n", item.ProbandID)
 			} else {
 				infoList[sampleID] = item
-				simple_util.CheckErr(os.MkdirAll(filepath.Join(familyWorkdir, item.PoolingID), 0755))
+				familyProbandDir := filepath.Join(familyWorkdir, item.PoolingID, item.ProbandID)
+				simple_util.CheckErr(os.MkdirAll(familyProbandDir, 0755))
 				source := filepath.Join(singleWorkdir, item.PoolingID, item.SampleID)
-				dest := filepath.Join(familyWorkdir, item.ProbandPoolingID, item.SampleID)
+				dest := filepath.Join(familyProbandDir, item.SampleID)
 				_, err := os.Stat(dest)
 				if err == nil {
 					readLink, err := os.Readlink(dest)
