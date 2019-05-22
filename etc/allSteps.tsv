@@ -15,10 +15,12 @@ BQSR	8	4	sample	pReads	IR
 pReads	10	4	sample	dSurvey,HC,UG,eDepth1,CNVkit1,SMA	BQSR	
 dSurvey	10	4	sample	dReport	pReads	
 HC	10	4	sample	fIndel	pReads	
-UG	10	4	sample	fSnv	pReads	
-fSnv	10	4	sample	combVcf	UG	
+UG	10	4	sample	fSnv1	pReads	
+fSnv1	3	2	sample	fSnv2	UG	
+fSnv2	3	4	sample	fSnv3	fSnv1	
+fSnv3	10	4	sample	combVcf	fSnv2	
 fIndel	10	4	sample	combVcf	HC	
-combVcf	10	4	sample	annotat	UG,HC	
+combVcf	10	4	sample	annotat	fSnv3,HC	
 annotat	10	4	sample	eReport	combVcf	
 eDepth1	1	1	sample	eDepth2	pReads	gender
 eDepth2	1	1	batch	eDepth3	eDepth1
