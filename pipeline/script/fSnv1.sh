@@ -8,7 +8,7 @@ export PATH=$pipeline/tools:$PATH
 GATK=$pipeline/tools/GenomeAnalysisTK.jar
 hg19=$pipeline/hg19/hg19_chM_male_mask.fa
 
-echo `date` Start SelectVariants
+echo `date` Start SelectVariantsSNP
 tabix -f -p vcf $Workdir/gatk/UG/$sampleID.vcf.gz
 
 java  -Djava.io.tmpdir=$workdir/javatmp \

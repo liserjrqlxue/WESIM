@@ -9,7 +9,7 @@ GATK=$pipeline/tools/GenomeAnalysisTK.jar
 hg19=$pipeline/hg19/hg19_chM_male_mask.fa
 filterExpression="QD<2.0 || MQ<40.0 || FS>60.0 || HaplotypeScore>13.0 || MQRankSum<-12.5 || ReadPosRankSum<-8.0"
 
-echo `date` Start VariantFiltration
+echo `date` Start VariantFiltrationSNP
 
 java  -Djava.io.tmpdir=$workdir/javatmp \
     -jar $GATK \
