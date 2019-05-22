@@ -12,22 +12,21 @@ dupMark	8	2	sample	RTC	SortSam
 RTC	10	8	sample	IR	dupMark	
 IR	8	1	sample	BQSR	RTC	
 BQSR	8	4	sample	pReads	IR	
-pReads	10	4	sample	dSurvey,HC,UG,eDepth1,CNVkit1,SMA	BQSR	
-dSurvey	10	4	sample	dReport	pReads	
-HC	10	4	sample	fIndel	pReads	
+AppBQSR	2	2	sample	dSurvey,HC,UG,eDepth1,CNVkit1,SMA	BQSR	
+dSurvey	1	1	sample	dReport	pReads	
+HC	1	1	sample	fIndel	pReads	
 UG	10	4	sample	fSnv1	pReads	
 fSnv1	3	2	sample	fSnv2	UG	
 fSnv2	3	4	sample	fSnv3	fSnv1	
-fSnv3	10	4	sample	combVcf	fSnv2	
+fSnv3	2	1	sample	combVcf	fSnv2	
 fIndel	10	4	sample	combVcf	HC	
 combVcf	10	4	sample	annotat	fSnv3,HC	
 annotat	10	4	sample	eReport	combVcf	
 eDepth1	1	1	sample	eDepth2	pReads	gender
 eDepth2	1	1	batch	eDepth3	eDepth1
-eDepth3	1	1	sample	eDepth4	eDepth2	gender
-eDepth4	1	1	batch	eReport	eDepth3	
+eDepth3	1	1	sample	eReport	eDepth2	gender
 CNVkit1	2	4	sample	CNVkit2	pReads	
 CNVkit2	1	1	batch	eReport	CNVkit1	
 SMA	8	1	batch	eReport	pReads	
-eReport	10	4	sample		annotat,eDepth4,CNVkit2,SMA	
+eReport	10	4	sample		annotat,eDepth3,CNVkit2,SMA	
 trio	10	4	family		eReport
