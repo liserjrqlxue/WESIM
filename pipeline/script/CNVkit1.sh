@@ -3,7 +3,7 @@ workdir=$1
 pipeline=$2
 sampleID=$3
 
-bam=$workdir/$sampleID/bwa/$sampleID.final.bam
+bam=$workdir/$sampleID/bwa/$sampleID.bqsr.bam
 export PATH=$pipeline/tools:$PATH
 Workdir=$workdir/CNVkit
 

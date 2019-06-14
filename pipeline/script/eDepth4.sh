@@ -1,15 +1,22 @@
 #!/usr/bin/env bash
 workdir=$1
 pipeline=$2
+sampleID=$3
+gender=$4
 
+export PATH=$pipeline/tools:$PATH
+Bin=$pipeline/ExomeDepth
 outdir=$workdir/ExomeDepth
-CNV_anno=$pipeline/CNV_anno
+gender=$gender
 
-time $pipeline/perl \
-    $CNV_anno/script/add_cn_split_gene.batch.pl \
-    $outdir/all.CNV.calls.list \
-    $outdir/sample.list.checked \
+echo `date` Start ExomeDepth4
+time perl \
+    $CNV_anno/script/add_cn_split_gene.pl \
+    $sampleID \
+    $outdir/$sampleID.CNV.calls.tsv \
+    $gender \
     $CNV_anno/database/database.gene.list.NM \
     $CNV_anno/database/gene_exon.bed \
     $CNV_anno/database/OMIM/OMIM.xls \
-    $outdir/all.CNV.calls.anno
+    $workdir/$sampleID/$sampleID.CNV.calls.anno
+echo `date` Done
