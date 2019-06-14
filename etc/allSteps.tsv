@@ -11,22 +11,24 @@ rmBam2	1	1	sample		SortSam
 dupMark	8	2	sample	RTC	SortSam	
 RTC	10	8	sample	IR	dupMark	
 IR	8	1	sample	BQSR	RTC	
-BQSR	8	4	sample	pReads	IR	
+BQSR	8	4	sample	AppBQSR	IR	
 AppBQSR	2	2	sample	dSurvey,HC,UG,eDepth1,CNVkit1,SMA	BQSR	
-dSurvey	1	1	sample	dReport	pReads	
-HC	1	1	sample	fIndel	pReads	
-UG	10	4	sample	fSnv1	pReads	
+dSurvey	1	1	sample	dReport	AppBQSR	
+HC	1	1	sample	fIndel1	AppBQSR	
+UG	10	4	sample	fSnv1	AppBQSR	
 fSnv1	3	2	sample	fSnv2	UG	
 fSnv2	3	4	sample	fSnv3	fSnv1	
 fSnv3	2	1	sample	combVcf	fSnv2	
-fIndel	10	4	sample	combVcf	HC	
+fIndel1	10	4	sample	fIndel2	HC	
+fIndel2	10	4	sample	combVcf	fIndel1	
 combVcf	10	4	sample	annotat	fSnv3,HC	
 annotat	10	4	sample	eReport	combVcf	
-eDepth1	1	1	sample	eDepth2	pReads	gender
+eDepth1	1	1	sample	eDepth2	AppBQSR	gender
 eDepth2	1	1	batch	eDepth3	eDepth1
-eDepth3	1	1	sample	eReport	eDepth2	gender
-CNVkit1	2	4	sample	CNVkit2	pReads	
+eDepth3	1	1	sample	eDepth4	eDepth2	gender
+eDepth4	1	1	sample	eReport	eDepth3	gender
+CNVkit1	2	4	sample	CNVkit2	AppBQSR	
 CNVkit2	1	1	batch	eReport	CNVkit1	
-SMA	8	1	batch	eReport	pReads	
-eReport	10	4	sample		annotat,eDepth3,CNVkit2,SMA	
+SMA	8	1	batch	eReport	AppBQSR	
+eReport	10	4	sample		annotat,eDepth4,CNVkit2,SMA	
 trio	10	4	family		eReport
