@@ -6,7 +6,7 @@ gender=$4
 
 export PATH=$pipeline/tools:$PATH
 Bin=$pipeline/ExomeDepth
-Bam=$workdir/$sampleID/bwa/$sampleID.final.bam
+Bam=$workdir/$sampleID/bwa/$sampleID.bqsr.bam
 outdir=$workdir/ExomeDepth
 
 Rscript $Bin/run.getBamCount.R $sampleID $Bam A       $outdir $Bin

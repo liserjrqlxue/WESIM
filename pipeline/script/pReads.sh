@@ -16,6 +16,6 @@ java  -Djava.io.tmpdir=$workdir/javatmp \
     -R $hg19 \
     -BQSR $Workdir/$sampleID.recal_data.grp \
     -I    $Workdir/$sampleID.sort.realn.bam \
-    -o    $Workdir/$sampleID.final.bam
+    -o    $Workdir/$sampleID.bqsr.bam
 
 echo `date` Done

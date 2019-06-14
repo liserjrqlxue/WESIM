@@ -13,7 +13,7 @@ java  -Djava.io.tmpdir=$workdir/javatmp \
     -jar $GATK \
     -T ReadBackedPhasing \
     -R $hg19 \
-    -I        $Workdir/bwa/$sampleID.final.bam \
+    -I        $Workdir/bwa/$sampleID.bqsr.bam \
     --variant $Workdir/gatk/UG/snv/$sampleID.snv.filter.vcf \
     -o        $Workdir/gatk/UG/snv/$sampleID.snv.vcf
 

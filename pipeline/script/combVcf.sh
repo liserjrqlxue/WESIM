@@ -23,7 +23,7 @@ java  -Djava.io.tmpdir=$workdir/javatmp \
     -o $Workdir/gatk/$sampleID.filter.vcf
 
 perl $IndelPhasing \
-    -b $Workdir/bwa/$sampleID.final.bam \
+    -b $Workdir/bwa/$sampleID.bqsr.bam \
     -v $Workdir/gatk/$sampleID.filter.vcf \
     -o $Workdir/gatk/$sampleID.final.vcf
 

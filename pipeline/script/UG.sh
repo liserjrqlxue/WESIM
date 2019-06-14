@@ -18,7 +18,7 @@ java  -Djava.io.tmpdir=$workdir/javatmp \
     --genotype_likelihoods_model BOTH \
     -stand_call_conf 30.0 \
     -stand_emit_conf 10.0 \
-    -I $Workdir/bwa/$sampleID.final.bam \
+    -I $Workdir/bwa/$sampleID.bqsr.bam \
     -o $Workdir/gatk/UG/$sampleID.vcf
     #--dbsnp $DbSNP \
 

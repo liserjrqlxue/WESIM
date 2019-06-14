@@ -17,12 +17,12 @@ tag=BGI59M
 
 
 echo `date` Start depthSurvey
-#samtools rmdup $Workdir/bwa/$sampleID.final.bam $Workdir/bwa/$sampleID.rmdup_final.bam
-#samtools view -u $Workdir/bwa/$sampleID.final.bam chrX >$Workdir/bwa/chrX.sort.bam
-#samtools view -u $Workdir/bwa/$sampleID.final.bam chrY >$Workdir/bwa/chrY.sort.bam
+#samtools rmdup $Workdir/bwa/$sampleID.bqsr.bam $Workdir/bwa/$sampleID.rmdup_final.bam
+#samtools view -u $Workdir/bwa/$sampleID.bqsr.bam chrX >$Workdir/bwa/chrX.sort.bam
+#samtools view -u $Workdir/bwa/$sampleID.bqsr.bam chrY >$Workdir/bwa/chrY.sort.bam
 
-echo `date` bamdst -p $Region --uncover 5 -o $Workdir/coverage $Workdir/bwa/$sampleID.final.bam --cutoffdepth 20
-bamdst -p $Region --uncover 5 -o $Workdir/coverage $Workdir/bwa/$sampleID.final.bam --cutoffdepth 20
+echo `date` bamdst -p $Region --uncover 5 -o $Workdir/coverage $Workdir/bwa/$sampleID.bqsr.bam --cutoffdepth 20
+bamdst -p $Region --uncover 5 -o $Workdir/coverage $Workdir/bwa/$sampleID.bqsr.bam --cutoffdepth 20
 
 #$Bam2depths --bamdir=$Workdir/bwa --region=$RegionDir --out=$Workdir/coverage --flank=100
 #$pipeline/Rscript $Bin/dis.R  $Workdir/coverage/dis_target.plot  $sampleID $workdir/graph_sigleBaseDepth/$sampleID_perBase.png
