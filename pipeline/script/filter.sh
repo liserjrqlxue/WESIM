@@ -16,6 +16,6 @@ $SOAPnuke filter -o $Workdir/filter/$laneName \
     --adapter2 AAGTCGGATCGTAGCCATGTCGTTCTGTGAGCCAAGGAGTTG \
     --cleanFq1 pe.$laneName.1_filter.fq.gz \
     --cleanFq2 pe.$laneName.2_filter.fq.gz \
-    --nRate 0.05 --lowQual 10  --seqType 0 --qualRate 0.5 -Q 2 -G
+    --nRate 0.05 --lowQual 10  --seqType 0 --qualRate 0.5 -Q 2 -G 2
 
 echo Done `date`
