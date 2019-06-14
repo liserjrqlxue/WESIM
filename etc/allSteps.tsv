@@ -1,5 +1,5 @@
 name	mem	thread	type	next	prior	args
-filter	1	4	lane	filStat,bwaMem		laneName,fq1,fq2
+filter	1	6	lane	filStat,bwaMem		laneName,fq1,fq2
 filStat	1	1	lane		filter	laneName
 bwaMem	8	8	lane	merge	filter	laneName
 rmFQ	1	1	lane		bwaMem	laneName
