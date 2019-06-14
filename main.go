@@ -110,6 +110,8 @@ func main() {
 
 	var singleWorkdir = filepath.Join(*workdir, "single")
 	var familyWorkdir = filepath.Join(*workdir, "family")
+	simple_util.CheckErr(os.MkdirAll(singleWorkdir, 0755))
+	simple_util.CheckErr(os.MkdirAll(familyWorkdir, 0755))
 
 	// write sample.list
 	sampleListFile, err := os.Create(filepath.Join(singleWorkdir, "sample.list"))
