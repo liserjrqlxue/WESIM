@@ -6,6 +6,19 @@ WES Integrated machine pipeline
 # build
 export PATH=pipeline/tools:PATH
 
+# samtools
+git clone https://github.com/samtools/htslib.git github.com/samtools/htslib
+git clone https://github.com/samtools/samtools.git github.com/samtools/samtools
+wget -m https://github.com/samtools/samtools/releases/download/1.9/samtools-1.9.tar.bz2
+cd github.com/samtools/samtools
+make -j 6
+cd ../../..
+
+cd pipeline/tools
+ln -sf ../../github.com/samtools/samtools/samtools
+cd ../..
+
+
 ## ref
 git clone https://github.com/lh3/bwa.git github.com/lh3/bwa
 cd github.com/lh3/bwa
