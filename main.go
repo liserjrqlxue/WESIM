@@ -183,6 +183,7 @@ func main() {
 	for pooling := range poolingList {
 		simple_util.Json2File(filepath.Join(singleWorkdir, pooling, "allSteps.json"), allSteps)
 	}
+	simple_util.Json2File(filepath.Join(*workdir, "allSteps.json"), allSteps)
 
 	// parser family list
 	if *family == "" {
