@@ -8,10 +8,9 @@ rmBam1	1	1	sample		merge	laneName
 MDSpark	16	8	sample		merge	
 SortSam	8	2	sample	dupMark	merge	
 rmBam2	1	1	sample		SortSam	
-dupMark	8	2	sample	RTC	SortSam	
-RTC	10	8	sample	IR	dupMark	
-IR	8	1	sample	BQSR	RTC	
-BQSR	8	4	sample	AppBQSR	IR	
+dupMark	30	4	sample	indxDup	SortSam	
+indxDup	1	1	sample	BQSR	dupMark	
+BQSR	8	4	sample	AppBQSR	dupMark	
 AppBQSR	2	2	sample	dSurvey,HC,UG,eDepth1,CNVkit1,SMA	BQSR	
 dSurvey	1	1	sample	dReport	AppBQSR	
 HC	1	1	sample	fIndel1	AppBQSR	
