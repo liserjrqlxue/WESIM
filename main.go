@@ -87,7 +87,7 @@ type FamilyInfo struct {
 }
 
 var poolingDirList = []string{
-	"graph_singleBaseDepth",
+	//"graph_singleBaseDepth",
 	"ExomeDepth",
 	"CNVkit",
 	"SMA",
@@ -99,8 +99,9 @@ var sampleDirList = []string{
 	"bwa",
 	"coverage",
 	"annotation",
-	filepath.Join("gatk", "UG", "snv"),
-	filepath.Join("gatk", "HC", "short_indel"),
+	"gatk",
+	//filepath.Join("gatk", "UG", "snv"),
+	//filepath.Join("gatk", "HC", "short_indel"),
 }
 
 var laneDirList = []string{
@@ -176,11 +177,19 @@ func main() {
 		probandInfo, ok := infoList[probandID]
 		if ok {
 			familyInfo.ProbandPoolingID = probandInfo.PoolingID
+			familyList[probandID] = familyInfo
 		} else {
 			log.Printf("Error: can not find proband[%s] info", probandID)
 		}
+		familyProbandDir := filepath.Join(familyWorkdir, familyInfo.ProbandPoolingID, probandID)
+		simple_util.CheckErr(os.MkdirAll(familyProbandDir, 0755))
+		for _, sampleID := range familyInfo.FamilyMap {
+			poolingID := infoList[sampleID].PoolingID
+			source := filepath.Join(singleWorkdir, poolingID, sampleID)
+			dest := filepath.Join(familyProbandDir, sampleID)
+			symlink(source, dest)
+		}
 	}
-	log.Printf("%+v", familyList)
 	var samples []string
 	for k := range infoList {
 		samples = append(samples, k)
@@ -189,7 +198,6 @@ func main() {
 	stepList, _ := simple_util.File2MapArray(*stepsCfg, "\t", nil)
 
 	// step0 create workdir
-	simple_util.CheckErr(os.MkdirAll(singleWorkdir, 0755))
 	createWorkdir(singleWorkdir, poolingList, infoList, poolingDirList, sampleDirList, laneDirList)
 
 	var allSteps []*PStep
@@ -252,29 +260,7 @@ func main() {
 					simple_util.CheckErr(os.MkdirAll(familyProbandDir, 0755))
 					source := filepath.Join(singleWorkdir, item.PoolingID, item.SampleID)
 					dest := filepath.Join(familyProbandDir, item.SampleID)
-					_, err := os.Stat(dest)
-					if err == nil {
-						readLink, err := os.Readlink(dest)
-						if err != nil {
-							log.Printf("%v\n", err)
-						}
-						if readLink != source {
-							log.Printf("dest is not link to source:[%s]->[%s]vs[%s]\n", dest, readLink, source)
-							err = os.Symlink(source, dest)
-							if err != nil {
-								log.Printf("%v\n", err)
-							}
-						} else {
-							log.Printf("dest is link to source:[%s]->[%s]", dest, readLink)
-						}
-					} else if os.IsNotExist(err) {
-						err = os.Symlink(source, dest)
-						if err != nil {
-							log.Printf("%v\n", err)
-						}
-					} else {
-						log.Printf("dest stat err:%v [%s]\n", err, dest)
-					}
+					symlink(source,dest)
 				}
 			} else {
 				log.Printf("Proband[%s] no in family.list[%s]\n", item.ProbandID, *family)
