@@ -5,10 +5,10 @@ sampleID=$3
 laneName=$4
 
 Workdir=$workdir/$sampleID
+export PATH=$pipeline/tools:$PATH
 hg19=$pipeline/hg19/hg19_chM_male_mask.fa
-bwa=$pipeline/tools/bwa
-echo Start bwaMem `date`
-$bwa \
+echo `date` Start bwaMem
+bwa \
     mem -K 100000000 -t 8 -M \
     -R "@RG\tID:$sampleID\tSM:$sampleID\tLB:$laneName\tPL:COMPLETE" \
     $hg19 \
@@ -17,4 +17,4 @@ $bwa \
     | samtools view -S -b \
     -o $Workdir/bwa/sampleID.raw.$laneName.bam \
     -
-echo Done `date`
+echo `date` Done

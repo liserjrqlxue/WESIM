@@ -4,20 +4,18 @@ pipeline=$2
 sampleID=$3
 
 Workdir=$workdir/$sampleID/bwa
-java=$pipeline/tools/java
-Picard=$pipeline/tools/picard
-samtools=$pipeline/tools/samtools
+export PATH=$pipeline/tools:$PATH
 
-echo Start MakrDuplicates `date`
-$java -Djava.io.tmpdir=$workdir/javatmp \
-    -jar $Picard/MarkDuplicates.jar \
-    MAX_FILE_HANDLES_FOR_READ_ENDS_MAP=8000 \
-    INPUT=$Workdir/$sampleID.sort.bam \
-    OUTPUT=$Workdir/$sampleID.sort.dup.bam \
-    METRICS_FILE=$Workdir/$sampleID.sort.dup.metrics \
-    VALIDATION_STRINGENCY=SILENT
+echo `date` Start MakrDuplicates
+gatk \
+  MarkDuplicates \
+  -I $Workdir/$sampleID.sort.bam \
+  -O $Workdir/$sampleID.sort.dup.bam \
+  -M $Workdir/$sampleID.sort.dup.metrics \
+  --CLEAR_DT false \
+  --showHidden
 
-echo Start index `date`
-$samtools index $Workdir/$sampleID.sort.dup.bam
+#echo Start index `date`
+#samtools index $Workdir/$sampleID.sort.dup.bam
 
-echo Done `date`
+echo `date` Done

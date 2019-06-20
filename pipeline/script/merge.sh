@@ -4,8 +4,9 @@ pipeline=$2
 sampleID=$3
 
 Workdir=$workdir/$sampleID/bwa
-samtools=$pipeline/tools/samtools
+export PATH=$pipeline/tools:$PATH
 
+echo `date` Start Merge
 shift 3
 inputBams=""
 for i in $@;do
@@ -13,10 +14,10 @@ for i in $@;do
 done
 
 echo Start merge `date`
-$samtools \
+samtools \
     merge \
     -@ 8 \
     -f $Workdir/$sampleID.raw.bam \
     $inputBams
 
-echo Done `date`
+echo `date` Done
