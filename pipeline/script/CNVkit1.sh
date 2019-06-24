@@ -6,19 +6,16 @@ sampleID=$3
 bam=$workdir/$sampleID/bwa/$sampleID.bqsr.bam
 export PATH=$pipeline/tools:$PATH
 Workdir=$workdir/CNVkit
+CNVkitControl=$pipeline/CNVkit/control/MGISEQ_2000_control/201811/MGISEQ-2000_201811
 
-echo time perl \
-    $pipeline/CNVkit/bin/analyse.pl \
-    $pipeline/CNVkit/control/MGISEQ_2000_control/201811/MGISEQ-2000_201811 \
-    $bam \
-    cbs \
-    $Workdir/$sampleID
-
+echo `date` Start CNVkitAnalyse
 time perl \
-    $pipeline/CNVkit/bin/analyse.pl \
-    $pipeline/CNVkit/control/MGISEQ_2000_control/201811/MGISEQ-2000_201811 \
-    $bam \
-    cbs \
-    $Workdir/$sampleID
+  $pipeline/CNVkit/bin/analyse.pl \
+  $CNVkitControl \
+  $bam \
+  cbs \
+  $Workdir/$sampleID
 
-sh $Workdir/$sampleID.sh
+echo `date` sh $Workdir/$sampleID.sh
+time sh $Workdir/$sampleID.sh
+echo `date` Done

@@ -1,14 +1,18 @@
 #!/usr/bin/env bash
 workdir=$1
 pipeline=$2
+sampleID=$3
 
 Workdir=$workdir/CNVkit
+Workdir=$workdir/$sampleID
 export PATH=$pipeline/tools:$PATH
-cat $Workdir/*.gender > $Workdir/sample_gender.xls
+
+echo `date` Start CNVkitAnnotation
+cat $workdir/CNVkit/*.gender > $Workdir/sample_gender.xls
 
 time perl \
     $pipeline/CNVkit/bin/merge_result.pl \
-    $Workdir/ \
+    $workdir/CNVkit \
     $Workdir/sample_gender.xls \
     $pipeline/CNVkit/bin/hg19_chM_male_mask.fa.fai \
     $Workdir
@@ -48,3 +52,4 @@ time perl \
     $pipeline/CNV_anno/script/add_Pathogenicity.pl \
     $Workdir/CNVkit_cnv_gene_BGI160_Decipher_DGV.xls \
     $Workdir/CNVkit_cnv_gene_BGI160_Decipher_DGV_Pathogenicity.xls
+echo `date` Done

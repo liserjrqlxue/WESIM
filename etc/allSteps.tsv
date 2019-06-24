@@ -27,7 +27,7 @@ eDepth2	1	1	batch	eDepth3	eDepth1
 eDepth3	1	1	sample	eDepth4	eDepth2	gender
 eDepth4	1	1	sample	eReport	eDepth3	gender
 CNVkit1	2	4	sample	CNVkit2	AppBQSR	
-CNVkit2	1	1	batch	eReport	CNVkit1	
+CNVkit2	1	1	sample	eReport	CNVkit1	
 SMA	8	1	batch	eReport	AppBQSR	
 eReport	10	4	sample		annotat,eDepth4,CNVkit2,SMA	
 trio	10	4	family		eReport
