@@ -197,8 +197,8 @@ func main() {
 		}
 		for _, subdir := range familyDirList {
 			simple_util.CheckErr(os.MkdirAll(filepath.Join(familyProbandDir, subdir), 0755))
-
 		}
+		createTiroInfo(familyInfo, familyProbandDir)
 	}
 	var samples []string
 	for k := range infoList {

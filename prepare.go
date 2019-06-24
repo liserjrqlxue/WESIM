@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/liserjrqlxue/simple-util"
 	"log"
 	"os"
@@ -54,4 +55,18 @@ func symlink(source, dest string) error {
 		log.Printf("Error: dest[%s] stat err:%v", dest, err)
 	}
 	return nil
+}
+
+func createTiroInfo(familyInfo FamilyInfo, workdir string) {
+	f, err := os.Create(filepath.Join(workdir, "trio.info"))
+	simple_util.CheckErr(err)
+	defer simple_util.DeferClose(f)
+	for _, relationShip := range []string{"proband", "father", "mother"} {
+		sampleID, ok := familyInfo.FamilyMap[relationShip]
+		if ok {
+			fmt.Fprintln(f, sampleID)
+		} else {
+			log.Fatalf("Error: family Error: can not find relationShip[%s]of proband[%s]\n", relationShip, familyInfo.ProbandID)
+		}
+	}
 }
