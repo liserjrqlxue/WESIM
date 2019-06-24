@@ -14,7 +14,7 @@ gatk \
   ApplyBQSR \
   --tmp-dir=$workdir/javatmp \
   -R $hg19 \
-  -I $Workdir/$sampleID.sort.realn.bam \
+  -I $Workdir/$sampleID.sort.dup.bam \
   -O $Workdir/$sampleID.bqsr.bam \
   -bqsr $Workdir/$sampleID.recal_data.grp
 
