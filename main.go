@@ -214,7 +214,7 @@ func main() {
 	var stepMap = make(map[string]*PStep)
 	for _, item := range stepList {
 		var step = newPStep(item["name"])
-		step.createJobs(infoList, poolingList, item, singleWorkdir, *pipeline)
+		step.CreateJobs(item, familyList, infoList, poolingList, familyWorkdir, singleWorkdir, *pipeline)
 		step.PriorStep = append(step.PriorStep, strings.Split(item["prior"], ",")...)
 		step.NextStep = append(step.NextStep, strings.Split(item["next"], ",")...)
 

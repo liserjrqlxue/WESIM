@@ -68,17 +68,30 @@ func (step *PStep) addLaneJobs(infoList map[string]info, workdir string, mem int
 	step.JobSh = &stepJobs
 }
 
-func (step *PStep) createJobs(infoList map[string]info, poolingList map[string]int, stepInfo map[string]string, workdir, pipeline string) {
+func (step *PStep) CreateJobs(stepInfo map[string]string, familyList map[string]FamilyInfo, infoList map[string]info, poolingList map[string]int, familyWorkdir, workdir, pipeline string) {
 	var stepJobs []PJob
-	stepName := stepInfo["name"]
+
 	stepType := stepInfo["type"]
 	stepMem, err := strconv.Atoi(stepInfo["mem"])
 	simple_util.CheckErr(err)
 	stepArgs := strings.Split(stepInfo["args"], ",")
-
-	script := filepath.Join(pipeline, "script", stepName+".sh")
+	script := filepath.Join(pipeline, "script", stepInfo["name"]+".sh")
 
 	switch stepType {
+	case "family":
+		for probandID, familyInfo := range familyList {
+			familyProbandDir := filepath.Join(familyWorkdir, familyInfo.ProbandPoolingID, probandID)
+			var job = newPJob(stepMem)
+			job.Sh = filepath.Join(familyProbandDir, "shell", step.Name+".sh")
+			stepJobs = append(stepJobs, job)
+			var appendArgs []string
+			appendArgs = append(appendArgs, filepath.Join(familyProbandDir), pipeline)
+			for _, arg := range stepArgs {
+				switch arg {
+				}
+			}
+			createShell(job.Sh, script, appendArgs...)
+		}
 	case "batch":
 		for pooling := range poolingList {
 			var job = newPJob(stepMem)
