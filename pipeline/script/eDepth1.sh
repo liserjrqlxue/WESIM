@@ -9,5 +9,7 @@ Bin=$pipeline/ExomeDepth
 Bam=$workdir/$sampleID/bwa/$sampleID.bqsr.bam
 outdir=$workdir/ExomeDepth
 
+echo `date` Start getBamCount
 Rscript $Bin/run.getBamCount.R $sampleID $Bam A       $outdir $Bin
 Rscript $Bin/run.getBamCount.R $sampleID $Bam $gender $outdir $Bin
+echo `date` Done
