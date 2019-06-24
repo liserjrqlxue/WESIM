@@ -5,13 +5,13 @@ pipeline=$2
 sampleID=$3
 
 Workdir=$workdir/$sampleID
-java=$pipeline/tools/java
+export PATH=$pipeline/tools:$PATH
 GATK=$pipeline/tools/GenomeAnalysisTK.jar
 Bed=$pipeline/config/cns_region_hg19_bychr/for500_region.bed
 hg19=$pipeline/hg19/hg19_chM_male_mask.fa
 
-echo Start RealignerTargetCreator `date`
-$java  -Djava.io.tmpdir=$workdir/javatmp \
+echo `date` Start RealignerTargetCreator
+java  -Djava.io.tmpdir=$workdir/javatmp \
     -jar $GATK \
     -T RealignerTargetCreator \
     -R $hg19 \
@@ -19,4 +19,4 @@ $java  -Djava.io.tmpdir=$workdir/javatmp \
     -I $Workdir/bwa/$sampleID.sort.dup.bam \
     -o $Workdir/bwa/$sampleID.realn_data.intervals
 
-echo Done `date`
+echo `date` Done
