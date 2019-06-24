@@ -92,6 +92,7 @@ var poolingDirList = []string{
 	"CNVkit",
 	"SMA",
 	"shell",
+	"result",
 }
 
 var sampleDirList = []string{
@@ -106,6 +107,11 @@ var sampleDirList = []string{
 
 var laneDirList = []string{
 	"filter",
+}
+
+var familyDirList = []string{
+	"result",
+	"shell",
 }
 
 func main() {
@@ -188,6 +194,10 @@ func main() {
 			source := filepath.Join("..", "..", "..", "single", poolingID, sampleID)
 			dest := filepath.Join(familyProbandDir, sampleID)
 			symlink(source, dest)
+		}
+		for _, subdir := range familyDirList {
+			simple_util.CheckErr(os.MkdirAll(filepath.Join(familyProbandDir, subdir), 0755))
+
 		}
 	}
 	var samples []string
