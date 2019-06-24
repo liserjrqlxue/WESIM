@@ -101,8 +101,6 @@ var sampleDirList = []string{
 	"coverage",
 	"annotation",
 	"gatk",
-	//filepath.Join("gatk", "UG", "snv"),
-	//filepath.Join("gatk", "HC", "short_indel"),
 }
 
 var laneDirList = []string{
