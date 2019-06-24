@@ -17,7 +17,7 @@ echo `date` Start Annotation
 time perl \
     $anno \
     $cfg \
-    -t vcf -n 5 -b 500 -q \
+    -t vcf -n 13 -b 5000 -q \
     -o $prefix.out \
     $Workdir/gatk/$sampleID.final.vcf.gz
 
