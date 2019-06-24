@@ -5,6 +5,7 @@ sampleID=$3
 gender=$4
 
 export PATH=$pipeline/tools:$PATH
+CNV_anno=$pipeline/CNV_anno
 Bin=$pipeline/ExomeDepth
 outdir=$workdir/ExomeDepth
 gender=$gender
@@ -13,7 +14,7 @@ echo `date` Start ExomeDepth4
 time perl \
     $CNV_anno/script/add_cn_split_gene.pl \
     $sampleID \
-    $outdir/$sampleID.CNV.calls.tsv \
+    $outdir/$sampleID.A.CNV.calls.tsv \
     $gender \
     $CNV_anno/database/database.gene.list.NM \
     $CNV_anno/database/gene_exon.bed \
