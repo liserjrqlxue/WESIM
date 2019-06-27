@@ -284,7 +284,7 @@ func createShell(fileName, script string, args ...string) {
 	simple_util.CheckErr(err)
 	defer simple_util.DeferClose(file)
 
-	_, err = fmt.Fprintf(file, "#!/bin/bash\nsh \\\n\t%s \\\n\t%s\n", script, strings.Join(args, " \\\n\t"))
+	_, err = fmt.Fprintf(file, "#!/bin/bash\nsh %s %s\n", script, strings.Join(args, " "))
 	simple_util.CheckErr(err)
 }
 
