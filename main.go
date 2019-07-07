@@ -134,6 +134,7 @@ func main() {
 	// ProbandID -> FamilyInfo
 	var familyList = make(map[string]FamilyInfo)
 	var poolingList = make(map[string]int)
+	var poolingSamples = make(map[string]map[string]string)
 	var infoList = make(map[string]info)
 	for _, item := range sampleList {
 		var poolingID = item["pooling_library_num"]
@@ -176,6 +177,13 @@ func main() {
 			}
 			familyList[probandID] = familyInfo
 		}
+
+		samplesMap, ok := poolingSamples[poolingID]
+		if !ok {
+			samplesMap = make(map[string]string)
+		}
+		samplesMap[sampleID] = gender
+		poolingSamples[poolingID] = samplesMap
 	}
 	for probandID, familyInfo := range familyList {
 		probandInfo, ok := infoList[probandID]
@@ -207,6 +215,23 @@ func main() {
 
 	// step0 create workdir
 	createWorkdir(singleWorkdir, poolingList, infoList, poolingDirList, sampleDirList, laneDirList)
+
+	// write pooling list
+	log.Printf("%+v", poolingSamples)
+	for poolingID, item := range poolingSamples {
+		pListFile, err := os.Create(filepath.Join(singleWorkdir, poolingID, "sample.list"))
+		simple_util.CheckErr(err, "write sample.list")
+		defer simple_util.DeferClose(pListFile)
+		BamListFile, err := os.Create(filepath.Join(singleWorkdir, poolingID, "bam.list"))
+		simple_util.CheckErr(err, "write bam.list")
+		defer simple_util.DeferClose(BamListFile)
+		for sampleID, gender := range item {
+			_, err := fmt.Fprintf(pListFile, "%s\t%s\n", sampleID, gender)
+			simple_util.CheckErr(err)
+			_, err = fmt.Fprintf(BamListFile, "%s\n", filepath.Join(singleWorkdir, poolingID, sampleID, "bwa", sampleID+".bqsr.bam"))
+			simple_util.CheckErr(err)
+		}
+	}
 
 	var allSteps []*PStep
 	var stepMap = make(map[string]*PStep)
