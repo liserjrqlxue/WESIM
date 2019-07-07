@@ -92,6 +92,11 @@ func (step *PStep) CreateJobs(stepInfo map[string]string, familyList map[string]
 					for _, relationShip := range []string{"proband", "father", "mother"} {
 						appendArgs = append(appendArgs, familyInfo.FamilyMap[relationShip])
 					}
+				case "single":
+					appendArgs = append(
+						appendArgs,
+						filepath.Join(workdir, familyInfo.ProbandPoolingID),
+					)
 				}
 			}
 			createShell(job.Sh, script, appendArgs...)
