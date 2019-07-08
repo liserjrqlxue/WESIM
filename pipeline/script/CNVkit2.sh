@@ -3,16 +3,15 @@ workdir=$1
 pipeline=$2
 sampleID=$3
 
-Workdir=$workdir/CNVkit
-Workdir=$workdir/$sampleID
+Workdir=$workdir/$sampleID/bwa
 export PATH=$pipeline/tools:$PATH
 
 echo `date` Start CNVkitAnnotation
-cat $workdir/CNVkit/*.gender > $Workdir/sample_gender.xls
+cat $Workdir/$sampleID.gender > $Workdir/sample_gender.xls
 
 time perl \
     $pipeline/CNVkit/bin/merge_result.pl \
-    $workdir/CNVkit \
+    $Workdir/ \
     $Workdir/sample_gender.xls \
     $pipeline/CNVkit/bin/hg19_chM_male_mask.fa.fai \
     $Workdir
