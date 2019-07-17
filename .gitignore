@@ -11,9 +11,26 @@
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
 
-# index of ref
+# reference
+pipeline/hg19/hg19_chM_male_mask.fa
 pipeline/hg19/hg19_chM_male_mask.fa.amb
 pipeline/hg19/hg19_chM_male_mask.fa.ann
 pipeline/hg19/hg19_chM_male_mask.fa.bwt
 pipeline/hg19/hg19_chM_male_mask.fa.pac
 pipeline/hg19/hg19_chM_male_mask.fa.sa
+pipeline/hg19/hg19_chM_male_mask.dict
+pipeline/hg19/hg19_chM_male_mask.fa.fai
+
+test*
+target*
+
+
+download.java.net/
+ftp.broadinstitute.org/
+github.com/
+
+
+peline/hg19/Mills_and_1000G_gold_standard.indels.hg19.sites.vcf
+pipeline/hg19/Mills_and_1000G_gold_standard.indels.hg19.sites.vcf.idx
+pipeline/hg19/dbsnp_138.hg19.vcf
+pipeline/hg19/dbsnp_138.hg19.vcf.idx
