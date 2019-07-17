@@ -6,7 +6,7 @@ sampleID=$3
 bam=$workdir/$sampleID/bwa/$sampleID.bqsr.bam
 export PATH=$pipeline/tools:$PATH
 Workdir=$workdir/$sampleID/bwa
-CNVkitControl=$pipeline/CNVkit/control/MGISEQ_2000_control/201811/MGISEQ-2000_201811
+CNVkitControl=$pipeline/CNVkit/control/MGISEQ_2000_control/201906/MGISEQ-2000_201906
 
 echo `date` Start CNVkitAnalyse
 time perl \
