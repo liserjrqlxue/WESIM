@@ -189,7 +189,7 @@ func main() {
 		familyProbandDir := filepath.Join(familyWorkdir, probandID)
 		simple_util.CheckErr(os.MkdirAll(familyProbandDir, 0755))
 		for _, sampleID := range familyInfo.FamilyMap {
-			source := filepath.Join("..", "..", "..", "single", sampleID)
+			source := filepath.Join("..", "..", "single", sampleID)
 			dest := filepath.Join(familyProbandDir, sampleID)
 			symlink(source, dest)
 		}
