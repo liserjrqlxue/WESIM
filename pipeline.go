@@ -68,7 +68,7 @@ func (step *PStep) addLaneJobs(infoList map[string]info, workdir string, mem int
 	step.JobSh = &stepJobs
 }
 
-func (step *PStep) CreateJobs(stepInfo map[string]string, familyList map[string]FamilyInfo, infoList map[string]info, poolingList map[string]int, familyWorkdir, workdir, pipeline string) {
+func (step *PStep) CreateJobs(stepInfo map[string]string, familyList map[string]FamilyInfo, infoList map[string]info, familyWorkdir, workdir, pipeline string) {
 	var stepJobs []PJob
 
 	stepType := stepInfo["type"]
@@ -80,7 +80,7 @@ func (step *PStep) CreateJobs(stepInfo map[string]string, familyList map[string]
 	switch stepType {
 	case "family":
 		for probandID, familyInfo := range familyList {
-			familyProbandDir := filepath.Join(familyWorkdir, familyInfo.ProbandPoolingID, probandID)
+			familyProbandDir := filepath.Join(familyWorkdir, probandID)
 			var job = newPJob(stepMem)
 			job.Sh = filepath.Join(familyProbandDir, "shell", step.Name+".sh")
 			stepJobs = append(stepJobs, job)
@@ -93,34 +93,29 @@ func (step *PStep) CreateJobs(stepInfo map[string]string, familyList map[string]
 						appendArgs = append(appendArgs, familyInfo.FamilyMap[relationShip])
 					}
 				case "single":
-					appendArgs = append(
-						appendArgs,
-						filepath.Join(workdir, familyInfo.ProbandPoolingID),
-					)
+					appendArgs = append(appendArgs, workdir)
 				}
 			}
 			createShell(job.Sh, script, appendArgs...)
 		}
 	case "batch":
-		for pooling := range poolingList {
-			var job = newPJob(stepMem)
-			job.Sh = filepath.Join(workdir, pooling, "shell", step.Name+".sh")
-			stepJobs = append(stepJobs, job)
-			var appendArgs []string
-			appendArgs = append(appendArgs, filepath.Join(workdir, pooling), pipeline)
-			for _, arg := range stepArgs {
-				switch arg {
-				}
+		var job = newPJob(stepMem)
+		job.Sh = filepath.Join(workdir, "shell", step.Name+".sh")
+		stepJobs = append(stepJobs, job)
+		var appendArgs []string
+		appendArgs = append(appendArgs, workdir, pipeline)
+		for _, arg := range stepArgs {
+			switch arg {
 			}
-			createShell(job.Sh, script, appendArgs...)
 		}
+		createShell(job.Sh, script, appendArgs...)
 	case "sample":
 		for sampleID, item := range infoList {
 			var job = newPJob(stepMem)
-			job.Sh = filepath.Join(workdir, item.PoolingID, sampleID, "shell", step.Name+".sh")
+			job.Sh = filepath.Join(workdir, sampleID, "shell", step.Name+".sh")
 			stepJobs = append(stepJobs, job)
 			var appendArgs []string
-			appendArgs = append(appendArgs, filepath.Join(workdir, item.PoolingID), pipeline, sampleID)
+			appendArgs = append(appendArgs, workdir, pipeline, sampleID)
 			for _, arg := range stepArgs {
 				switch arg {
 				case "laneName":
@@ -137,10 +132,10 @@ func (step *PStep) CreateJobs(stepInfo map[string]string, familyList map[string]
 		for sampleID, item := range infoList {
 			for _, lane := range item.LaneInfo {
 				var job = newPJob(stepMem)
-				job.Sh = filepath.Join(workdir, item.PoolingID, sampleID, "shell", step.Name+"."+lane.LaneName+".sh")
+				job.Sh = filepath.Join(workdir, sampleID, "shell", step.Name+"."+lane.LaneName+".sh")
 				stepJobs = append(stepJobs, job)
 				var appendArgs []string
-				appendArgs = append(appendArgs, filepath.Join(workdir, item.PoolingID), pipeline, sampleID)
+				appendArgs = append(appendArgs, workdir, pipeline, sampleID)
 				for _, arg := range stepArgs {
 					switch arg {
 					case "laneName":

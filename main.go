@@ -71,22 +71,19 @@ type laneInfo struct {
 }
 
 type info struct {
-	SampleID         string
-	PoolingID        string
-	Gender           string
-	ProbandID        string
-	ProbandPoolingID string
-	LaneInfo         []laneInfo
-	FamilyInfo       map[string][]string
+	SampleID   string
+	Gender     string
+	ProbandID  string
+	LaneInfo   []laneInfo
+	FamilyInfo map[string][]string
 }
 
 type FamilyInfo struct {
-	ProbandID        string
-	ProbandPoolingID string
-	FamilyMap        map[string]string
+	ProbandID string
+	FamilyMap map[string]string
 }
 
-var poolingDirList = []string{
+var singleDirList = []string{
 	//"graph_singleBaseDepth",
 	"ExomeDepth",
 	"CNVkit",
@@ -101,6 +98,7 @@ var sampleDirList = []string{
 	"coverage",
 	"annotation",
 	"gatk",
+	"result",
 }
 
 var laneDirList = []string{
@@ -128,27 +126,34 @@ func main() {
 	sampleListFile, err := os.Create(filepath.Join(singleWorkdir, "sample.list"))
 	simple_util.CheckErr(err)
 	defer simple_util.DeferClose(sampleListFile)
+	// write bam.list
+	bamListFile, err := os.Create(filepath.Join(singleWorkdir, "bam.list"))
+	simple_util.CheckErr(err, "write bam.list")
+	defer simple_util.DeferClose(bamListFile)
+
 	// parser input list
 	sampleList, title := simple_util.File2MapArray(*input, "\t", nil)
 	checkTitle(title)
 	// ProbandID -> FamilyInfo
 	var familyList = make(map[string]FamilyInfo)
-	var poolingList = make(map[string]int)
-	var poolingSamples = make(map[string]map[string]string)
 	var infoList = make(map[string]info)
 	for _, item := range sampleList {
-		var poolingID = item["pooling_library_num"]
 		var sampleID = item["main_sample_num"]
 		var probandID = item["proband_number"]
 		var relationShip = item["relationship"]
 		var gender = item["gender"]
-		fmt.Fprintf(sampleListFile, "%s\t%s\n", sampleID, gender)
 		var laneCode = item["lane_code"]
 		var fqPath = item["FQ_path"]
 		var pe = strings.Split(fqPath, ",")
 		if len(pe) != 2 {
 			log.Fatalf("can not parse pair end in lane(%s) of sample(%s):[%s]\n", laneCode, sampleID, fqPath)
 		}
+
+		_, err = fmt.Fprintf(sampleListFile, "%s\t%s\n", sampleID, gender)
+		simple_util.CheckErr(err)
+		_, err = fmt.Fprintf(bamListFile, "%s\n", filepath.Join(singleWorkdir, sampleID, "bwa", sampleID+".bqsr.bam"))
+		simple_util.CheckErr(err)
+
 		var lane = laneInfo{
 			LaneName: laneCode,
 			Fq1:      pe[0],
@@ -158,12 +163,10 @@ func main() {
 		if !ok {
 			sampleInfo.SampleID = sampleID
 			sampleInfo.Gender = gender
-			sampleInfo.PoolingID = poolingID
 			sampleInfo.ProbandID = probandID
 		}
 		sampleInfo.LaneInfo = append(sampleInfo.LaneInfo, lane)
 		infoList[sampleID] = sampleInfo
-		poolingList[poolingID]++
 		// FamilyInfo
 		if probandID != "" {
 			familyInfo, ok := familyList[probandID]
@@ -177,27 +180,12 @@ func main() {
 			}
 			familyList[probandID] = familyInfo
 		}
-
-		samplesMap, ok := poolingSamples[poolingID]
-		if !ok {
-			samplesMap = make(map[string]string)
-		}
-		samplesMap[sampleID] = gender
-		poolingSamples[poolingID] = samplesMap
 	}
 	for probandID, familyInfo := range familyList {
-		probandInfo, ok := infoList[probandID]
-		if ok {
-			familyInfo.ProbandPoolingID = probandInfo.PoolingID
-			familyList[probandID] = familyInfo
-		} else {
-			log.Printf("Error: can not find proband[%s] info", probandID)
-		}
-		familyProbandDir := filepath.Join(familyWorkdir, familyInfo.ProbandPoolingID, probandID)
+		familyProbandDir := filepath.Join(familyWorkdir, probandID)
 		simple_util.CheckErr(os.MkdirAll(familyProbandDir, 0755))
 		for _, sampleID := range familyInfo.FamilyMap {
-			poolingID := infoList[sampleID].PoolingID
-			source := filepath.Join("..", "..", "..", "single", poolingID, sampleID)
+			source := filepath.Join("..", "..", "..", "single", sampleID)
 			dest := filepath.Join(familyProbandDir, sampleID)
 			symlink(source, dest)
 		}
@@ -214,30 +202,13 @@ func main() {
 	stepList, _ := simple_util.File2MapArray(*stepsCfg, "\t", nil)
 
 	// step0 create workdir
-	createWorkdir(singleWorkdir, poolingList, infoList, poolingDirList, sampleDirList, laneDirList)
-
-	// write pooling list
-	log.Printf("%+v", poolingSamples)
-	for poolingID, item := range poolingSamples {
-		pListFile, err := os.Create(filepath.Join(singleWorkdir, poolingID, "sample.list"))
-		simple_util.CheckErr(err, "write sample.list")
-		defer simple_util.DeferClose(pListFile)
-		BamListFile, err := os.Create(filepath.Join(singleWorkdir, poolingID, "bam.list"))
-		simple_util.CheckErr(err, "write bam.list")
-		defer simple_util.DeferClose(BamListFile)
-		for sampleID, gender := range item {
-			_, err := fmt.Fprintf(pListFile, "%s\t%s\n", sampleID, gender)
-			simple_util.CheckErr(err)
-			_, err = fmt.Fprintf(BamListFile, "%s\n", filepath.Join(singleWorkdir, poolingID, sampleID, "bwa", sampleID+".bqsr.bam"))
-			simple_util.CheckErr(err)
-		}
-	}
+	createWorkdir(singleWorkdir, infoList, singleDirList, sampleDirList, laneDirList)
 
 	var allSteps []*PStep
 	var stepMap = make(map[string]*PStep)
 	for _, item := range stepList {
 		var step = newPStep(item["name"])
-		step.CreateJobs(item, familyList, infoList, poolingList, familyWorkdir, singleWorkdir, *pipeline)
+		step.CreateJobs(item, familyList, infoList, familyWorkdir, singleWorkdir, *pipeline)
 		if item["prior"] != "" {
 			step.PriorStep = append(step.PriorStep, strings.Split(item["prior"], ",")...)
 		}
@@ -256,54 +227,12 @@ func main() {
 		default:
 		}
 	}
-	for pooling := range poolingList {
-		simple_util.Json2File(filepath.Join(singleWorkdir, pooling, "allSteps.json"), allSteps)
-	}
 	simple_util.Json2File(filepath.Join(*workdir, "allSteps.json"), allSteps)
 
 	// parser family list
 	if *family == "" {
 		return
 	}
-	/*
-		familyList, title := simple_util.File2MapArray(*family, "\t", nil)
-		var familyInfo = make(map[string]map[string][]string)
-		var poolingMap = make(map[string]string)
-		for _, item := range familyList {
-			sampleID := item["main_sample_num"]
-			probandID := item["proband_number"]
-			relationship := item["relationship"]
-			pooling := item["pooling_library_num"]
-			poolingMap[sampleID] = pooling
-			info, ok := familyInfo[probandID]
-			if ok {
-				info[relationship] = append(info[relationship], sampleID)
-			} else {
-				var familyMember = make(map[string][]string)
-				familyMember[relationship] = append(familyMember[relationship], sampleID)
-				familyInfo[probandID] = familyMember
-			}
-		}
-		for sampleID, item := range infoList {
-			member, ok := familyInfo[item.ProbandID]
-			if ok {
-				item.FamilyInfo = member
-				item.ProbandPoolingID, ok = poolingMap[item.ProbandID]
-				if !ok {
-					log.Printf("can not find poolingID of proband[%s]\n", item.ProbandID)
-				} else {
-					infoList[sampleID] = item
-					familyProbandDir := filepath.Join(familyWorkdir, item.PoolingID, item.ProbandID)
-					simple_util.CheckErr(os.MkdirAll(familyProbandDir, 0755))
-					source := filepath.Join(singleWorkdir, item.PoolingID, item.SampleID)
-					dest := filepath.Join(familyProbandDir, item.SampleID)
-					symlink(source,dest)
-				}
-			} else {
-				log.Printf("Proband[%s] no in family.list[%s]\n", item.ProbandID, *family)
-			}
-		}
-	*/
 	//jsonByte,err:=json.MarshalIndent(infoList,"","\t")
 	//fmt.Printf("%s\n",jsonByte)
 }
