@@ -182,6 +182,10 @@ func main() {
 		}
 	}
 	for probandID, familyInfo := range familyList {
+		_, ok := infoList[probandID]
+		if !ok {
+			log.Fatalf("Error: can nnot find sample info of proband[%s]", probandID)
+		}
 		familyProbandDir := filepath.Join(familyWorkdir, probandID)
 		simple_util.CheckErr(os.MkdirAll(familyProbandDir, 0755))
 		for _, sampleID := range familyInfo.FamilyMap {
