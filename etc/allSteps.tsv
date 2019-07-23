@@ -1,35 +1,34 @@
-name	mem	thread	type	next	prior	args
-filter	1	6	lane	filStat,bwaMem		laneName,fq1,fq2
-filStat	1	1	lane		filter	laneName
-bwaMem	8	8	lane	merge	filter	laneName
-rmFQ	1	1	lane		bwaMem	laneName
-merge	1	8	sample	SortSam	bwaMem	laneName
-rmBam1	1	1	sample		merge	laneName
-MDSpark	16	8	sample		merge	
-SortSam	8	2	sample	dupMark	merge	
-rmBam2	1	1	sample		SortSam	
-dupMark	30	4	sample	indxDup	SortSam	
-indxDup	1	1	sample	BQSR	dupMark	
-BQSR	8	4	sample	AppBQSR	dupMark	
-AppBQSR	2	2	sample	dSurvey,HC,UG,eDepth1,CNVkit1,SMA	BQSR	
-dSurvey	1	1	sample	dReport	AppBQSR	
-HC	1	1	sample	fIndel1	AppBQSR	
-UG	10	4	sample	fSnv1	AppBQSR	
-fSnv1	3	2	sample	fSnv2	UG	
-fSnv2	3	4	sample	fSnv3	fSnv1	
-fSnv3	2	1	sample	combVcf	fSnv2	
-fIndel1	10	4	sample	fIndel2	HC	
-fIndel2	10	4	sample	combVcf	fIndel1	
-combVcf	10	4	sample	annotat	fSnv3,HC	
-annotat	10	4	sample	eReport	combVcf	
-eDepth1	1	1	sample	eDepth2	AppBQSR	gender
-eDepth2	1	1	batch	eDepth3	eDepth1
-eDepth3	1	1	sample	eDepth4	eDepth2	gender
-eDepth4	1	1	sample	eReport	eDepth3	gender
-TCcnn	2	12	sample	CNVkit1	AppBQSR	
-ATCcnn	2	12	sample	CNVkit1	AppBQSR	
-CNVkit1	2	4	sample	CNVkit2	TCcnn,ATCcnn	
-CNVkit2	1	1	sample	eReport	CNVkit1	
-SMA	8	1	batch	eReport	AppBQSR	
-eReport	10	4	sample		annotat,eDepth4,CNVkit2,SMA	
-trio	10	4	family		eReport
+name	mem	thread	time	type	next	prior	args
+filter	1	6	30m	lane	filStat,bwaMem		laneName,fq1,fq2
+filStat	1	1	1s	lane	dSurvey	filter	laneName
+bwaMem	8	8	1h	lane	merge	filter	laneName
+merge	1	8	15m	sample	SortSam	bwaMem	laneName
+SortSam	8	2	40m	sample	dupMark	merge	
+dupMark	30	?1	230m/52.3m	sample	indxDup	SortSam	
+indxDup	1	1	6m	sample	BQSR	dupMark
+BQSR	3	1	1h	sample	AppBQSR	indxDup	
+AppBQSR	2	2	1h	sample	dSurvey,HC4,eDepth1,TCcnn,ATCcnn,depth,bedcov	BQSR	
+dSurvey	1	1	10m	sample	eReport	AppBQSR	
+HC4	13	3	205m	sample	GeGVCFs	AppBQSR	
+GeGVCFs	6	1	5m	sample	fIndel1,fSnv1	HC4	
+fSnv1	3	?	10s	sample	fSnv2	GeGVCFs
+fSnv2	3	?	25s	sample	MerVcfs	fSnv1	
+fIndel1	3	?	10s	sample	fIndel2	GeGVCFs	
+fIndel2	3	?	10s	sample	MerVcfs	fIndel1	
+MerVcfs	3	?	20s	sample	bgiAnno	fSnv2,fIndel2	
+bgiAnno	10	12	40m	sample	acmg	MerVcfs	
+acmg	1	1	1m	sample	updFunc	bgiAnno	
+updFunc	1	1	20s	sample	eReport	acmg	
+eDepth1	1	1	20m	sample	eDepth2	AppBQSR	gender
+eDepth2	1	1	20s	batch	eDepth3	eDepth1
+eDepth3	1	1	2m	sample	eDepth4	eDepth2	gender
+eDepth4	1	1	10s	sample	eReport	eDepth3	gender
+TCcnn	2	12	5m	sample	CNVkit1	AppBQSR	
+ATCcnn	2	12	2m	sample	CNVkit1	AppBQSR	
+CNVkit1	2	12	30s	sample	CNVkit2	TCcnn,ATCcnn	
+CNVkit2	1	1	3s	sample	eReport	CNVkit1	
+depth	1	1	15m	sample	SMA	AppBQSR	
+bedcov	1	1	30s	sample	SMA	AppBQSR	
+SMA	8	1		batch	eReport	depth,bedcov	
+eReport	10	4		sample	trio	updFunc,eDepth4,CNVkit2,SMA	
+trio	10	4		family		eReport	single,list

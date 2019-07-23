@@ -8,8 +8,6 @@ Workdir=$workdir/$sampleID
 export PATH=$pipeline/tools:$PATH
 cfg=$pipeline/config/config_BGI59M_CG_single.2019.pl
 anno=$pipeline/bgi_anno/bin/bgicg_anno.pl
-acmg=$pipeline/acmg2015/bin/anno.acmg.pl
-func=$pipeline/bin/update.Function.pl
 prefix=$Workdir/annotation/$sampleID
 
 echo `date` Start Annotation
@@ -17,18 +15,8 @@ echo `date` Start Annotation
 time perl \
     $anno \
     $cfg \
-    -t vcf -n 13 -b 5000 -q \
+    -t vcf -n 13 -b 10000 -q \
     -o $prefix.out \
-    $Workdir/gatk/$sampleID.final.vcf.gz
-
-time perl \
-    $acmg \
-    $prefix.out \
-    >$prefix.out.ACMG
-
-time perl \
-    $func \
-    $prefix.out.ACMG \
-    >$prefix.out.ACMG.updateFunc
+    $Workdir/gatk/$sampleID.filter.vcf.gz
 
 echo `date` Done
