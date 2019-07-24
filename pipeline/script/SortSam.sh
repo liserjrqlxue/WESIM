@@ -12,6 +12,7 @@ gatk \
   -I $Workdir/$sampleID.raw.bam \
   -O $Workdir/$sampleID.sort.bam \
   -SO coordinate \
-  --showHidden=true
+  --showHidden=true \
+&& rm -rvf $Workdir/$sampleID.raw.bam || echo error
 
 echo `date` Done
