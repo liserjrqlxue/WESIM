@@ -10,14 +10,20 @@ echo `date` Start Merge
 shift 3
 inputBams=""
 for i in $@;do
-    inputBams="$inputBams $Workdir/sampleID.raw.$i.bam"
+    inputBams="$inputBams $Workdir/$sampleID.raw.$i.bam"
 done
 
 echo Start merge `date`
+echo samtools \
+    merge \
+    -@ 8 \
+    -f $Workdir/$sampleID.raw.bam \
+    $inputBams 
 samtools \
     merge \
     -@ 8 \
     -f $Workdir/$sampleID.raw.bam \
-    $inputBams
+    $inputBams \
+&& rm -rvf $inputBams || echo error
 
 echo `date` Done
