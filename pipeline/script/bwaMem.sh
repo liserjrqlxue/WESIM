@@ -12,9 +12,10 @@ bwa \
     mem -K 100000000 -t 8 -M \
     -R "@RG\tID:$sampleID\tSM:$sampleID\tLB:$laneName\tPL:COMPLETE" \
     $hg19 \
-    $Workdir/filter/$laneName/pe.$laneName.1_filter.fq.gz \
-    $Workdir/filter/$laneName/pe.$laneName.2_filter.fq.gz \
+    $Workdir/filter/$laneName/$sampleID.$laneName.filter_1.fq.gz \
+    $Workdir/filter/$laneName/$sampleID.$laneName.filter_2.fq.gz \
     | samtools view -S -b \
-    -o $Workdir/bwa/sampleID.raw.$laneName.bam \
-    -
+    -o $Workdir/bwa/$sampleID.raw.$laneName.bam \
+    - \
+&&rm -rvf $Workdir/filter/$laneName/$sampleID.$laneName.filter_{1,2}.fq.gz || echo error
 echo `date` Done
