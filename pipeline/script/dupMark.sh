@@ -6,14 +6,16 @@ sampleID=$3
 Workdir=$workdir/$sampleID/bwa
 export PATH=$pipeline/tools:$PATH
 
-echo `date` Start MakrDuplicates
+echo `date` Start MarkDuplicates
 gatk \
   MarkDuplicates \
   -I $Workdir/$sampleID.sort.bam \
-  -O $Workdir/$sampleID.sort.dup.bam \
-  -M $Workdir/$sampleID.sort.dup.metrics \
+  -O $Workdir/$sampleID.dup.bam \
+  -M $Workdir/$sampleID.dup.metrics \
+  --CREATE_INDEX \
   --CLEAR_DT false \
-  --showHidden
+  --showHidden \
+&& rm -rvf $Workdir/$sampleID.sort.bam || echo error
 
 #echo Start index `date`
 #samtools index $Workdir/$sampleID.sort.dup.bam
