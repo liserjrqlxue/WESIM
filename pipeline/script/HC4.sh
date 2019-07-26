@@ -11,7 +11,7 @@ gvcf_basename=$Workdir/gatk/$sampleID.gvcf
 in_bam=$Workdir/bwa/$sampleID.bqsr.bam
 
 echo `date` Start G4HaplotypeCaller
-gatk \
+time gatk \
   HaplotypeCaller \
   --tmp-dir=$workdir/javatmp \
   -R $ref_fasta \

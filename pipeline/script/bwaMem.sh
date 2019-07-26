@@ -8,7 +8,7 @@ Workdir=$workdir/$sampleID
 export PATH=$pipeline/tools:$PATH
 hg19=$pipeline/hg19/hg19_chM_male_mask.fa
 echo `date` Start bwaMem
-bwa \
+time bwa \
     mem -K 100000000 -t 8 -M \
     -R "@RG\tID:$sampleID\tSM:$sampleID\tLB:$laneName\tPL:COMPLETE" \
     $hg19 \

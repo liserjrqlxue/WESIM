@@ -10,7 +10,7 @@ Workdir=$workdir/$sampleID
 export PATH=$pipeline/tools:$PATH
 
 echo Start SOAPnuke `date`
-SOAPnuke filter -o $Workdir/filter/$laneName \
+time SOAPnuke filter -o $Workdir/filter/$laneName \
     --fq1 $fq1 \
     --fq2 $fq2 \
     --adapter1 AAGTCGGAGGCCAAGCGGTCTTAGGAAGACAA \

@@ -22,7 +22,7 @@ echo `date` Start depthSurvey
 #samtools view -u $Workdir/bwa/$sampleID.bqsr.bam chrY >$Workdir/bwa/chrY.sort.bam
 
 echo `date` bamdst -p $Region --uncover 5 -o $Workdir/coverage $Workdir/bwa/$sampleID.bqsr.bam --cutoffdepth 20
-bamdst -p $Region --uncover 5 -o $Workdir/coverage $Workdir/bwa/$sampleID.bqsr.bam --cutoffdepth 20
+time bamdst -p $Region --uncover 5 -o $Workdir/coverage $Workdir/bwa/$sampleID.bqsr.bam --cutoffdepth 20
 
 #$Bam2depths --bamdir=$Workdir/bwa --region=$RegionDir --out=$Workdir/coverage --flank=100
 #$pipeline/Rscript $Bin/dis.R  $Workdir/coverage/dis_target.plot  $sampleID $workdir/graph_sigleBaseDepth/$sampleID_perBase.png
@@ -30,6 +30,6 @@ bamdst -p $Region --uncover 5 -o $Workdir/coverage $Workdir/bwa/$sampleID.bqsr.b
 #$pipeline/perl $UncoverdRegionSjt $RegionDir/all_region  $Workdir/coverage/target.detail $Workdir/coverage
 #$pipeline/gzip -f $Workdir/coverage/target.detail
 echo `date` perl $GenderCorrect $Workdir/coverage/chromosomes.report $tag
-perl $GenderCorrect $Workdir/coverage/chromosomes.report $tag
+time perl $GenderCorrect $Workdir/coverage/chromosomes.report $tag
 
 echo `date` Done
