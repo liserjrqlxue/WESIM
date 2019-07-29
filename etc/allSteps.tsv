@@ -1,14 +1,12 @@
 name	mem	thread	time	type	next	prior	args
 filter	1	6	30m	lane	filStat,bwaMem		laneName,fq1,fq2
-filStat	1	1	1s	lane	dSurvey	filter	laneName
-bwaMem	8	8	1h	lane	merge	filter	laneName
-merge	1	8	15m	sample	SortSam	bwaMem	laneName
-SortSam	8	2	40m	sample	dupMark	merge	
-dupMark	30	?1	230m/52.3m	sample	indxDup	SortSam	
-indxDup	1	1	6m	sample	BQSR	dupMark
-BQSR	3	1	1h	sample	AppBQSR	indxDup	
-AppBQSR	2	2	1h	sample	dSurvey,HC4,eDepth1,TCcnn,ATCcnn,depth,bedcov	BQSR	
-dSurvey	1	1	10m	sample	eReport	AppBQSR	
+filStat	1	1	0m	lane	dSurvey	filter	laneName
+bwaMem	8	8	500/75m	lane	G4MSF	filter	laneName
+G4MSF	13	1	93m	sample	dupMark	bwaMem	laneName
+dupMark	30	4	290/82m	sample	BQSR	G4MSF	
+BQSR	3	1	61/55m	sample	AppBQSR	dupMark	
+AppBQSR	3	1	97/89m	sample	dSurvey,HC4,TCcnn,ATCcnn,SMA	BQSR	
+dSurvey	1	1	12m	sample	eDepth	AppBQSR	
 HC4	13	3	205m	sample	GeGVCFs	AppBQSR	
 GeGVCFs	6	1	5m	sample	fIndel1,fSnv1	HC4	
 fSnv1	3	?	10s	sample	fSnv2	GeGVCFs
@@ -19,16 +17,11 @@ MerVcfs	3	?	20s	sample	bgiAnno	fSnv2,fIndel2
 bgiAnno	10	12	40m	sample	acmg	MerVcfs	
 acmg	1	1	1m	sample	updFunc	bgiAnno	
 updFunc	1	1	20s	sample	eReport	acmg	
-eDepth1	1	1	20m	sample	eDepth2	AppBQSR	gender
-eDepth2	1	1	20s	batch	eDepth3	eDepth1
-eDepth3	1	1	2m	sample	eDepth4	eDepth2	gender
-eDepth4	1	1	10s	sample	eReport	eDepth3	gender
-TCcnn	2	12	5m	sample	CNVkit1	AppBQSR	
-ATCcnn	2	12	2m	sample	CNVkit1	AppBQSR	
-CNVkit1	2	12	30s	sample	CNVkit2	TCcnn,ATCcnn	
-CNVkit2	1	1	3s	sample	eReport	CNVkit1	
-depth	1	1	15m	sample	SMA	AppBQSR	
-bedcov	1	1	30s	sample	SMA	AppBQSR	
-SMA	8	1		batch	eReport	depth,bedcov	
-eReport	10	4		sample	trio	updFunc,eDepth4,CNVkit2,SMA	
+TCcnn	2	12	52/5m	sample	CNVkit1	AppBQSR	
+ATCcnn	2	6	6/1m	sample	CNVkit1	AppBQSR	
+CNVkit	2	2	1/0.5m	sample	eReport	TCcnn,ATCcnn	
+eDepth	2	1	22m	sample	eReport	AppBQSR	
+SMA	1	1	16m	sample	eReport	AppBQSR	
+eReport	10	4		sample	score	updFunc,eDepth,CNVkit,SMA	
+score	10	4		sample	trio	eReport	
 trio	10	4		family		eReport	single,list
