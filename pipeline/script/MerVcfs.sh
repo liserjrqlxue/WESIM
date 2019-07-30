@@ -7,11 +7,12 @@ Workdir=$workdir/$sampleID
 export PATH=$pipeline/tools:$PATH
 
 echo `date` Start MergeVcfs
-gatk \
+time gatk \
   MergeVcfs \
   -I $Workdir/gatk/$sampleID.snp.vcf \
   -I $Workdir/gatk/$sampleID.indel.vcf \
   -O $Workdir/gatk/$sampleID.filter.vcf.gz \
-  --showHidden
+  --showHidden \
+  && echo success || echo error
 
 echo `date` Done

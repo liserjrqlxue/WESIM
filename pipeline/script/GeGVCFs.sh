@@ -11,13 +11,14 @@ gvcf_basename=$Workdir/gatk/$sampleID.gvcf
 vcf_basename=$Workdir/gatk/$sampleID.vcf
 
 echo `date` Start GenotypeGVCFs
-gatk \
+time gatk \
   GenotypeGVCFs \
   --tmp-dir=$workdir/javatmp \
   -R $ref_fasta \
   -O $vcf_basename.vcf.gz \
   -V $gvcf_basename.vcf.gz \
   -L $interval_list \
-  --showHidden
+  --showHidden \
+  && echo success || echo error
 
 echo `date` Done

@@ -12,8 +12,9 @@ prefix=$Workdir/annotation/$sampleID
 echo `date` Start UpdateFunction
 
 time perl \
-    $func \
-    $prefix.out.ACMG \
-    >$prefix.out.ACMG.updateFunc
+  $func \
+  $prefix.out.ACMG \
+  >$prefix.out.ACMG.updateFunc \
+  && echo success || echo error
 
 echo `date` Done
