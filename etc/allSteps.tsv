@@ -8,18 +8,15 @@ BQSR	3	1	61/55m	sample	AppBQSR	dupMark
 AppBQSR	3	1	97/89m	sample	dSurvey,HC4,TCcnn,ATCcnn,SMA	BQSR	
 dSurvey	1	1	12m	sample	eDepth	AppBQSR	
 HC4	13	2	360/210m	sample	GeGVCFs	AppBQSR	
-GeGVCFs	8	1	4m	sample	fIndel1,fSnv1	HC4	
-fSnv	3	4	0.33m	sample	MerVcfs	GeGVCFs
-fIndel	3	4	0.25m	sample	MerVcfs	GeGVCFs	
-MerVcfs	3	?	20s	sample	bgiAnno	fSnv2,fIndel2	
-bgiAnno	10	12	40m	sample	acmg	MerVcfs	
-acmg	1	1	1m	sample	updFunc	bgiAnno	
-updFunc	1	1	20s	sample	eReport	acmg	
+GeGVCFs	8	1	4m	sample	filtVcf	HC4	
+filtVcf	3	3	1m	sample	bgiAnno	GeGVCFs	
+bgiAnno	10	10	390/39m	sample	acmg	MerVcfs	
+fixAnno	1	1	1m	sample	eReport	bgiAnno	
 TCcnn	2	12	52/5m	sample	CNVkit1	AppBQSR	
 ATCcnn	2	6	6/1m	sample	CNVkit1	AppBQSR	
 CNVkit	2	2	1/0.5m	sample	eReport	TCcnn,ATCcnn	
 eDepth	2	1	22m	sample	eReport	AppBQSR	
 SMA	1	1	16m	sample	eReport	AppBQSR	
-eReport	10	4		sample	score	updFunc,eDepth,CNVkit,SMA	
-score	10	4		sample	trio	eReport	
+eReport	10	1	1m	sample	score	fixAnno,eDepth,CNVkit,SMA	
+score	10	4	2m	sample	trio	eReport	
 trio	10	4		family		eReport	single,list
