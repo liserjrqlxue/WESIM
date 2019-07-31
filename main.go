@@ -74,6 +74,7 @@ type info struct {
 	SampleID   string
 	Gender     string
 	ProbandID  string
+	HPO        string
 	LaneInfo   []laneInfo
 	FamilyInfo map[string][]string
 }
@@ -85,10 +86,10 @@ type FamilyInfo struct {
 
 var singleDirList = []string{
 	//"graph_singleBaseDepth",
-	"ExomeDepth",
-	"CNVkit",
-	"SMA",
-	"shell",
+	//"ExomeDepth",
+	//"CNVkit",
+	//"SMA",
+	//"shell",
 	"result",
 }
 
@@ -144,6 +145,7 @@ func main() {
 		var gender = item["gender"]
 		var laneCode = item["lane_code"]
 		var fqPath = item["FQ_path"]
+		var hpo = item["HPO"]
 		var pe = strings.Split(fqPath, ",")
 		if len(pe) != 2 {
 			log.Fatalf("can not parse pair end in lane(%s) of sample(%s):[%s]\n", laneCode, sampleID, fqPath)
@@ -164,6 +166,7 @@ func main() {
 			sampleInfo.SampleID = sampleID
 			sampleInfo.Gender = gender
 			sampleInfo.ProbandID = probandID
+			sampleInfo.HPO = hpo
 		}
 		sampleInfo.LaneInfo = append(sampleInfo.LaneInfo, lane)
 		infoList[sampleID] = sampleInfo

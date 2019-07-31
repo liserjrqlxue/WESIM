@@ -17,5 +17,5 @@ CNVkit	2	2	1/0.5m	sample	eReport	TCcnn,ATCcnn
 eDepth	2	1	22m	sample	eReport	dSurvey	
 SMA	1	1	16m	sample	eReport	dSurvey	
 eReport	10	1	1m	sample	score	fixAnno,eDepth,CNVkit,SMA	
-score	10	4	2m	sample	trio	eReport	
-trio	10	4		family		eReport	single,list
+score	10	4	2m	sample	trio	eReport	HPO
+trio	10	4		family		eReport	single,list,HPO

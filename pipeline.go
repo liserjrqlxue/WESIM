@@ -94,6 +94,8 @@ func (step *PStep) CreateJobs(stepInfo map[string]string, familyList map[string]
 					}
 				case "single":
 					appendArgs = append(appendArgs, workdir)
+				case "HPO":
+					appendArgs = append(appendArgs, infoList[probandID].HPO)
 				}
 			}
 			createShell(job.Sh, script, appendArgs...)
@@ -124,7 +126,10 @@ func (step *PStep) CreateJobs(stepInfo map[string]string, familyList map[string]
 					}
 				case "gender":
 					appendArgs = append(appendArgs, item.Gender)
+				case "HPO":
+					appendArgs = append(appendArgs, item.HPO)
 				}
+
 			}
 			createShell(job.Sh, script, appendArgs...)
 		}

@@ -2,6 +2,7 @@
 workdir=$1
 pipeline=$2
 sampleID=$3
+HPO=$4
 
 grep -P "$sampleID\tpass" $workdir/$sampleID/$sampleID.QC.txt || exit 0
 
@@ -19,7 +20,7 @@ for i in $workdir/result/$sampleID.*Tier1*.xlsx;do
   echo ln -sf $i $Workdir/score/inputData/file/$sampleID.Tier1.xlsx
   ln -sf $i $Workdir/score/inputData/file/$sampleID.Tier1.xlsx
 done
-echo 'HP:0000407,HP:0000405,HP:0001730' > $Workdir/score/inputData/file/hpo.txt
+echo $HPO > $Workdir/score/inputData/file/hpo.txt
 cat <<< "{\"input_files\":[\"$sampleID.Tier1.xlsx\",\"$sampleID.filter.vcf\"],\"action_type\":4,\"project_name\":\"test\",\"sample_name\":\"$sampleID\"}" >$Workdir/score/input.json
 
 echo `date` score

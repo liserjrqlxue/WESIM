@@ -6,6 +6,7 @@ singleWorkdir=$3
 proband=$4
 father=$5
 mother=$6
+HPO=$7
 
 grep -P "$proband\tpass" $workdir/$proband/$proband.QC.txt || exit 0
 grep -P "$father\tpass"  $workdir/$father/$father.QC.txt   || exit 0
@@ -74,7 +75,7 @@ for i in $workdir/result/$sampleID.*Tier1*.xlsx;do
   echo ln -sf $i $workdir/score/inputData/file/$sampleID.Tier1.xlsx
   ln -sf $i $workdir/score/inputData/file/$sampleID.Tier1.xlsx
 done
-echo 'HP:0000407,HP:0000405,HP:0001730' > $workdir/score/inputData/file/hpo.txt
+echo $HPO > $workdir/score/inputData/file/hpo.txt
 cat <<< "{\"input_files\":[\"$sampleID.Tier1.xlsx\",\"$sampleID.filter.vcf\"],\"action_type\":4,\"project_name\":\"test\",\"sample_name\":\"$sampleID\"}" >$workdir/score/input.json
 
 time python /home/uploader/uploader-WES/score/sample_score/run_three_uploader.py -i $workdir/score/input.json
