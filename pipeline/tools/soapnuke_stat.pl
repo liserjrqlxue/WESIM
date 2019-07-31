@@ -48,14 +48,14 @@ while (<IN>)
 		$hash{'g2_r'}=$fre{3};
 		$hash{'g2_c'}=$fre{4};
 	}
-	if($arr[0] =~ /^Number of base calls with quality value of 20 or higher/)
+	if($arr[0] =~ /^Q20 number/)
 	{
 		$hash{'q20_1r'}=$fre{1};
 		$hash{'q20_1c'}=$fre{2};
 		$hash{'q20_2r'}=$fre{3};
 		$hash{'q20_2c'}=$fre{4};
 	}
-	if($arr[0] =~ /^Number of base calls with quality value of 30 or higher/)
+	if($arr[0] =~ /^Q30 number/)
 	{
 		$hash{'q30_1r'}=$fre{1};
 		$hash{'q30_1c'}=$fre{2};
