@@ -7,6 +7,10 @@ proband=$4
 father=$5
 mother=$6
 
+grep -P "$proband\tpass" $workdir/$proband/$proband.QC.txt || exit 0
+grep -P "$father\tpass"  $workdir/$father/$father.QC.txt   || exit 0
+grep -P "$mother\tpass"  $workdir/$mother/$mother.QC.txt   || exit 0
+
 export PATH=$pipeline/tools:$PATH
 cfg=$pipeline/config/config_BGI59M_CG_single.2019.pl
 family=$pipeline/Family_anno/bin/family.plus.pl

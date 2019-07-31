@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
-
 workdir=$1
 pipeline=$2
 sampleID=$3
+
+grep -P "$sampleID\tpass" $workdir/$sampleID/$sampleID.QC.txt || exit 0
 
 Workdir=$workdir/$sampleID
 export PATH=$pipeline/tools:$PATH

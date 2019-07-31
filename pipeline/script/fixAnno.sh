@@ -3,6 +3,8 @@ workdir=$1
 pipeline=$2
 sampleID=$3
 
+grep -P "$sampleID\tpass" $workdir/$sampleID/$sampleID.QC.txt || exit 0
+
 Workdir=$workdir/$sampleID/annotation
 export PATH=$pipeline/tools:$PATH
 acmg=$pipeline/acmg2015/bin/anno.acmg.pl
