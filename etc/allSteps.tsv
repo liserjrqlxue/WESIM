@@ -4,18 +4,18 @@ bwaMem	8	8	500/75m	lane	G4MSF	filter	laneName
 G4MSF	13	1	93m	sample	dupMark	bwaMem	laneName
 dupMark	30	4	290/82m	sample	BQSR	G4MSF	
 BQSR	3	1	61/55m	sample	AppBQSR	dupMark	
-AppBQSR	3	1	97/89m	sample	dSurvey,HC4,TCcnn,ATCcnn,SMA	BQSR	
-dSurvey	1	1	12m	sample	eDepth	AppBQSR	
-HC4	13	2	360/210m	sample	GeGVCFs	AppBQSR	
+AppBQSR	3	1	97/89m	sample	dSurvey	BQSR	
+dSurvey	1	1	12m	sample	HC4,TCcnn,ATCcnn,SMA,eDepth	AppBQSR	
+HC4	13	2	360/210m	sample	GeGVCFs	dSurvey	
 GeGVCFs	8	1	4m	sample	filtVcf	HC4	
 filtVcf	3	3	1m	sample	bgiAnno	GeGVCFs	
 bgiAnno	10	10	390/39m	sample	acmg	MerVcfs	
 fixAnno	1	1	1m	sample	eReport	bgiAnno	
-TCcnn	2	12	52/5m	sample	CNVkit1	AppBQSR	
-ATCcnn	2	6	6/1m	sample	CNVkit1	AppBQSR	
+TCcnn	2	12	52/5m	sample	CNVkit1	dSurvey	
+ATCcnn	2	6	6/1m	sample	CNVkit1	dSurvey	
 CNVkit	2	2	1/0.5m	sample	eReport	TCcnn,ATCcnn	
-eDepth	2	1	22m	sample	eReport	AppBQSR	
-SMA	1	1	16m	sample	eReport	AppBQSR	
+eDepth	2	1	22m	sample	eReport	dSurvey	
+SMA	1	1	16m	sample	eReport	dSurvey	
 eReport	10	1	1m	sample	score	fixAnno,eDepth,CNVkit,SMA	
 score	10	4	2m	sample	trio	eReport	
 trio	10	4		family		eReport	single,list
