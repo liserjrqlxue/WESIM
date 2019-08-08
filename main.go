@@ -71,12 +71,13 @@ type laneInfo struct {
 }
 
 type info struct {
-	SampleID   string
-	Gender     string
-	ProbandID  string
-	HPO        string
-	LaneInfo   []laneInfo
-	FamilyInfo map[string][]string
+	SampleID    string
+	Gender      string
+	ProbandID   string
+	HPO         string
+	StandardTag string
+	LaneInfo    []laneInfo
+	FamilyInfo  map[string][]string
 }
 
 type FamilyInfo struct {
@@ -139,6 +140,9 @@ func main() {
 	var familyList = make(map[string]FamilyInfo)
 	var infoList = make(map[string]info)
 	for _, item := range sampleList {
+		if item["StandardQC"] == "FAIL" {
+			continue
+		}
 		var sampleID = item["main_sample_num"]
 		var probandID = item["proband_number"]
 		var relationShip = item["relationship"]
@@ -146,6 +150,7 @@ func main() {
 		var laneCode = item["lane_code"]
 		var fqPath = item["FQ_path"]
 		var hpo = item["HPO"]
+		var standardTag = item["isStandardSample"]
 		var pe = strings.Split(fqPath, ",")
 		if len(pe) != 2 {
 			log.Fatalf("can not parse pair end in lane(%s) of sample(%s):[%s]\n", laneCode, sampleID, fqPath)
@@ -167,6 +172,7 @@ func main() {
 			sampleInfo.Gender = gender
 			sampleInfo.ProbandID = probandID
 			sampleInfo.HPO = hpo
+			sampleInfo.StandardTag = standardTag
 		}
 		sampleInfo.LaneInfo = append(sampleInfo.LaneInfo, lane)
 		infoList[sampleID] = sampleInfo

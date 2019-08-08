@@ -128,8 +128,9 @@ func (step *PStep) CreateJobs(stepInfo map[string]string, familyList map[string]
 					appendArgs = append(appendArgs, item.Gender)
 				case "HPO":
 					appendArgs = append(appendArgs, item.HPO)
+				case "StandardTag":
+					appendArgs = append(appendArgs, item.StandardTag)
 				}
-
 			}
 			createShell(job.Sh, script, appendArgs...)
 		}
