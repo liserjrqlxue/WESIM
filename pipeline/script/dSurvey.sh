@@ -35,5 +35,6 @@ time perl $GenderCorrect $Workdir/coverage/chromosomes.report $tag
 
 echo `date` perl $GetQC $sampleID $Workdir
 time perl $GetQC $sampleID $Workdir
+cp $Workdir/$sampleID.QC.txt $Workdir/result/$sampleID.QC.txt
 
 echo `date` Done
