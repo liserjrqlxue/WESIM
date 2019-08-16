@@ -12,12 +12,13 @@ prefix=$Workdir/annotation/$sampleID
 echo `date` Start anno2xlsx
 time anno2xlsx \
   -prefix $workdir/result/$sampleID \
-  -snv $prefix.out.ACMG.updateFunc \
+  -snv $prefix.out.updateFunc \
   -qc  $Workdir/coverage/coverage.report \
   -large $Workdir/cnv/CNVkit_cnv_gene_BGI160_Decipher_DGV_Pathogenicity.xls \
   -exon $Workdir/cnv/$sampleID.CNV.calls.anno \
   -smn $Workdir/cnv/$sampleID.SMA_v2.txt \
   -wesim \
+  -acmg \
   -list $sampleID \
   && echo success || echo error
 
