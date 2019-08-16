@@ -11,10 +11,10 @@ GoldIndels=$pipeline/hg19/Mills_and_1000G_gold_standard.indels.hg19.sites.vcf
 hg19=$pipeline/hg19/hg19_chM_male_mask.fa
 
 echo `date` Start BQSR $sampleID
-mkdir -p $workdir/$sampleID/javatmp
+mkdir -p $workdir/javatmp
 time gatk \
   BaseRecalibrator \
-  --tmp-dir=$workdir/$sampleID/javatmp \
+  --tmp-dir=$workdir/javatmp \
   -I $Workdir/$sampleID.dup.bam \
   -O $Workdir/$sampleID.recal_data.grp \
   --known-sites $DbSNP \
