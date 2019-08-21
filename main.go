@@ -30,11 +30,6 @@ var (
 		"",
 		"input lane info",
 	)
-	family = flag.String(
-		"family",
-		"",
-		"input family info",
-	)
 	workdir = flag.String(
 		"workdir",
 		filepath.Join(exPath, "test", "workdir"),
@@ -95,7 +90,7 @@ var singleDirList = []string{
 	//"ExomeDepth",
 	//"CNVkit",
 	//"SMA",
-	//"shell",
+	"shell",
 	"result",
 }
 
@@ -124,8 +119,8 @@ func main() {
 		os.Exit(0)
 	}
 
-	var singleWorkdir = filepath.Join(*workdir, "single")
-	var familyWorkdir = filepath.Join(*workdir, "family")
+	var singleWorkdir = *workdir //filepath.Join(*workdir, "single")
+	var familyWorkdir = *workdir //filepath.Join(*workdir, "family")
 	simple_util.CheckErr(os.MkdirAll(singleWorkdir, 0755))
 	simple_util.CheckErr(os.MkdirAll(familyWorkdir, 0755))
 
@@ -192,32 +187,18 @@ func main() {
 			familyList[probandID] = familyInfo
 		}
 	}
+
+	// step0 create workdir
+	createWorkdir(singleWorkdir, infoList, singleDirList, sampleDirList, laneDirList)
 	for probandID, familyInfo := range familyList {
 		_, ok := infoList[probandID]
 		if !ok {
 			log.Fatalf("Error: can nnot find sample info of proband[%s]", probandID)
 		}
-		familyProbandDir := filepath.Join(familyWorkdir, probandID)
-		simple_util.CheckErr(os.MkdirAll(familyProbandDir, 0755))
-		for _, sampleID := range familyInfo.FamilyMap {
-			source := filepath.Join("..", "..", "single", sampleID)
-			dest := filepath.Join(familyProbandDir, sampleID)
-			symlink(source, dest)
-		}
-		for _, subdir := range familyDirList {
-			simple_util.CheckErr(os.MkdirAll(filepath.Join(familyProbandDir, subdir), 0755))
-		}
-		createTiroInfo(familyInfo, familyProbandDir)
-	}
-	var samples []string
-	for k := range infoList {
-		samples = append(samples, k)
+		createTiroInfo(familyInfo, filepath.Join(familyWorkdir, probandID))
 	}
 
 	stepList, _ := simple_util.File2MapArray(*stepsCfg, "\t", nil)
-
-	// step0 create workdir
-	createWorkdir(singleWorkdir, infoList, singleDirList, sampleDirList, laneDirList)
 
 	var allSteps []*PStep
 	var stepMap = make(map[string]*PStep)
@@ -244,12 +225,6 @@ func main() {
 	}
 	simple_util.Json2File(filepath.Join(*workdir, "allSteps.json"), allSteps)
 
-	// parser family list
-	if *family == "" {
-		return
-	}
-	//jsonByte,err:=json.MarshalIndent(infoList,"","\t")
-	//fmt.Printf("%s\n",jsonByte)
 }
 
 func createShell(fileName, script string, args ...string) {
