@@ -8,5 +8,5 @@ Workdir=$workdir/$sampleID
 export PATH=$pipeline/tools:$PATH
 
 if [ $StandardTag == "Y" ];then
-	echo -e "sampleID\tQC\n$sampleID\tPASS" > $workdir/standard.QC.txt
+	echo -e "$sampleID\tPASS" >> $workdir/standard.QC.txt
 fi

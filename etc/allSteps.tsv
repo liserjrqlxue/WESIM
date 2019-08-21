@@ -1,5 +1,6 @@
 name	mem	thread	time	type	next	prior	args
-filter	1	6	30m	lane	bwaMem		laneName,fq1,fq2
+first	1	1	1m	batch	filter		laneInput
+filter	1	6	30m	lane	bwaMem	laneQC	laneName,fq1,fq2
 bwaMem	8	8	500/75m	lane	G4MSF	filter	laneName
 G4MSF	13	1	93m	sample	dupMark	bwaMem	laneName
 dupMark	30	4	290/82m	sample	BQSR	G4MSF	

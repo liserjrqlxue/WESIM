@@ -19,6 +19,7 @@ time anno2xlsx \
   -smn $Workdir/cnv/$sampleID.SMA_v2.txt \
   -wesim \
   -acmg \
+  -redis -redisAddr 127.0.0.1:6380 \
   -list $sampleID \
   && echo success || echo error
 
