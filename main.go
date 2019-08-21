@@ -25,6 +25,11 @@ var (
 		filepath.Join(exPath, "test", "input.list"),
 		"input samples info",
 	)
+	lane = flag.String(
+		"lane",
+		"",
+		"input lane info",
+	)
 	family = flag.String(
 		"family",
 		"",
@@ -235,7 +240,7 @@ func main() {
 
 	for name, step := range stepMap {
 		switch name {
-		case "filter":
+		case "first":
 			step.First = 1
 		default:
 		}

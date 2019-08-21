@@ -108,6 +108,8 @@ func (step *PStep) CreateJobs(stepInfo map[string]string, familyList map[string]
 		appendArgs = append(appendArgs, workdir, pipeline)
 		for _, arg := range stepArgs {
 			switch arg {
+			case "laneInput":
+				appendArgs = append(appendArgs, *lane)
 			}
 		}
 		createShell(job.Sh, script, appendArgs...)
