@@ -9,7 +9,7 @@ dSurvey	1	1	12m	sample	HC4,TCcnn,ATCcnn,SMA,eDepth	AppBQSR
 HC4	13	2	360/210m	sample	GeGVCFs	dSurvey	
 GeGVCFs	8	1	4m	sample	filtVcf	HC4	
 filtVcf	3	3	1m	sample	bgiAnno	GeGVCFs	
-bgiAnno	10	10	390/39m	sample	acmg	MerVcfs	
+bgiAnno	10	10	390/39m	sample	fixAnno	MerVcfs	
 fixAnno	1	1	1m	sample	eReport	bgiAnno	
 SQC	1	1	1s	sample		bgiAnno	StandardTag
 TCcnn	2	12	52/5m	sample	CNVkit	dSurvey	
