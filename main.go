@@ -145,9 +145,6 @@ func main() {
 	var familyList = make(map[string]FamilyInfo)
 	var infoList = make(map[string]info)
 	for _, item := range sampleList {
-		if item["StandardQC"] == "FAIL" {
-			continue
-		}
 		var sampleID = item["main_sample_num"]
 		var probandID = item["proband_number"]
 		var relationShip = item["relationship"]
