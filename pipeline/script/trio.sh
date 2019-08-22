@@ -8,10 +8,15 @@ father=$5
 mother=$6
 HPO=$7
 
-grep -P "$proband\tpass" $workdir/$proband/$proband.QC.txt || exit 0
-grep -P "$father\tpass"  $workdir/$father/$father.QC.txt   || exit 0
-grep -P "$mother\tpass"  $workdir/$mother/$mother.QC.txt   || exit 0
+workdir=$singleWorkdir
+grep -P "$proband\tpass" $workdir/result/$proband/$proband.QC.txt \
+|| { echo `date` sample QC not pass, skip $0;exit 0; }
+grep -P "$father\tpass"  $workdir/result/$father/$father.QC.txt   \
+|| { echo `date` sample QC not pass, skip $0;exit 0; }
+grep -P "$mother\tpass"  $workdir/result/$mother/$mother.QC.txt   \
+|| { echo `date` sample QC not pass, skip $0;exit 0; }
 
+Workdir=$workdir/$proband
 export PATH=$pipeline/tools:$PATH
 cfg=$pipeline/config/config_BGI59M_CG_single.2019.pl
 family=$pipeline/Family_anno/bin/family.plus.pl
@@ -29,7 +34,7 @@ echo `date` Start Trio
 echo \
   perl \
   $family \
-  -o $workdir/$proband.family.$suffix \
+  -o $Workdir/$proband.family.$suffix \
   $workdir/$proband/$subdir/$proband.$suffix \
   $workdir/$father/$subdir/$father.$suffix \
   $workdir/$mother/$subdir/$mother.$suffix \
@@ -37,7 +42,7 @@ echo \
 time \
   perl \
   $family \
-  -o $workdir/$proband.family.$suffix \
+  -o $Workdir/$proband.family.$suffix \
   $workdir/$proband/$subdir/$proband.$suffix \
   $workdir/$father/$subdir/$father.$suffix \
   $workdir/$mother/$subdir/$mother.$suffix \
@@ -69,7 +74,7 @@ export PATH=/home/uploader/anaconda3/bin:$PATH
 source /home/uploader/anaconda3/etc/profile.d/conda.sh
 conda activate base
 
-mkdir -p $workdir/score/inputData/file
+mkdir -p $Workdir/score/inputData/file
 gzip -dc $workdir/$proband/gatk/$sampleID.filter.vcf.gz > $Workdir/score/inputData/file/$sampleID.filter.vcf
 for i in $workdir/result/$sampleID.*Tier1*.xlsx;do
   echo ln -sf $i $workdir/score/inputData/file/$sampleID.Tier1.xlsx

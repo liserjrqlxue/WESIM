@@ -23,7 +23,8 @@ echo `date` Start depthSurvey
 #samtools view -u $Workdir/bwa/$sampleID.bqsr.bam chrY >$Workdir/bwa/chrY.sort.bam
 
 echo `date` bamdst -p $Region --uncover 5 -o $Workdir/coverage $Workdir/bwa/$sampleID.bqsr.bam --cutoffdepth 20
-time bamdst -p $Region --uncover 5 -o $Workdir/coverage $Workdir/bwa/$sampleID.bqsr.bam --cutoffdepth 20
+time bamdst -p $Region --uncover 5 -o $Workdir/coverage $Workdir/bwa/$sampleID.bqsr.bam --cutoffdepth 20 \
+&& echo success || (echo error && exit 1)
 
 #$Bam2depths --bamdir=$Workdir/bwa --region=$RegionDir --out=$Workdir/coverage --flank=100
 #$pipeline/Rscript $Bin/dis.R  $Workdir/coverage/dis_target.plot  $sampleID $workdir/graph_sigleBaseDepth/$sampleID_perBase.png
@@ -31,10 +32,13 @@ time bamdst -p $Region --uncover 5 -o $Workdir/coverage $Workdir/bwa/$sampleID.b
 #$pipeline/perl $UncoverdRegionSjt $RegionDir/all_region  $Workdir/coverage/target.detail $Workdir/coverage
 #$pipeline/gzip -f $Workdir/coverage/target.detail
 echo `date` perl $GenderCorrect $Workdir/coverage/chromosomes.report $tag
-time perl $GenderCorrect $Workdir/coverage/chromosomes.report $tag
+time perl $GenderCorrect $Workdir/coverage/chromosomes.report $tag \
+&& echo success || (echo error && exit 1)
 
 echo `date` perl $GetQC $sampleID $Workdir
-time perl $GetQC $sampleID $Workdir
-cp $Workdir/$sampleID.QC.txt $Workdir/result/$sampleID.QC.txt
+time perl $GetQC $sampleID $Workdir \
+&& echo success || (echo error && exit 1)
+mkdir -p $workdir/result/$sampleID && cp -v $Workdir/$sampleID.QC.txt $workdir/result/$sampleID/$sampleID.QC.txt \
+&& echo success || (echo error && exit 1)
 
 echo `date` Done

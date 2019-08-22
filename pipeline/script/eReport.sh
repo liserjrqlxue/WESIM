@@ -3,7 +3,8 @@ workdir=$1
 pipeline=$2
 sampleID=$3
 
-grep -P "$sampleID\tpass" $workdir/$sampleID/$sampleID.QC.txt || exit 0
+grep -P "$sampleID\tpass" $workdir/result/$sampleID/$sampleID.QC.txt \
+|| { echo `date` sample QC not pass, skip $0;exit 0; }
 
 Workdir=$workdir/$sampleID
 export PATH=$pipeline/tools:$PATH
@@ -21,12 +22,14 @@ time anno2xlsx \
   -acmg \
   -redis -redisAddr 127.0.0.1:6380 \
   -list $sampleID \
-  && echo success || echo error
+&& echo success \
+|| { echo error;exit 1; }
 
 for i in $workdir/result/$sampleID.*Tier1*xlsx $workdir/result/$sampleID.*Tier2*xlsx;do
   echo `date` xlsx2txt -xlsx $i
   time xlsx2txt -xlsx $i \
-    && echo success || echo error
+  && echo success \
+  || { echo error;exit 1; }
 done
 
 echo `date` Done

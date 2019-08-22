@@ -3,11 +3,12 @@ workdir=$1
 pipeline=$2
 laneInput=${3:-null}
 
-Workdir=$workdir
+Workdir=$workdir/result
 export PATH=$pipeline/tools:$PATH
 GetLaneQC=$pipeline/getQC/get.lane.QC.batch.pl
 
-echo -e "sampleID\tQC" > $workdir/standard.QC.txt
+echo -e "sampleID\tQC" > $Workdir/standard.QC.txt \
+|| { echo error;exit 1; }
 
 if [ $laneInput == "null" ];then
 	echo no laneInput
@@ -15,5 +16,7 @@ if [ $laneInput == "null" ];then
 fi
 
 echo `date` Start GetLaneQC
-time perl $GetLaneQC $laneInput $Workdir && echo succes || (echo error && exit 1)
+time perl $GetLaneQC $laneInput $Workdir \
+&& echo success \
+|| { echo error;exit 1; }
 echo `date` Done

@@ -3,7 +3,8 @@ workdir=$1
 pipeline=$2
 sampleID=$3
 
-grep -P "$sampleID\tpass" $workdir/$sampleID/$sampleID.QC.txt || exit 0
+grep -P "$sampleID\tpass" $workdir/result/$sampleID/$sampleID.QC.txt \
+|| { echo `date` sample QC not pass, skip $0;exit 0; }
 
 Workdir=$workdir/$sampleID
 export PATH=$pipeline/tools:$PATH
@@ -14,13 +15,17 @@ control=$pipeline/SMA_WES/SMA_v2.txt.control_gene.csv
 
 mkdir -p $Workdir/cnv
 echo `date` Start samtoolsBedcov
-echo -e "Chr\tStart\tEnd\tStrand\tGene\tExon\tTrans\tPrimarytag\tGenelength\t${sampleID}_total_cvg" > $Workdir/cnv/$sampleID.bqsr.bam.bedcov
+echo -e "Chr\tStart\tEnd\tStrand\tGene\tExon\tTrans\tPrimarytag\tGenelength\t${sampleID}_total_cvg" > $Workdir/cnv/$sampleID.bqsr.bam.bedcov \
+&& echo success \
+|| { echo error;exit 1; }
+
 time samtools \
   bedcov \
   $bed \
   $Workdir/bwa/$sampleID.bqsr.bam \
   >> $Workdir/cnv/$sampleID.bqsr.bam.bedcov \
-  && echo success || echo error
+&& echo success \
+|| { echo error;exit 1; }
 
 echo `date` Start samtoolsDepth
 echo -e "Chr\tPos\tDepth_for_${sampleID}" >$Workdir/cnv/$sampleID.bqsr.bam.depth
@@ -29,7 +34,8 @@ time samtools \
   -b $bed \
   $Workdir/bwa/$sampleID.bqsr.bam \
   >> $Workdir/cnv/$sampleID.bqsr.bam.depth \
-  && echo success || echo error
+&& echo success \
+|| { echo error;exit 1; }
 
 echo `date` Start SMA
 time python2 $pipeline/SMA_WES/v1/SMN_copy_number_detection_v3.single.py \
@@ -37,6 +43,7 @@ time python2 $pipeline/SMA_WES/v1/SMN_copy_number_detection_v3.single.py \
   -o $Workdir/cnv/$sampleID.SMA_v2.txt \
   -l $Workdir/cnv/$sampleID.bqsr.bam.depth \
   -c $control \
-  && echo success || echo error
+&& echo success \
+|| { echo error;exit 1; }
 
 echo `date` Done

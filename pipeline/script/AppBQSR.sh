@@ -18,6 +18,7 @@ time gatk \
   -O $Workdir/$sampleID.bqsr.bam \
   --create-output-bam-index \
   -bqsr $Workdir/$sampleID.recal_data.grp \
-&& rm -rvf $Workdir/$sampleID.dup.bam || echo error
+&& echo success && rm -rvf $Workdir/$sampleID.dup.bam \
+|| (echo error && exit 1)
 
 echo `date` Done

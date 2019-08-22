@@ -3,7 +3,8 @@ workdir=$1
 pipeline=$2
 sampleID=$3
 
-grep -P "$sampleID\tpass" $workdir/$sampleID/$sampleID.QC.txt || exit 0
+grep -P "$sampleID\tpass" $workdir/result/$sampleID/$sampleID.QC.txt \
+|| { echo `date` sample QC not pass, skip $0;exit 0; }
 
 Workdir=$workdir/$sampleID/gatk
 export PATH=$pipeline/tools:$PATH
@@ -20,7 +21,8 @@ time gatk \
   -R $hg19 \
   -select-type SNP \
   --showHidden \
-  && echo success || echo error
+&& echo success \
+|| { echo error;exit 1; }
 
 echo `date` Start VariantFiltrationSNP
 time gatk \
@@ -31,7 +33,8 @@ time gatk \
   --filter-name "StandardFilter" \
   -R $hg19 \
   --showHidden \
-  && echo success || echo error
+&& echo success \
+|| { echo error;exit 1; }
 
 
 echo `date` Start SelectVariantsINDEL
@@ -43,7 +46,8 @@ time gatk \
   -R $hg19 \
   -select-type INDEL \
   --showHidden \
-  && echo success || echo error
+&& echo success \
+|| { echo error;exit 1; }
 
 echo `date` Start VariantFiltrationINDEL
 time gatk \
@@ -54,7 +58,8 @@ time gatk \
   --filter-name "StandardFilter" \
   -R $hg19 \
   --showHidden \
-  && echo success || echo error
+&& echo success \
+|| { echo error;exit 1; }
 
 echo `date` Start MergeVcfs
 time gatk \
@@ -63,6 +68,7 @@ time gatk \
   -I $Workdir/$sampleID.indel.vcf \
   -O $Workdir/$sampleID.filter.vcf.gz \
   --showHidden \
-  && echo success || echo error
+&& echo success \
+|| { echo error;exit 1; }
 
 echo `date` Done
