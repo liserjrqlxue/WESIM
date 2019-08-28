@@ -73,6 +73,7 @@ type laneInfo struct {
 type info struct {
 	SampleID    string
 	Gender      string
+	ProductCode string
 	ProbandID   string
 	HPO         string
 	StandardTag string
@@ -100,16 +101,10 @@ var sampleDirList = []string{
 	"coverage",
 	"annotation",
 	"gatk",
-	"result",
 }
 
 var laneDirList = []string{
 	"filter",
-}
-
-var familyDirList = []string{
-	"result",
-	"shell",
 }
 
 func main() {
@@ -141,6 +136,7 @@ func main() {
 	var infoList = make(map[string]info)
 	for _, item := range sampleList {
 		var sampleID = item["main_sample_num"]
+		var productCode = item["product_code"]
 		var probandID = item["proband_number"]
 		var relationShip = item["relationship"]
 		var gender = item["gender"]
@@ -167,6 +163,7 @@ func main() {
 		if !ok {
 			sampleInfo.SampleID = sampleID
 			sampleInfo.Gender = gender
+			sampleInfo.ProductCode = productCode
 			sampleInfo.ProbandID = probandID
 			sampleInfo.HPO = hpo
 			sampleInfo.StandardTag = standardTag
