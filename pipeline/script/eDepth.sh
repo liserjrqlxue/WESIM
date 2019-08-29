@@ -28,9 +28,12 @@ time Rscript $Bin/run.getBamCount.R $sampleID $Bam $gender $outdir $Bin \
 || { echo error;exit 1; }
 
 echo `date` Start getCNVsFromControl $control
+echo Rscript $Bin/run.getCNVsFromControl.R $sampleID A       $outdir $control.A.my.count.rds && \
 time Rscript $Bin/run.getCNVsFromControl.R $sampleID A       $outdir $control.A.my.count.rds \
 && echo success \
 || { echo error;exit 1; }
+
+echo Rscript $Bin/run.getCNVsFromControl.R $sampleID $gender $outdir $control.$gender.my.count.rds && \
 time Rscript $Bin/run.getCNVsFromControl.R $sampleID $gender $outdir $control.$gender.my.count.rds \
 && echo success \
 || { echo error;exit 1; }
@@ -38,23 +41,56 @@ time Rscript $Bin/run.getCNVsFromControl.R $sampleID $gender $outdir $control.$g
 CNV_anno=$pipeline/CNV_anno
 
 echo `date` Start AnnoCNV
-time perl \
-  $CNV_anno/script/add_cn_split_gene.pl \
-  $sampleID \
-  $outdir/$sampleID.A.CNV.calls.tsv,$outdir/$sampleID.$gender.CNV.calls.tsv \
-  $gender \
-  $CNV_anno/database/database.gene.list.NM \
-  $CNV_anno/database/gene_exon.bed \
-  $CNV_anno/database/OMIM/OMIM.xls \
-  $outdir/$sampleID.CNV.calls.anno.withoutHGMD \
-&& echo success \
-|| { echo error;exit 1; }
-time perl \
-  $CNV_anno/script/add_HGMD_gross.pl \
-  $outdir/$sampleID.CNV.calls.anno.withoutHGMD \
-  $CNV_anno/database/hgmd-gross_all-ex1-20190426.tsv \
-  $outdir/$sampleID.CNV.calls.anno \
-&& echo success \
-|| { echo error;exit 1; }
+if [[ -s "$outdir/$sampleID.A.CNV.calls.tsv" && -s "$outdir/$sampleID.$gender.CNV.calls.tsv" ]];then
+	time perl \
+	  $CNV_anno/script/add_cn_split_gene.pl \
+	  $sampleID \
+	  $outdir/$sampleID.A.CNV.calls.tsv,$outdir/$sampleID.$gender.CNV.calls.tsv \
+	  $gender \
+	  $CNV_anno/database/database.gene.list.NM \
+	  $CNV_anno/database/gene_exon.bed \
+	  $CNV_anno/database/OMIM/OMIM.xls \
+	  $outdir/$sampleID.CNV.calls.anno.withoutHGMD \
+	&& echo success \
+	|| { echo error;exit 1; }
+elif [ -s "$outdir/$sampleID.A.CNV.calls.tsv" ];then
+	echo "$sampleID has no chrX CNV result"
+	time perl \
+	  $CNV_anno/script/add_cn_split_gene.pl \
+	  $sampleID \
+	  $outdir/$sampleID.A.CNV.calls.tsv \
+	  $gender \
+	  $CNV_anno/database/database.gene.list.NM \
+	  $CNV_anno/database/gene_exon.bed \
+	  $CNV_anno/database/OMIM/OMIM.xls \
+	  $outdir/$sampleID.CNV.calls.anno.withoutHGMD \
+	&& echo success \
+	|| { echo error;exit 1; }
+elif [ -s "$outdir/$sampleID.$gender.CNV.calls.tsv" ];then
+	echo "$sampleID has no chrA CNV result"
+	time perl \
+	  $CNV_anno/script/add_cn_split_gene.pl \
+	  $sampleID \
+	  $outdir/$sampleID.$gender.CNV.calls.tsv \
+	  $gender \
+	  $CNV_anno/database/database.gene.list.NM \
+	  $CNV_anno/database/gene_exon.bed \
+	  $CNV_anno/database/OMIM/OMIM.xls \
+	  $outdir/$sampleID.CNV.calls.anno.withoutHGMD \
+	&& echo success \
+	|| { echo error;exit 1; }
+else
+	echo "$sampleID  has no CNV result"
+fi
+
+if [ -s "$outdir/$sampleID.CNV.calls.anno.withoutHGMD" ];then
+	time perl \
+	  $CNV_anno/script/add_HGMD_gross.pl \
+	  $outdir/$sampleID.CNV.calls.anno.withoutHGMD \
+	  $CNV_anno/database/hgmd-gross_all-ex1-20190426.tsv \
+	  $outdir/$sampleID.CNV.calls.anno \
+	&& echo success \
+	|| { echo error;exit 1; }
+fi
 
 echo `date` Done
