@@ -78,14 +78,14 @@ func (step *PStep) CreateJobs(stepInfo map[string]string, familyList map[string]
 	script := filepath.Join(pipeline, "script", stepInfo["name"]+".sh")
 
 	switch stepType {
-	case "family":
+	case "trio":
 		for probandID, familyInfo := range familyList {
 			familyProbandDir := filepath.Join(familyWorkdir, probandID)
 			var job = newPJob(stepMem)
 			job.Sh = filepath.Join(familyProbandDir, "shell", step.Name+".sh")
 			stepJobs = append(stepJobs, job)
 			var appendArgs []string
-			appendArgs = append(appendArgs, filepath.Join(familyProbandDir), pipeline)
+			appendArgs = append(appendArgs, workdir, pipeline)
 			for _, arg := range stepArgs {
 				switch arg {
 				case "list":

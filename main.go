@@ -179,9 +179,8 @@ func main() {
 			sampleInfo.RelationShip = relationShip
 		}
 		sampleInfo.LaneInfo = append(sampleInfo.LaneInfo, lane)
-		infoList[sampleID] = sampleInfo
 		// FamilyInfo
-		if probandID != "" {
+		if ProductTrio[productCode] {
 			familyInfo, ok := familyList[probandID]
 			if ok {
 				familyInfo.FamilyMap[relationShip] = sampleID
@@ -192,7 +191,10 @@ func main() {
 				}
 			}
 			familyList[probandID] = familyInfo
+		} else {
+			sampleInfo.ProbandID = sampleID
 		}
+		infoList[sampleID] = sampleInfo
 	}
 
 	// step0 create workdir
