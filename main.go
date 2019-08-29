@@ -72,6 +72,7 @@ type laneInfo struct {
 
 type info struct {
 	SampleID    string
+	Type        string
 	Gender      string
 	ProductCode string
 	ProbandID   string
@@ -105,6 +106,13 @@ var sampleDirList = []string{
 
 var laneDirList = []string{
 	"filter",
+}
+
+var ProductTrio = map[string]bool{
+	"DX0458": false,
+	"DX1515": true,
+	"HW101":  false,
+	"HW102":  true,
 }
 
 func main() {

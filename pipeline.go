@@ -113,6 +113,34 @@ func (step *PStep) CreateJobs(stepInfo map[string]string, familyList map[string]
 			}
 		}
 		createShell(job.Sh, script, appendArgs...)
+	case "single":
+		for sampleID, item := range infoList {
+			if ProductTrio[item.ProductCode] {
+				continue
+			}
+			var job = newPJob(stepMem)
+			job.Sh = filepath.Join(workdir, sampleID, "shell", step.Name+".sh")
+			stepJobs = append(stepJobs, job)
+			var appendArgs []string
+			appendArgs = append(appendArgs, workdir, pipeline, sampleID)
+			for _, arg := range stepArgs {
+				switch arg {
+				case "laneName":
+					for _, lane := range item.LaneInfo {
+						appendArgs = append(appendArgs, lane.LaneName)
+					}
+				case "gender":
+					appendArgs = append(appendArgs, item.Gender)
+				case "HPO":
+					appendArgs = append(appendArgs, item.HPO)
+				case "StandardTag":
+					appendArgs = append(appendArgs, item.StandardTag)
+				case "product_code":
+					appendArgs = append(appendArgs, item.ProductCode)
+				}
+			}
+			createShell(job.Sh, script, appendArgs...)
+		}
 	case "sample":
 		for sampleID, item := range infoList {
 			var job = newPJob(stepMem)
