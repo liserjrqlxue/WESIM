@@ -71,15 +71,16 @@ type laneInfo struct {
 }
 
 type info struct {
-	SampleID    string
-	Type        string
-	Gender      string
-	ProductCode string
-	ProbandID   string
-	HPO         string
-	StandardTag string
-	LaneInfo    []laneInfo
-	FamilyInfo  map[string][]string
+	SampleID     string
+	Type         string
+	Gender       string
+	ProductCode  string
+	ProbandID    string
+	RelationShip string
+	HPO          string
+	StandardTag  string
+	LaneInfo     []laneInfo
+	FamilyInfo   map[string][]string
 }
 
 type FamilyInfo struct {
@@ -175,6 +176,7 @@ func main() {
 			sampleInfo.ProbandID = probandID
 			sampleInfo.HPO = hpo
 			sampleInfo.StandardTag = standardTag
+			sampleInfo.RelationShip = relationShip
 		}
 		sampleInfo.LaneInfo = append(sampleInfo.LaneInfo, lane)
 		infoList[sampleID] = sampleInfo
@@ -202,6 +204,7 @@ func main() {
 		}
 		createTiroInfo(familyInfo, filepath.Join(familyWorkdir, probandID))
 	}
+	createSampleInfo(infoList, *workdir)
 
 	stepList, _ := simple_util.File2MapArray(*stepsCfg, "\t", nil)
 
