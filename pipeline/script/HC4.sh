@@ -22,7 +22,7 @@ time gatk \
   -I $in_bam \
   -L $interval_list \
   -ERC GVCF \
-  --showHidden
+  --showHidden \
 && echo success \
 || { echo error;exit 1; }
 
