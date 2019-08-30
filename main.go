@@ -79,6 +79,7 @@ type info struct {
 	RelationShip string
 	HPO          string
 	StandardTag  string
+	QChistory    string
 	LaneInfo     []laneInfo
 	FamilyInfo   map[string][]string
 }
@@ -153,6 +154,7 @@ func main() {
 		var fqPath = item["FQ_path"]
 		var hpo = item["HPO"]
 		var standardTag = item["isStandardSample"]
+		var QChistory = item["QChistory"]
 		var pe = strings.Split(fqPath, ",")
 		if len(pe) != 2 {
 			log.Fatalf("can not parse pair end in lane(%s) of sample(%s):[%s]\n", laneCode, sampleID, fqPath)
@@ -177,6 +179,7 @@ func main() {
 			sampleInfo.HPO = hpo
 			sampleInfo.StandardTag = standardTag
 			sampleInfo.RelationShip = relationShip
+			sampleInfo.QChistory = QChistory
 		}
 		sampleInfo.LaneInfo = append(sampleInfo.LaneInfo, lane)
 		// FamilyInfo
