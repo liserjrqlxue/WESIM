@@ -76,6 +76,7 @@ type info struct {
 	Type         string
 	Gender       string
 	ProductCode  string
+	ProductType  string
 	ProbandID    string
 	RelationShip string
 	HPO          string
@@ -150,6 +151,7 @@ func main() {
 		var sampleID = item["main_sample_num"]
 		var chipCode = item["chip_code"]
 		var productCode = item["product_code"]
+		var productType = item["productType"]
 		var probandID = item["proband_number"]
 		var relationShip = item["relationship"]
 		var gender = item["gender"]
@@ -180,6 +182,7 @@ func main() {
 			sampleInfo.ChipCode = chipCode
 			sampleInfo.Gender = gender
 			sampleInfo.ProductCode = productCode
+			sampleInfo.ProductType = productType
 			sampleInfo.ProbandID = probandID
 			sampleInfo.HPO = hpo
 			sampleInfo.StandardTag = standardTag
