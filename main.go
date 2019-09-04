@@ -72,6 +72,7 @@ type laneInfo struct {
 
 type info struct {
 	SampleID     string
+	ChipCode     string
 	Type         string
 	Gender       string
 	ProductCode  string
@@ -146,6 +147,7 @@ func main() {
 	var infoList = make(map[string]info)
 	for _, item := range sampleList {
 		var sampleID = item["main_sample_num"]
+		var chipCode = item["chip_code"]
 		var productCode = item["product_code"]
 		var probandID = item["proband_number"]
 		var relationShip = item["relationship"]
@@ -173,6 +175,7 @@ func main() {
 		sampleInfo, ok := infoList[sampleID]
 		if !ok {
 			sampleInfo.SampleID = sampleID
+			sampleInfo.ChipCode = chipCode
 			sampleInfo.Gender = gender
 			sampleInfo.ProductCode = productCode
 			sampleInfo.ProbandID = probandID
