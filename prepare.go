@@ -74,11 +74,11 @@ func createSampleInfo(infoList map[string]info, workdir string) {
 	f, err := os.Create(filepath.Join(workdir, "sample.info"))
 	simple_util.CheckErr(err)
 	defer simple_util.DeferClose(f)
-	_, err = fmt.Fprintln(f, strings.Join([]string{"main_sample_num", "chip_code", "product_code", "gender", "proband_number", "relationship"}, "\t"))
+	_, err = fmt.Fprintln(f, strings.Join([]string{"main_sample_num", "StandardQC", "chip_code", "product_code", "gender", "proband_number", "relationship"}, "\t"))
 	simple_util.CheckErr(err)
 	for _, item := range infoList {
 		var array []string
-		array = append(array, item.SampleID, item.ChipCode, item.ProductCode, item.Gender, item.ProbandID, item.RelationShip)
+		array = append(array, item.SampleID, item.StandardQC, item.ChipCode, item.ProductCode, item.Gender, item.ProbandID, item.RelationShip)
 		_, err := fmt.Fprintln(f, strings.Join(array, "\t"))
 		simple_util.CheckErr(err)
 	}

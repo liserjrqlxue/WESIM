@@ -80,6 +80,7 @@ type info struct {
 	RelationShip string
 	HPO          string
 	StandardTag  string
+	StandardQC   string
 	QChistory    string
 	LaneInfo     []laneInfo
 	FamilyInfo   map[string][]string
@@ -156,6 +157,7 @@ func main() {
 		var fqPath = item["FQ_path"]
 		var hpo = item["HPO"]
 		var standardTag = item["isStandardSample"]
+		var standardQC = item["StandardQC"]
 		var QChistory = item["QChistory"]
 		var pe = strings.Split(fqPath, ",")
 		if len(pe) != 2 {
@@ -181,6 +183,7 @@ func main() {
 			sampleInfo.ProbandID = probandID
 			sampleInfo.HPO = hpo
 			sampleInfo.StandardTag = standardTag
+			sampleInfo.StandardQC = standardQC
 			sampleInfo.RelationShip = relationShip
 			sampleInfo.QChistory = QChistory
 		}

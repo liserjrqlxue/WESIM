@@ -166,6 +166,8 @@ func (step *PStep) CreateJobs(stepInfo map[string]string, familyList map[string]
 					appendArgs = append(appendArgs, item.ProductCode)
 				case "QChistory":
 					appendArgs = append(appendArgs, item.QChistory)
+				case "chip_code":
+					appendArgs = append(appendArgs, item.ChipCode)
 				}
 			}
 			createShell(job.Sh, script, appendArgs...)
