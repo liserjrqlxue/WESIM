@@ -9,7 +9,8 @@ Workdir=$workdir/result
 export PATH=$pipeline/tools:$PATH
 
 if [ $StandardTag == "Y" ];then
-	echo -e "$sampleID\t$chipCode\tPASS" >> $Workdir/standard.QC.txt \
+	grep -P "$sampleID\tpass" $workdir/$sampleID/$sampleID.QC.txt && tag="PASS" || tag="FAIL"
+	echo -e "$sampleID\t$chipCode\t$tag" >> $Workdir/standard.QC.txt \
 	&& echo success \
 	|| { echo error;exit 1; }
 fi
