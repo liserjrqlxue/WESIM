@@ -39,7 +39,5 @@ time perl $GenderCorrect $Workdir/coverage/chromosomes.report $tag \
 echo `date` perl $GetQC $sampleID $Workdir $Workdir $QChistory
 time perl $GetQC $sampleID $Workdir $Workdir $QChistory \
 && echo success || (echo error && exit 1)
-mkdir -p $workdir/result/$sampleID && cp -v $Workdir/$sampleID.QC.txt $workdir/result/$sampleID/$sampleID.QC.txt \
-&& echo success || (echo error && exit 1)
 
 echo `date` Done
