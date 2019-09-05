@@ -3,7 +3,7 @@ workdir=$1
 pipeline=$2
 sampleID=$3
 
-grep -P "$sampleID\tpass" $workdir/result/$sampleID/$sampleID.QC.txt \
+grep -P "$sampleID\tpass" $workdir/$sampleID/$sampleID.QC.txt \
 || { echo `date` sample QC not pass, skip $0;exit 0; }
 
 bam=$workdir/$sampleID/bwa/$sampleID.bqsr.bam

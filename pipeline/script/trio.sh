@@ -9,11 +9,11 @@ mother=$6
 HPO=$7
 
 workdir=$singleWorkdir
-grep -P "$proband\tpass" $workdir/result/$proband/$proband.QC.txt \
+grep -P "$proband\tpass" $workdir/$proband/$proband.QC.txt \
 || { echo `date` sample QC not pass, skip $0;exit 0; }
-grep -P "$father\tpass"  $workdir/result/$father/$father.QC.txt   \
+grep -P "$father\tpass"  $workdir/$father/$father.QC.txt   \
 || { echo `date` sample QC not pass, skip $0;exit 0; }
-grep -P "$mother\tpass"  $workdir/result/$mother/$mother.QC.txt   \
+grep -P "$mother\tpass"  $workdir/$mother/$mother.QC.txt   \
 || { echo `date` sample QC not pass, skip $0;exit 0; }
 
 Workdir=$workdir/$proband
