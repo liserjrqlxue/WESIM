@@ -29,33 +29,6 @@ func createWorkdir(workdir string, infoList map[string]info, singleDirList, samp
 	return nil
 }
 
-func symlink(source, dest string) error {
-	_, err := os.Stat(dest)
-	if err == nil {
-		readLink, err := os.Readlink(dest)
-		if err != nil {
-			log.Printf("%v\n", err)
-		}
-		if readLink != source {
-			log.Printf("dest is not symlink of source:[%s]->[%s]vs[%s]\n", dest, readLink, source)
-			err = os.Symlink(source, dest)
-			if err != nil {
-				log.Printf("%v\n", err)
-			}
-		} else {
-			log.Printf("dest is symlink of source:[%s]->[%s]", dest, readLink)
-		}
-	} else if os.IsNotExist(err) {
-		err = os.Symlink(source, dest)
-		if err != nil {
-			log.Printf("Error: Symlink[%s->%s] err:%v", source, dest, err)
-		}
-	} else {
-		log.Printf("Error: dest[%s] stat err:%v", dest, err)
-	}
-	return nil
-}
-
 func createTiroInfo(familyInfo FamilyInfo, workdir string) {
 	f, err := os.Create(filepath.Join(workdir, "trio.info"))
 	simple_util.CheckErr(err)
@@ -63,7 +36,8 @@ func createTiroInfo(familyInfo FamilyInfo, workdir string) {
 	for _, relationShip := range []string{"proband", "father", "mother"} {
 		sampleID, ok := familyInfo.FamilyMap[relationShip]
 		if ok {
-			fmt.Fprintln(f, sampleID)
+			_, err = fmt.Fprintln(f, sampleID)
+			simple_util.CheckErr(err)
 		} else {
 			log.Fatalf("Error: family Error: can not find relationShip[%s]of proband[%s]\n", relationShip, familyInfo.ProbandID)
 		}
