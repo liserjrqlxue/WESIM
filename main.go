@@ -210,7 +210,7 @@ func main() {
 	}
 
 	// step0 create workdir
-	createWorkdir(singleWorkdir, infoList, singleDirList, sampleDirList, laneDirList)
+	simple_util.CheckErr(createWorkdir(singleWorkdir, infoList, singleDirList, sampleDirList, laneDirList))
 	for probandID, familyInfo := range familyList {
 		_, ok := infoList[probandID]
 		if !ok {
@@ -245,8 +245,7 @@ func main() {
 		default:
 		}
 	}
-	simple_util.Json2File(filepath.Join(*workdir, "allSteps.json"), allSteps)
-
+	simple_util.CheckErr(simple_util.Json2File(filepath.Join(*workdir, "allSteps.json"), allSteps))
 }
 
 func createShell(fileName, script string, args ...string) {
