@@ -7,7 +7,7 @@ Workdir=$workdir/result
 export PATH=$pipeline/tools:$PATH
 GetLaneQC=$pipeline/getQC/get.lane.QC.batch.pl
 
-echo -e "sampleID\tQC" > $Workdir/standard.QC.txt \
+echo -e "sampleID\tchip_code\tQC" > $Workdir/standard.QC.txt \
 || { echo error;exit 1; }
 
 if [ $laneInput == "null" ];then
