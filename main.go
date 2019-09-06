@@ -2,7 +2,6 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"github.com/liserjrqlxue/simple-util"
 	"log"
 	"os"
@@ -30,7 +29,7 @@ var (
 		"",
 		"input lane info",
 	)
-	workdir = flag.String(
+	workDir = flag.String(
 		"workdir",
 		filepath.Join(exPath, "test", "workdir"),
 		"workdir",
@@ -99,23 +98,19 @@ func main() {
 		os.Exit(0)
 	}
 
-	var singleWorkdir = *workdir //filepath.Join(*workdir, "single")
-	var familyWorkdir = *workdir //filepath.Join(*workdir, "family")
-	simple_util.CheckErr(os.MkdirAll(singleWorkdir, 0755))
-	simple_util.CheckErr(os.MkdirAll(familyWorkdir, 0755))
-
+	simple_util.CheckErr(os.MkdirAll(*workDir, 0755))
 	infoList, familyList := parserInput(*input)
 
 	// step0 create workdir
-	simple_util.CheckErr(createWorkdir(singleWorkdir, infoList, singleDirList, sampleDirList, laneDirList))
+	simple_util.CheckErr(createWorkdir(*workDir, infoList, singleDirList, sampleDirList, laneDirList))
 	for probandID, familyInfo := range familyList {
 		_, ok := infoList[probandID]
 		if !ok {
 			log.Fatalf("Error: can nnot find sample info of proband[%s]", probandID)
 		}
-		createTiroInfo(familyInfo, filepath.Join(familyWorkdir, probandID))
+		createTiroInfo(familyInfo, filepath.Join(*workDir, probandID))
 	}
-	createSampleInfo(infoList, *workdir)
+	createSampleInfo(infoList, *workDir)
 
 	stepList, _ := simple_util.File2MapArray(*stepsCfg, "\t", nil)
 
@@ -123,7 +118,7 @@ func main() {
 	var stepMap = make(map[string]*PStep)
 	for _, item := range stepList {
 		var step = newPStep(item["name"])
-		step.CreateJobs(item, familyList, infoList, familyWorkdir, singleWorkdir, *pipeline)
+		step.CreateJobs(item, familyList, infoList, *workDir, *pipeline)
 		if item["prior"] != "" {
 			step.PriorStep = append(step.PriorStep, strings.Split(item["prior"], ",")...)
 		}
@@ -135,6 +130,7 @@ func main() {
 		allSteps = append(allSteps, step)
 	}
 
+	// set first step
 	for name, step := range stepMap {
 		switch name {
 		case "first":
@@ -142,29 +138,6 @@ func main() {
 		default:
 		}
 	}
-	simple_util.CheckErr(simple_util.Json2File(filepath.Join(*workdir, "allSteps.json"), allSteps))
-}
-
-func createShell(fileName, script string, args ...string) {
-	file, err := os.Create(fileName)
-	simple_util.CheckErr(err)
-	defer simple_util.DeferClose(file)
-
-	_, err = fmt.Fprintf(file, "#!/bin/bash\nsh %s %s\n", script, strings.Join(args, " "))
-	simple_util.CheckErr(err)
-}
-
-func checkTitle(title []string) {
-	var titleMap = make(map[string]bool)
-	for _, key := range keyTitle {
-		titleMap[key] = false
-	}
-	for _, key := range title {
-		titleMap[key] = true
-	}
-	for k, v := range titleMap {
-		if !v {
-			log.Fatalf("not contain title[%s]\n", k)
-		}
-	}
+	// write workDir/allSteps.json
+	simple_util.CheckErr(simple_util.Json2File(filepath.Join(*workDir, "allSteps.json"), allSteps))
 }

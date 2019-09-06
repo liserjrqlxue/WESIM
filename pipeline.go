@@ -66,7 +66,7 @@ func (step *PStep) addLaneJobs(infoList map[string]info, workdir string, mem int
 	step.JobSh = &stepJobs
 }
 
-func (step *PStep) CreateJobs(stepInfo map[string]string, familyList map[string]*FamilyInfo, infoList map[string]*info, familyWorkdir, workdir, pipeline string) {
+func (step *PStep) CreateJobs(stepInfo map[string]string, familyList map[string]*FamilyInfo, infoList map[string]*info, workDir, pipeline string) {
 	var stepJobs []PJob
 
 	stepType := stepInfo["type"]
@@ -78,12 +78,12 @@ func (step *PStep) CreateJobs(stepInfo map[string]string, familyList map[string]
 	switch stepType {
 	case "trio":
 		for probandID, familyInfo := range familyList {
-			familyProbandDir := filepath.Join(familyWorkdir, probandID)
+			familyProbandDir := filepath.Join(workDir, probandID)
 			var job = newPJob(stepMem)
 			job.Sh = filepath.Join(familyProbandDir, "shell", step.Name+".sh")
 			stepJobs = append(stepJobs, job)
 			var appendArgs []string
-			appendArgs = append(appendArgs, workdir, pipeline)
+			appendArgs = append(appendArgs, workDir, pipeline)
 			for _, arg := range stepArgs {
 				switch arg {
 				case "list":
@@ -91,7 +91,7 @@ func (step *PStep) CreateJobs(stepInfo map[string]string, familyList map[string]
 						appendArgs = append(appendArgs, familyInfo.FamilyMap[relationShip])
 					}
 				case "single":
-					appendArgs = append(appendArgs, workdir)
+					appendArgs = append(appendArgs, workDir)
 				case "HPO":
 					appendArgs = append(appendArgs, infoList[probandID].HPO)
 				}
@@ -100,10 +100,10 @@ func (step *PStep) CreateJobs(stepInfo map[string]string, familyList map[string]
 		}
 	case "batch":
 		var job = newPJob(stepMem)
-		job.Sh = filepath.Join(workdir, "shell", step.Name+".sh")
+		job.Sh = filepath.Join(workDir, "shell", step.Name+".sh")
 		stepJobs = append(stepJobs, job)
 		var appendArgs []string
-		appendArgs = append(appendArgs, workdir, pipeline)
+		appendArgs = append(appendArgs, workDir, pipeline)
 		for _, arg := range stepArgs {
 			switch arg {
 			case "laneInput":
@@ -117,10 +117,10 @@ func (step *PStep) CreateJobs(stepInfo map[string]string, familyList map[string]
 				continue
 			}
 			var job = newPJob(stepMem)
-			job.Sh = filepath.Join(workdir, sampleID, "shell", step.Name+".sh")
+			job.Sh = filepath.Join(workDir, sampleID, "shell", step.Name+".sh")
 			stepJobs = append(stepJobs, job)
 			var appendArgs []string
-			appendArgs = append(appendArgs, workdir, pipeline, sampleID)
+			appendArgs = append(appendArgs, workDir, pipeline, sampleID)
 			for _, arg := range stepArgs {
 				switch arg {
 				case "laneName":
@@ -144,10 +144,10 @@ func (step *PStep) CreateJobs(stepInfo map[string]string, familyList map[string]
 	case "sample":
 		for sampleID, item := range infoList {
 			var job = newPJob(stepMem)
-			job.Sh = filepath.Join(workdir, sampleID, "shell", step.Name+".sh")
+			job.Sh = filepath.Join(workDir, sampleID, "shell", step.Name+".sh")
 			stepJobs = append(stepJobs, job)
 			var appendArgs []string
-			appendArgs = append(appendArgs, workdir, pipeline, sampleID)
+			appendArgs = append(appendArgs, workDir, pipeline, sampleID)
 			for _, arg := range stepArgs {
 				switch arg {
 				case "laneName":
@@ -174,10 +174,10 @@ func (step *PStep) CreateJobs(stepInfo map[string]string, familyList map[string]
 		for sampleID, item := range infoList {
 			for _, lane := range item.LaneInfo {
 				var job = newPJob(stepMem)
-				job.Sh = filepath.Join(workdir, sampleID, "shell", step.Name+"."+lane.LaneName+".sh")
+				job.Sh = filepath.Join(workDir, sampleID, "shell", step.Name+"."+lane.LaneName+".sh")
 				stepJobs = append(stepJobs, job)
 				var appendArgs []string
-				appendArgs = append(appendArgs, workdir, pipeline, sampleID)
+				appendArgs = append(appendArgs, workDir, pipeline, sampleID)
 				for _, arg := range stepArgs {
 					switch arg {
 					case "laneName":
@@ -213,31 +213,6 @@ func (step *PStep) createLaneShell(infoList map[string]info, item map[string]str
 			}
 
 		}
-	}
-}
-
-func flowSteps(steps ...*PStep) {
-	for i, step := range steps {
-		if i < len(steps)-1 {
-			step.NextStep = append(step.NextStep, steps[i+1].Name)
-		}
-		if i > 0 {
-			step.PriorStep = append(step.PriorStep, steps[i-1].Name)
-		}
-	}
-}
-
-func flowDown2Ups(downStep *PStep, upSteps ...*PStep) {
-	for _, upStep := range upSteps {
-		upStep.NextStep = append(upStep.NextStep, downStep.Name)
-		downStep.PriorStep = append(downStep.PriorStep, upStep.Name)
-	}
-}
-
-func flowUp2Downs(upStep *PStep, downSteps ...*PStep) {
-	for _, downStep := range downSteps {
-		upStep.NextStep = append(upStep.NextStep, downStep.Name)
-		downStep.PriorStep = append(downStep.PriorStep, upStep.Name)
 	}
 }
 
