@@ -33,6 +33,8 @@ func newPStep(name string) (step *PStep) {
 	step.Name = name
 	step.ComputingFlag = "cpu"
 	step.Threads = 1
+	step.PriorStep = []string{}
+	step.NextStep = []string{}
 	return
 }
 
