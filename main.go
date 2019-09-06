@@ -119,9 +119,7 @@ func main() {
 	for _, item := range stepList {
 		var step = newPStep(item)
 		if step.CreateJobs(item, familyList, infoList, *workDir, *pipeline) {
-			step.prior = item["prior"]
-			step.next = item["next"]
-			stepMap[item["name"]] = step
+			stepMap[step.Name] = step
 			allSteps = append(allSteps, step)
 		}
 	}

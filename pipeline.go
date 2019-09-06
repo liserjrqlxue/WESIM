@@ -39,6 +39,8 @@ func newPStep(item map[string]string) (step *PStep) {
 	mem, err := strconv.Atoi(item["mem"])
 	simple_util.CheckErr(err)
 	step.Memory = mem
+	step.prior = item["prior"]
+	step.next = item["next"]
 	step.PriorStep = []string{}
 	step.NextStep = []string{}
 	return
