@@ -64,34 +64,6 @@ var keyTitle = []string{
 	"relationship",
 }
 
-type laneInfo struct {
-	LaneName string `json:"lane_code"`
-	Fq1      string `json:"fastq1"`
-	Fq2      string `json:"fastq2"`
-}
-
-type info struct {
-	SampleID     string
-	ChipCode     string
-	Type         string
-	Gender       string
-	ProductCode  string
-	ProductType  string
-	ProbandID    string
-	RelationShip string
-	HPO          string
-	StandardTag  string
-	StandardQC   string
-	QChistory    string
-	LaneInfo     []laneInfo
-	FamilyInfo   map[string][]string
-}
-
-type FamilyInfo struct {
-	ProbandID string
-	FamilyMap map[string]string
-}
-
 var singleDirList = []string{
 	//"graph_singleBaseDepth",
 	//"ExomeDepth",
@@ -132,82 +104,7 @@ func main() {
 	simple_util.CheckErr(os.MkdirAll(singleWorkdir, 0755))
 	simple_util.CheckErr(os.MkdirAll(familyWorkdir, 0755))
 
-	// write sample.list
-	sampleListFile, err := os.Create(filepath.Join(singleWorkdir, "sample.list"))
-	simple_util.CheckErr(err)
-	defer simple_util.DeferClose(sampleListFile)
-	// write bam.list
-	bamListFile, err := os.Create(filepath.Join(singleWorkdir, "bam.list"))
-	simple_util.CheckErr(err, "write bam.list")
-	defer simple_util.DeferClose(bamListFile)
-
-	// parser input list
-	sampleList, title := simple_util.File2MapArray(*input, "\t", nil)
-	checkTitle(title)
-	// ProbandID -> FamilyInfo
-	var familyList = make(map[string]FamilyInfo)
-	var infoList = make(map[string]info)
-	for _, item := range sampleList {
-		var sampleID = item["main_sample_num"]
-		var chipCode = item["chip_code"]
-		var productCode = item["product_code"]
-		var productType = item["productType"]
-		var probandID = item["proband_number"]
-		var relationShip = item["relationship"]
-		var gender = item["gender"]
-		var laneCode = item["lane_code"]
-		var fqPath = item["FQ_path"]
-		var hpo = item["HPO"]
-		var standardTag = item["isStandardSample"]
-		var standardQC = item["StandardQC"]
-		var QChistory = item["QChistory"]
-		var pe = strings.Split(fqPath, ",")
-		if len(pe) != 2 {
-			log.Fatalf("can not parse pair end in lane(%s) of sample(%s):[%s]\n", laneCode, sampleID, fqPath)
-		}
-
-		_, err = fmt.Fprintf(sampleListFile, "%s\t%s\n", sampleID, gender)
-		simple_util.CheckErr(err)
-		_, err = fmt.Fprintf(bamListFile, "%s\n", filepath.Join(singleWorkdir, sampleID, "bwa", sampleID+".bqsr.bam"))
-		simple_util.CheckErr(err)
-
-		var lane = laneInfo{
-			LaneName: laneCode,
-			Fq1:      pe[0],
-			Fq2:      pe[1],
-		}
-		sampleInfo, ok := infoList[sampleID]
-		if !ok {
-			sampleInfo.SampleID = sampleID
-			sampleInfo.ChipCode = chipCode
-			sampleInfo.Gender = gender
-			sampleInfo.ProductCode = productCode
-			sampleInfo.ProductType = productType
-			sampleInfo.ProbandID = probandID
-			sampleInfo.HPO = hpo
-			sampleInfo.StandardTag = standardTag
-			sampleInfo.StandardQC = standardQC
-			sampleInfo.RelationShip = relationShip
-			sampleInfo.QChistory = QChistory
-		}
-		sampleInfo.LaneInfo = append(sampleInfo.LaneInfo, lane)
-		// FamilyInfo
-		if ProductTrio[productCode] {
-			familyInfo, ok := familyList[probandID]
-			if ok {
-				familyInfo.FamilyMap[relationShip] = sampleID
-			} else {
-				familyInfo = FamilyInfo{
-					ProbandID: probandID,
-					FamilyMap: map[string]string{relationShip: sampleID},
-				}
-			}
-			familyList[probandID] = familyInfo
-		} else {
-			sampleInfo.ProbandID = sampleID
-		}
-		infoList[sampleID] = sampleInfo
-	}
+	infoList, familyList := parserInput(*input, *workdir)
 
 	// step0 create workdir
 	simple_util.CheckErr(createWorkdir(singleWorkdir, infoList, singleDirList, sampleDirList, laneDirList))
