@@ -117,7 +117,7 @@ func main() {
 	var allSteps []*PStep
 	var stepMap = make(map[string]*PStep)
 	for _, item := range stepList {
-		var step = newPStep(item["name"])
+		var step = newPStep(item)
 		if step.CreateJobs(item, familyList, infoList, *workDir, *pipeline) {
 			step.prior = item["prior"]
 			step.next = item["next"]
@@ -126,18 +126,12 @@ func main() {
 		}
 	}
 
-	for _, step := range stepMap {
+	for stepName, step := range stepMap {
 		for _, prior := range strings.Split(step.prior, ",") {
-			_, ok := stepMap[prior]
+			priorStep, ok := stepMap[prior]
 			if ok {
 				step.PriorStep = append(step.PriorStep, prior)
-			}
-		}
-
-		for _, next := range strings.Split(step.next, ",") {
-			_, ok := stepMap[next]
-			if ok {
-				step.NextStep = append(step.NextStep, next)
+				priorStep.NextStep = append(priorStep.NextStep, stepName)
 			}
 		}
 	}

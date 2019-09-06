@@ -29,11 +29,16 @@ type PStep struct {
 	JobSh         *[]PJob  `json:"jobSh"`
 }
 
-func newPStep(name string) (step *PStep) {
+func newPStep(item map[string]string) (step *PStep) {
 	step = &PStep{}
-	step.Name = name
+	step.Name = item["name"]
 	step.ComputingFlag = "cpu"
-	step.Threads = 1
+	thread, err := strconv.Atoi(item["thread"])
+	simple_util.CheckErr(err)
+	step.Threads = thread
+	mem, err := strconv.Atoi(item["mem"])
+	simple_util.CheckErr(err)
+	step.Memory = mem
 	step.PriorStep = []string{}
 	step.NextStep = []string{}
 	return
