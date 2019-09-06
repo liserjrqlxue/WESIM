@@ -104,7 +104,7 @@ func main() {
 	simple_util.CheckErr(os.MkdirAll(singleWorkdir, 0755))
 	simple_util.CheckErr(os.MkdirAll(familyWorkdir, 0755))
 
-	infoList, familyList := parserInput(*input, *workdir)
+	infoList, familyList := parserInput(*input)
 
 	// step0 create workdir
 	simple_util.CheckErr(createWorkdir(singleWorkdir, infoList, singleDirList, sampleDirList, laneDirList))

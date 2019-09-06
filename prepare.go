@@ -58,7 +58,7 @@ func createSampleInfo(infoList map[string]*info, workdir string) {
 	}
 }
 
-func parserInput(input, workDir string) (infoList map[string]*info, familyList map[string]*FamilyInfo) {
+func parserInput(input string) (infoList map[string]*info, familyList map[string]*FamilyInfo) {
 	// parser input list
 	sampleList, title := simple_util.File2MapArray(input, "\t", nil)
 	checkTitle(title)
@@ -77,6 +77,21 @@ func parserInput(input, workDir string) (infoList map[string]*info, familyList m
 			sampleInfo = newInfo(item)
 			infoList[sampleID] = sampleInfo
 		}
+		var pe = strings.Split(item["FQ_path"], ",")
+		if len(pe) != 2 {
+			log.Fatalf(
+				"can not parse pair end in lane(%s) of sample(%s):[%s]\n",
+				item["lane_code"],
+				sampleInfo.SampleID,
+				item["FQ_path"],
+			)
+		}
+		var lane = laneInfo{
+			LaneName: item["lane_code"],
+			Fq1:      pe[0],
+			Fq2:      pe[1],
+		}
+		sampleInfo.LaneInfo = append(sampleInfo.LaneInfo, lane)
 
 		// FamilyInfo
 		if ProductTrio[productCode] {

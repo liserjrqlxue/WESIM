@@ -1,10 +1,5 @@
 package main
 
-import (
-	"log"
-	"strings"
-)
-
 type info struct {
 	SampleID     string
 	ChipCode     string
@@ -46,20 +41,6 @@ func newInfo(item map[string]string) (sampleInfo *info) {
 	sampleInfo.StandardQC = item["StandardQC"]
 	sampleInfo.RelationShip = item["relationship"]
 	sampleInfo.QChistory = item["QChistory"]
-	var pe = strings.Split(item["FQ_path"], ",")
-	if len(pe) != 2 {
-		log.Fatalf(
-			"can not parse pair end in lane(%s) of sample(%s):[%s]\n",
-			item["lane_code"],
-			sampleInfo.SampleID,
-			item["FQ_path"],
-		)
-	}
-	var lane = laneInfo{
-		LaneName: item["lane_code"],
-		Fq1:      pe[0],
-		Fq2:      pe[1],
-	}
-	sampleInfo.LaneInfo = append(sampleInfo.LaneInfo, lane)
+
 	return
 }
