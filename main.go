@@ -118,16 +118,28 @@ func main() {
 	var stepMap = make(map[string]*PStep)
 	for _, item := range stepList {
 		var step = newPStep(item["name"])
-		step.CreateJobs(item, familyList, infoList, *workDir, *pipeline)
-		if item["prior"] != "" {
-			step.PriorStep = append(step.PriorStep, strings.Split(item["prior"], ",")...)
+		if step.CreateJobs(item, familyList, infoList, *workDir, *pipeline) {
+			step.prior = item["prior"]
+			step.next = item["next"]
+			stepMap[item["name"]] = step
+			allSteps = append(allSteps, step)
 		}
-		if item["next"] != "" {
-			step.NextStep = append(step.NextStep, strings.Split(item["next"], ",")...)
+	}
+
+	for _, step := range stepMap {
+		for _, prior := range strings.Split(step.prior, ",") {
+			_, ok := stepMap[prior]
+			if ok {
+				step.PriorStep = append(step.PriorStep, prior)
+			}
 		}
 
-		stepMap[item["name"]] = step
-		allSteps = append(allSteps, step)
+		for _, next := range strings.Split(step.next, ",") {
+			_, ok := stepMap[next]
+			if ok {
+				step.NextStep = append(step.NextStep, next)
+			}
+		}
 	}
 
 	// set first step

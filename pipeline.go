@@ -15,14 +15,15 @@ type Pipeline struct {
 }
 
 type PStep struct {
-	Name          string   `json:"name"`
-	First         int      `json:"first"`
-	StepFlag      int      `json:"stepFlag"`
-	ComputingFlag string   `json:"computingFlag"`
-	Memory        int      `json:"memory"`
-	Threads       int      `json:"threads"`
-	Timeout       int      `json:"timeout"`
-	ModuleIndex   int      `json:"moduleIndex"`
+	Name          string `json:"name"`
+	First         int    `json:"first"`
+	StepFlag      int    `json:"stepFlag"`
+	ComputingFlag string `json:"computingFlag"`
+	Memory        int    `json:"memory"`
+	Threads       int    `json:"threads"`
+	Timeout       int    `json:"timeout"`
+	ModuleIndex   int    `json:"moduleIndex"`
+	prior, next   string
 	PriorStep     []string `json:"priorStep"`
 	NextStep      []string `json:"nextStep"`
 	JobSh         *[]PJob  `json:"jobSh"`
@@ -66,7 +67,7 @@ func (step *PStep) addLaneJobs(infoList map[string]info, workdir string, mem int
 	step.JobSh = &stepJobs
 }
 
-func (step *PStep) CreateJobs(stepInfo map[string]string, familyList map[string]*FamilyInfo, infoList map[string]*info, workDir, pipeline string) {
+func (step *PStep) CreateJobs(stepInfo map[string]string, familyList map[string]*FamilyInfo, infoList map[string]*info, workDir, pipeline string) bool {
 	var stepJobs []PJob
 
 	stepType := stepInfo["type"]
@@ -193,6 +194,11 @@ func (step *PStep) CreateJobs(stepInfo map[string]string, familyList map[string]
 		}
 	}
 	step.JobSh = &stepJobs
+	if stepJobs == nil {
+		return false
+	} else {
+		return true
+	}
 }
 
 func (step *PStep) createLaneShell(infoList map[string]info, item map[string]string, workDir, pipelineDir string) {
