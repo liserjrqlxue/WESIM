@@ -33,7 +33,8 @@ type FamilyInfo struct {
 	FamilyMap map[string]string
 }
 
-func (sampleInfo *info) update(item map[string]string) {
+func newInfo(item map[string]string) (sampleInfo *info) {
+	sampleInfo = &info{}
 	sampleInfo.SampleID = item["main_sample_num"]
 	sampleInfo.ChipCode = item["chip_code"]
 	sampleInfo.Gender = item["gender"]
@@ -60,4 +61,5 @@ func (sampleInfo *info) update(item map[string]string) {
 		Fq2:      pe[1],
 	}
 	sampleInfo.LaneInfo = append(sampleInfo.LaneInfo, lane)
+	return
 }

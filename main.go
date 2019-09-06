@@ -131,8 +131,8 @@ func main() {
 			step.NextStep = append(step.NextStep, strings.Split(item["next"], ",")...)
 		}
 
-		stepMap[item["name"]] = &step
-		allSteps = append(allSteps, &step)
+		stepMap[item["name"]] = step
+		allSteps = append(allSteps, step)
 	}
 
 	for name, step := range stepMap {

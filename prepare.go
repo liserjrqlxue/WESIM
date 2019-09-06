@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-func createWorkdir(workdir string, infoList map[string]info, singleDirList, sampleDirList, laneDirList []string) error {
+func createWorkdir(workdir string, infoList map[string]*info, singleDirList, sampleDirList, laneDirList []string) error {
 	for _, subdir := range singleDirList {
 		err := os.MkdirAll(filepath.Join(workdir, subdir), 0755)
 		simple_util.CheckErr(err)
@@ -29,7 +29,7 @@ func createWorkdir(workdir string, infoList map[string]info, singleDirList, samp
 	return nil
 }
 
-func createTiroInfo(familyInfo FamilyInfo, workdir string) {
+func createTiroInfo(familyInfo *FamilyInfo, workdir string) {
 	f, err := os.Create(filepath.Join(workdir, "trio.info"))
 	simple_util.CheckErr(err)
 	defer simple_util.DeferClose(f)
@@ -44,7 +44,7 @@ func createTiroInfo(familyInfo FamilyInfo, workdir string) {
 	}
 }
 
-func createSampleInfo(infoList map[string]info, workdir string) {
+func createSampleInfo(infoList map[string]*info, workdir string) {
 	f, err := os.Create(filepath.Join(workdir, "sample.info"))
 	simple_util.CheckErr(err)
 	defer simple_util.DeferClose(f)
@@ -58,38 +58,24 @@ func createSampleInfo(infoList map[string]info, workdir string) {
 	}
 }
 
-func parserInput(input, workDir string) (infoList map[string]info, familyList map[string]FamilyInfo) {
+func parserInput(input, workDir string) (infoList map[string]*info, familyList map[string]*FamilyInfo) {
 	// parser input list
 	sampleList, title := simple_util.File2MapArray(input, "\t", nil)
 	checkTitle(title)
 
-	// write sample.list
-	sampleListFile, err := os.Create(filepath.Join(workDir, "sample.list"))
-	simple_util.CheckErr(err)
-	defer simple_util.DeferClose(sampleListFile)
-	// write bam.list
-	bamListFile, err := os.Create(filepath.Join(workDir, "bam.list"))
-	simple_util.CheckErr(err, "write bam.list")
-	defer simple_util.DeferClose(bamListFile)
-
-	infoList = make(map[string]info)
-	familyList = make(map[string]FamilyInfo)
+	infoList = make(map[string]*info)
+	familyList = make(map[string]*FamilyInfo)
 	// ProbandID -> FamilyInfo
 	for _, item := range sampleList {
 		var sampleID = item["main_sample_num"]
 		var productCode = item["product_code"]
 		var probandID = item["proband_number"]
 		var relationShip = item["relationship"]
-		var gender = item["gender"]
-
-		_, err = fmt.Fprintf(sampleListFile, "%s\t%s\n", sampleID, gender)
-		simple_util.CheckErr(err)
-		_, err = fmt.Fprintf(bamListFile, "%s\n", filepath.Join(workDir, sampleID, "bwa", sampleID+".bqsr.bam"))
-		simple_util.CheckErr(err)
 
 		sampleInfo, ok := infoList[sampleID]
 		if !ok {
-			sampleInfo.update(item)
+			sampleInfo = newInfo(item)
+			infoList[sampleID] = sampleInfo
 		}
 
 		// FamilyInfo
@@ -98,16 +84,15 @@ func parserInput(input, workDir string) (infoList map[string]info, familyList ma
 			if ok {
 				familyInfo.FamilyMap[relationShip] = sampleID
 			} else {
-				familyInfo = FamilyInfo{
+				familyInfo = &FamilyInfo{
 					ProbandID: probandID,
 					FamilyMap: map[string]string{relationShip: sampleID},
 				}
+				familyList[probandID] = familyInfo
 			}
-			familyList[probandID] = familyInfo
 		} else {
 			sampleInfo.ProbandID = sampleID
 		}
-		infoList[sampleID] = sampleInfo
 	}
 	return
 }

@@ -28,15 +28,11 @@ type PStep struct {
 	JobSh         *[]PJob  `json:"jobSh"`
 }
 
-func newPStep(name string) (step PStep) {
+func newPStep(name string) (step *PStep) {
+	step = &PStep{}
 	step.Name = name
-	step.First = 0
 	step.ComputingFlag = "cpu"
 	step.Threads = 1
-	step.Timeout = 0
-	step.PriorStep = []string{}
-	step.NextStep = []string{}
-	step.JobSh = &[]PJob{}
 	return
 }
 
@@ -68,7 +64,7 @@ func (step *PStep) addLaneJobs(infoList map[string]info, workdir string, mem int
 	step.JobSh = &stepJobs
 }
 
-func (step *PStep) CreateJobs(stepInfo map[string]string, familyList map[string]FamilyInfo, infoList map[string]info, familyWorkdir, workdir, pipeline string) {
+func (step *PStep) CreateJobs(stepInfo map[string]string, familyList map[string]*FamilyInfo, infoList map[string]*info, familyWorkdir, workdir, pipeline string) {
 	var stepJobs []PJob
 
 	stepType := stepInfo["type"]
