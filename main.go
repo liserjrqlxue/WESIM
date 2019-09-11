@@ -66,6 +66,7 @@ var keyTitle = []string{
 var batchDirList = []string{
 	"shell",
 	"result",
+	"javatmp",
 }
 
 var sampleDirList = []string{
@@ -74,6 +75,7 @@ var sampleDirList = []string{
 	"coverage",
 	"annotation",
 	"gatk",
+	"cnv",
 }
 
 var laneDirList = []string{
