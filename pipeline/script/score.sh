@@ -34,10 +34,16 @@ python /home/uploader/uploader-WES/score/sample_score/run_three_uploader.py -i $
   && echo success \
   || { echo error;exit 1; }
 
-echo `date` python3 $pipeline/wes-auto-report/generate-report.py $sampleID $workdir/sample.info $Workdir/score/outputData/file $workdir/result/$sampleID
+echo `date` create appendix
+#echo `date` python3 $pipeline/wes-auto-report/generate-report.py $sampleID $workdir/sample.info $Workdir/score/outputData/file $workdir/result/$sampleID
 python3 $pipeline/wes-auto-report/generate-report.py $sampleID $workdir/sample.info $Workdir/score/outputData/file $workdir/result/$sampleID \
   && echo success \
   || { echo error;exit 1; }
+
+echo `date` create $sampleID.reult.tsv
+Tier1toResult -xlsx $Workdir/score/outputData/file/Result_new_$sampleID.Tier1.xlsx -prefix $workdir/result/$sampleID/$sampleID \
+&& echo success \
+|| { echo error;exit 1; }
 
 echo cp -v $Workdir/score/outputData/file/Result_new_$sampleID.Tier1.xlsx $workdir/result/$sampleID/$sampleID.score.Tier1.xlsx 
 cp -v $Workdir/score/outputData/file/Result_new_$sampleID.Tier1.xlsx $workdir/result/$sampleID/$sampleID.score.Tier1.xlsx \
