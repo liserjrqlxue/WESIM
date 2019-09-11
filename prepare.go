@@ -9,19 +9,21 @@ import (
 	"strings"
 )
 
-func createWorkdir(workdir string, infoList map[string]*info, singleDirList, sampleDirList, laneDirList []string) error {
-	for _, subdir := range singleDirList {
-		err := os.MkdirAll(filepath.Join(workdir, subdir), 0755)
+func createWorkdir(workDir string, infoList map[string]*info, batchDirList, sampleDirList, laneDirList []string) error {
+	for _, subDir := range batchDirList {
+		err := os.MkdirAll(filepath.Join(workDir, subDir), 0755)
 		simple_util.CheckErr(err)
 	}
 	for sampleID, info := range infoList {
-		for _, subdir := range sampleDirList {
-			err := os.MkdirAll(filepath.Join(workdir, sampleID, subdir), 0755)
+		err := os.MkdirAll(filepath.Join(workDir, "result", sampleID), 0755)
+		simple_util.CheckErr(err)
+		for _, subDir := range sampleDirList {
+			err := os.MkdirAll(filepath.Join(workDir, sampleID, subDir), 0755)
 			simple_util.CheckErr(err)
 		}
 		for _, laneInfo := range info.LaneInfo {
-			for _, subdir := range laneDirList {
-				err := os.MkdirAll(filepath.Join(workdir, sampleID, subdir, laneInfo.LaneName), 0755)
+			for _, subDir := range laneDirList {
+				err := os.MkdirAll(filepath.Join(workDir, sampleID, subDir, laneInfo.LaneName), 0755)
 				simple_util.CheckErr(err)
 			}
 		}

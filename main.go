@@ -63,11 +63,7 @@ var keyTitle = []string{
 	"relationship",
 }
 
-var singleDirList = []string{
-	//"graph_singleBaseDepth",
-	//"ExomeDepth",
-	//"CNVkit",
-	//"SMA",
+var batchDirList = []string{
 	"shell",
 	"result",
 }
@@ -101,8 +97,8 @@ func main() {
 	simple_util.CheckErr(os.MkdirAll(*workDir, 0755))
 	infoList, familyList := parserInput(*input)
 
-	// step0 create workdir
-	simple_util.CheckErr(createWorkdir(*workDir, infoList, singleDirList, sampleDirList, laneDirList))
+	// step0 create workDir
+	simple_util.CheckErr(createWorkdir(*workDir, infoList, batchDirList, sampleDirList, laneDirList))
 	for probandID, familyInfo := range familyList {
 		_, ok := infoList[probandID]
 		if !ok {
