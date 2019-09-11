@@ -87,8 +87,8 @@ var laneDirList = []string{
 var ProductTrio = map[string]bool{
 	"DX0458": false,
 	"DX1515": true,
-	"HW101":  false,
-	"HW102":  true,
+	"HW1101": false,
+	"HW1102": true,
 }
 
 func main() {
