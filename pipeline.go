@@ -98,8 +98,8 @@ func (step *PStep) CreateJobs(stepInfo map[string]string, familyList map[string]
 					for _, relationShip := range []string{"proband", "father", "mother"} {
 						appendArgs = append(appendArgs, familyInfo.FamilyMap[relationShip])
 					}
-				case "single":
-					appendArgs = append(appendArgs, workDir)
+				case "product_code":
+					appendArgs = append(appendArgs, infoList[probandID].ProductCode)
 				case "HPO":
 					appendArgs = append(appendArgs, infoList[probandID].HPO)
 				}
