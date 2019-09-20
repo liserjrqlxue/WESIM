@@ -2,13 +2,12 @@
 
 workdir=$1
 pipeline=$2
-singleWorkdir=$3
+productCode=$3
 proband=$4
 father=$5
 mother=$6
 HPO=$7
 
-workdir=$singleWorkdir
 grep -P "$proband\tpass" $workdir/$proband/$proband.QC.txt \
 || { echo `date` sample QC not pass, skip $0;exit 0; }
 grep -P "$father\tpass"  $workdir/$father/$father.QC.txt   \
@@ -25,8 +24,21 @@ subdir=annotation
 suffix=out.updateFunc
 qc=coverage/coverage.report
 CNVkit=cnv/CNVkit_cnv_gene_BGI160_Decipher_DGV_Pathogenicity.xls
+aneuploid=cnv/sample_aneuploid.xls
 exon=CNV.calls.anno
 SMA=SMA_v2.txt
+
+function join_by {
+	local IFS="$1";
+	shift;
+	echo "$*";
+}
+filterStat=()
+for i in `find $Workdir/filter/*/*.filter.stat`;do
+	filterStat+=($i)
+done
+filterStatJoin=$(join_by "," ${filterStat[@]})
+echo $filterStatJoin
 
 
 echo `date` Start Trio
@@ -59,8 +71,13 @@ anno2xlsx \
   -snv $workdir/$proband/$proband.family.$suffix \
   -qc  $workdir/$proband/$qc,$workdir/$father/$qc,$workdir/$mother/$qc \
   -large $workdir/$proband/$CNVkit,$workdir/$father/$CNVkit,$workdir/$mother/$CNVkit \
+  -karyotype $workdir/$proband/$aneuploid,$workdir/$father/$aneuploid,$workdir/$mother/$aneuploid \
   -exon $workdir/$proband/cnv/$proband.$exon,$workdir/$father/cnv/$father.$exon,$workdir/$mother/cnv/$mother.$exon \
   -smn $workdir/$proband/cnv/$proband.$SMA,$workdir/$father/cnv/$father.$SMA,$workdir/$mother/cnv/$mother.$SMA \
+  -filterStat $filterStatJoin \
+  -acmg \
+  -redis -redisAddr 127.0.0.1:6380 \
+  -product $productCode \
 && echo success \
 || { echo error;exit 1; }
 

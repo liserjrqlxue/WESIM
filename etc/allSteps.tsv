@@ -21,4 +21,4 @@ eDepth	2	1	22m	sample	dSurvey
 SMA	1	1	16m	sample	dSurvey	
 eReport	10	1	1m	single	fixAnno,eDepth,CNVkit,SMA	product_code
 score	10	4	2m	single	eReport	HPO
-trio	10	4	3m	trio	fixAnno,eDepth,CNVkit,SMA	single,list,HPO
+trio	10	4	3m	trio	fixAnno,eDepth,CNVkit,SMA	product_code,list,HPO
