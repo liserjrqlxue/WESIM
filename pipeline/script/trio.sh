@@ -78,7 +78,7 @@ anno2xlsx \
   -acmg \
   -redis -redisAddr 127.0.0.1:6380 \
   -product $productCode \
-  -specVarList $pipeline/anno2xlsx/db/spec.var.lite.list \
+  -specVarList $pipeline/spec.var.lite.list \
 && echo success \
 || { echo error;exit 1; }
 
