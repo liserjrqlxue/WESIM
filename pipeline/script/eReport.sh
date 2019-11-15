@@ -38,6 +38,7 @@ time anno2xlsx \
   -redis -redisAddr 127.0.0.1:6380 \
   -list $sampleID \
   -product $productCode \
+  -specVarList $pipeline/anno2xlsx/db/spec.var.lite.list \
 && echo success \
 || { echo error;exit 1; }
 
