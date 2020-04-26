@@ -121,7 +121,7 @@ func main() {
 	for _, item := range stepList {
 		var step = libIM.NewStep(item)
 		step.CreateJobs(familyList, infoList, ProductTrio, *workDir, *pipeline)
-		if step.JobSh == nil {
+		if step.JobSh != nil {
 			stepMap[step.Name] = &step
 			allSteps = append(allSteps, &step)
 		}
