@@ -110,13 +110,11 @@ func main() {
 
 	stepList, _ := simple_util.File2MapArray(*stepsCfg, "\t", nil)
 
-	var allSteps []libIM.Step
-	var stepMap = make(map[string]libIM.Step)
+	var stepMap = make(map[string]*libIM.Step)
 	for _, item := range stepList {
 		var step = libIM.NewStep(item)
 		if step.CreateJobs(familyList, infoList, ProductTrio, *workDir, *pipeline); step.JobSh != nil {
-			stepMap[step.Name] = step
-			allSteps = append(allSteps, step)
+			stepMap[step.Name] = &step
 		}
 	}
 
@@ -137,6 +135,10 @@ func main() {
 			step.First = 1
 		default:
 		}
+	}
+	var allSteps []*libIM.Step
+	for _, step := range stepMap {
+		allSteps = append(allSteps, step)
 	}
 	// write workDir/allSteps.json
 	simple_util.CheckErr(simple_util.Json2File(filepath.Join(*workDir, "allSteps.json"), allSteps))

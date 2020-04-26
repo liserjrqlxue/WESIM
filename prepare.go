@@ -111,6 +111,8 @@ func parserInput(input string) (infoList map[string]libIM.Info, familyList map[s
 		} else {
 			sampleInfo.ProbandID = sampleID
 		}
+		// Should update data of hash if we do not use points as value of hash
+		infoList[sampleID] = sampleInfo
 	}
 	return
 }
