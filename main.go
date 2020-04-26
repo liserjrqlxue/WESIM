@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"github.com/liserjrqlxue/libIM"
 	"github.com/liserjrqlxue/simple-util"
 	"log"
 	"os"
@@ -13,9 +14,6 @@ import (
 var (
 	ex, _  = os.Executable()
 	exPath = filepath.Dir(ex)
-	//pSep   = string(os.PathSeparator)
-	//dbPath       = exPath + pSep + "db" + pSep
-	//templatePath = exPath + pSep + "template" + pSep
 )
 
 var (
@@ -112,18 +110,18 @@ func main() {
 
 	stepList, _ := simple_util.File2MapArray(*stepsCfg, "\t", nil)
 
-	var allSteps []*PStep
-	var stepMap = make(map[string]*PStep)
+	var allSteps []libIM.Step
+	var stepMap = make(map[string]libIM.Step)
 	for _, item := range stepList {
-		var step = newPStep(item)
-		if step.CreateJobs(item, familyList, infoList, *workDir, *pipeline) {
+		var step = libIM.NewStep(item)
+		if step.CreateJobs(familyList, infoList, ProductTrio, *workDir, *pipeline); step.JobSh != nil {
 			stepMap[step.Name] = step
 			allSteps = append(allSteps, step)
 		}
 	}
 
 	for stepName, step := range stepMap {
-		for _, prior := range strings.Split(step.prior, ",") {
+		for _, prior := range strings.Split(step.Prior, ",") {
 			priorStep, ok := stepMap[prior]
 			if ok {
 				step.PriorStep = append(step.PriorStep, prior)

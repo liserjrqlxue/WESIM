@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/liserjrqlxue/libIM"
 	"github.com/liserjrqlxue/simple-util"
 	"log"
 	"os"
@@ -9,7 +10,7 @@ import (
 	"strings"
 )
 
-func createWorkdir(workDir string, infoList map[string]*info, batchDirList, sampleDirList, laneDirList []string) error {
+func createWorkdir(workDir string, infoList map[string]libIM.Info, batchDirList, sampleDirList, laneDirList []string) error {
 	for _, subDir := range batchDirList {
 		err := os.MkdirAll(filepath.Join(workDir, subDir), 0755)
 		simple_util.CheckErr(err)
@@ -21,7 +22,7 @@ func createWorkdir(workDir string, infoList map[string]*info, batchDirList, samp
 			err := os.MkdirAll(filepath.Join(workDir, sampleID, subDir), 0755)
 			simple_util.CheckErr(err)
 		}
-		for _, laneInfo := range info.LaneInfo {
+		for _, laneInfo := range info.LaneInfos {
 			for _, subDir := range laneDirList {
 				err := os.MkdirAll(filepath.Join(workDir, sampleID, subDir, laneInfo.LaneName), 0755)
 				simple_util.CheckErr(err)
@@ -31,7 +32,7 @@ func createWorkdir(workDir string, infoList map[string]*info, batchDirList, samp
 	return nil
 }
 
-func createTiroInfo(familyInfo *FamilyInfo, workdir string) {
+func createTiroInfo(familyInfo libIM.FamilyInfo, workdir string) {
 	f, err := os.Create(filepath.Join(workdir, "trio.info"))
 	simple_util.CheckErr(err)
 	defer simple_util.DeferClose(f)
@@ -46,7 +47,7 @@ func createTiroInfo(familyInfo *FamilyInfo, workdir string) {
 	}
 }
 
-func createSampleInfo(infoList map[string]*info, workdir string) {
+func createSampleInfo(infoList map[string]libIM.Info, workdir string) {
 	f, err := os.Create(filepath.Join(workdir, "sample.info"))
 	simple_util.CheckErr(err)
 	defer simple_util.DeferClose(f)
@@ -60,13 +61,13 @@ func createSampleInfo(infoList map[string]*info, workdir string) {
 	}
 }
 
-func parserInput(input string) (infoList map[string]*info, familyList map[string]*FamilyInfo) {
+func parserInput(input string) (infoList map[string]libIM.Info, familyList map[string]libIM.FamilyInfo) {
 	// parser input list
 	sampleList, title := simple_util.File2MapArray(input, "\t", nil)
 	checkTitle(title)
 
-	infoList = make(map[string]*info)
-	familyList = make(map[string]*FamilyInfo)
+	infoList = make(map[string]libIM.Info)
+	familyList = make(map[string]libIM.FamilyInfo)
 	// ProbandID -> FamilyInfo
 	for _, item := range sampleList {
 		var sampleID = item["main_sample_num"]
@@ -76,7 +77,7 @@ func parserInput(input string) (infoList map[string]*info, familyList map[string
 
 		sampleInfo, ok := infoList[sampleID]
 		if !ok {
-			sampleInfo = newInfo(item)
+			sampleInfo = libIM.NewInfo(item)
 			infoList[sampleID] = sampleInfo
 		}
 		var pe = strings.Split(item["FQ_path"], ",")
@@ -88,12 +89,12 @@ func parserInput(input string) (infoList map[string]*info, familyList map[string
 				item["FQ_path"],
 			)
 		}
-		var lane = laneInfo{
+		var lane = libIM.LaneInfo{
 			LaneName: item["lane_code"],
 			Fq1:      pe[0],
 			Fq2:      pe[1],
 		}
-		sampleInfo.LaneInfo = append(sampleInfo.LaneInfo, lane)
+		sampleInfo.LaneInfos = append(sampleInfo.LaneInfos, lane)
 
 		// FamilyInfo
 		if ProductTrio[productCode] {
@@ -101,7 +102,7 @@ func parserInput(input string) (infoList map[string]*info, familyList map[string
 			if ok {
 				familyInfo.FamilyMap[relationShip] = sampleID
 			} else {
-				familyInfo = &FamilyInfo{
+				familyInfo = libIM.FamilyInfo{
 					ProbandID: probandID,
 					FamilyMap: map[string]string{relationShip: sampleID},
 				}
@@ -112,15 +113,6 @@ func parserInput(input string) (infoList map[string]*info, familyList map[string
 		}
 	}
 	return
-}
-
-func createShell(fileName, script string, args ...string) {
-	file, err := os.Create(fileName)
-	simple_util.CheckErr(err)
-	defer simple_util.DeferClose(file)
-
-	_, err = fmt.Fprintf(file, "#!/bin/bash\nsh %s %s\n", script, strings.Join(args, " "))
-	simple_util.CheckErr(err)
 }
 
 func checkTitle(title []string) {
