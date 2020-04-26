@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 )
 
@@ -136,10 +137,23 @@ func main() {
 		default:
 		}
 	}
-	var allSteps []*libIM.Step
+	var allSteps = make(StepArray, 0)
 	for _, step := range stepMap {
 		allSteps = append(allSteps, step)
 	}
+	sort.Sort(allSteps)
 	// write workDir/allSteps.json
 	simple_util.CheckErr(simple_util.Json2File(filepath.Join(*workDir, "allSteps.json"), allSteps))
+}
+
+type StepArray []*libIM.Step
+
+func (s StepArray) Len() int {
+	return len(s)
+}
+func (s StepArray) Swap(i, j int) {
+	s[i], s[j] = s[j], s[i]
+}
+func (s StepArray) Less(i, j int) bool {
+	return s[i].Name < s[j].Name
 }
