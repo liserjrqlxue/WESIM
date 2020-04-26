@@ -7,13 +7,6 @@ import (
 	"strings"
 )
 
-type Pipeline struct {
-	pipelineName string
-	version      string
-	steps        *[]PStep
-	files        *[]PFile
-}
-
 type PStep struct {
 	Name          string `json:"name"`
 	First         int    `json:"first"`
@@ -56,22 +49,6 @@ func newPJob(mem int) (job PJob) {
 	job.Mem = mem
 	job.ComputingFlag = "cpu"
 	return
-}
-
-func (job *PJob) addLaneSh(workdir, sampleID, laneName, tag string) {
-	job.Sh = filepath.Join(workdir, sampleID, "shell", strings.Join([]string{tag, laneName, "sh"}, "."))
-}
-
-func (step *PStep) addLaneJobs(infoList map[string]info, workdir string, mem int) {
-	var stepJobs []PJob
-	for sampleID, item := range infoList {
-		for _, lane := range item.LaneInfo {
-			var job = newPJob(mem)
-			job.addLaneSh(workdir, sampleID, lane.LaneName, step.Name)
-			stepJobs = append(stepJobs, job)
-		}
-	}
-	step.JobSh = &stepJobs
 }
 
 func (step *PStep) CreateJobs(stepInfo map[string]string, familyList map[string]*FamilyInfo, infoList map[string]*info, workDir, pipeline string) bool {
@@ -206,32 +183,4 @@ func (step *PStep) CreateJobs(stepInfo map[string]string, familyList map[string]
 	} else {
 		return true
 	}
-}
-
-func (step *PStep) createLaneShell(infoList map[string]info, item map[string]string, workDir, pipelineDir string) {
-	for sampleID, info := range infoList {
-		args := strings.Split(item["args"], ",")
-		for _, lane := range info.LaneInfo {
-			var appendArgs []string
-			appendArgs = append(appendArgs, workDir, pipelineDir, sampleID)
-			for _, arg := range args {
-				switch arg {
-				case "laneName":
-					appendArgs = append(appendArgs, lane.LaneName)
-				case "fq1":
-					appendArgs = append(appendArgs, lane.Fq1)
-				case "fq2":
-					appendArgs = append(appendArgs, lane.Fq2)
-				}
-			}
-
-		}
-	}
-}
-
-type PFile struct {
-	fileName string
-	filePath string
-	fileType int
-	fileFlag int
 }
