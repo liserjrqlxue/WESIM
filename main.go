@@ -2,14 +2,11 @@ package main
 
 import (
 	"flag"
-	"log"
 	"os"
 	"path/filepath"
-	"strings"
 
 	"github.com/liserjrqlxue/goUtil/jsonUtil"
 	"github.com/liserjrqlxue/goUtil/simpleUtil"
-	"github.com/liserjrqlxue/goUtil/textUtil"
 	"github.com/liserjrqlxue/libIM"
 )
 
@@ -101,64 +98,19 @@ func main() {
 	}
 
 	simpleUtil.CheckErr(os.MkdirAll(*workDir, 0755))
-	infoList, familyList := parserInput(*input)
 
-	// step0 create workDir
-	simpleUtil.CheckErr(createWorkdir(*workDir, infoList, batchDirList, sampleDirList, laneDirList))
-	for probandID, familyInfo := range familyList {
-		_, ok := infoList[probandID]
-		if !ok {
-			log.Fatalf("Error: can nnot find sample info of proband[%s]", probandID)
-		}
-		createTiroInfo(familyInfo, filepath.Join(*workDir, probandID))
-	}
+	var infoList, familyList = parserInput(*input)
+
+	simpleUtil.CheckErr(createWorkDir(*workDir, infoList, batchDirList, sampleDirList, laneDirList))
+
+	// write workDir/probandID/trio.info
+	createTrioInfos(familyList, *workDir)
+
+	// write workDir/sample.info
 	createSampleInfo(infoList, *workDir)
 
-	stepList, _ := textUtil.File2MapArray(*stepsCfg, "\t", nil)
+	var _, allSteps = parseStepCfg(*stepsCfg, infoList, familyList)
 
-	var stepMap = make(map[string]*libIM.Step)
-	var allSteps []*libIM.Step
-	for _, item := range stepList {
-		var step = libIM.NewStep(item)
-		step.CreateJobs(familyList, infoList, ProductTrio, *workDir, *pipeline)
-		if step.JobSh != nil {
-			stepMap[step.Name] = &step
-			allSteps = append(allSteps, &step)
-		}
-	}
-
-	for stepName, step := range stepMap {
-		for _, prior := range strings.Split(step.Prior, ",") {
-			priorStep, ok := stepMap[prior]
-			if ok {
-				step.PriorStep = append(step.PriorStep, prior)
-				priorStep.NextStep = append(priorStep.NextStep, stepName)
-			}
-		}
-	}
-
-	// set first step
-	for name, step := range stepMap {
-		switch name {
-		case "first":
-			step.First = 1
-		default:
-		}
-	}
 	// write workDir/allSteps.json
 	simpleUtil.CheckErr(jsonUtil.Json2File(filepath.Join(*workDir, "allSteps.json"), allSteps))
 }
-
-/*
-type StepArray []*libIM.Step
-
-func (s StepArray) Len() int {
-	return len(s)
-}
-func (s StepArray) Swap(i, j int) {
-	s[i], s[j] = s[j], s[i]
-}
-func (s StepArray) Less(i, j int) bool {
-	return s[i].Name < s[j].Name
-}
-*/

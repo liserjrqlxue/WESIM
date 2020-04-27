@@ -17,8 +17,8 @@ github.com/liserjrqlxue/crypto v0.0.0-20181031021947-e63cf1f4c48a/go.mod h1:qvcM
 github.com/liserjrqlxue/goUtil v0.0.14/go.mod h1:I+ZuTdYWyUfElQfcB8VfnBdr4EN1Z23NxP6Rm62Qetw=
 github.com/liserjrqlxue/goUtil v0.0.15 h1:akhdgTuZuEdwVAk5GBhUmu2Mf/crGybBmOtuX/8DhQU=
 github.com/liserjrqlxue/goUtil v0.0.15/go.mod h1:I+ZuTdYWyUfElQfcB8VfnBdr4EN1Z23NxP6Rm62Qetw=
-github.com/liserjrqlxue/libIM v0.0.0-20200426080329-fb812a105a9f h1:cZm5vGpg7yEK+L33tTCLkgSO5vbE3rT4qD2t1XgfE9o=
-github.com/liserjrqlxue/libIM v0.0.0-20200426080329-fb812a105a9f/go.mod h1:nCHm/SrQy4GlgasFCkZdel0iS3edc3V3QbBhV5O2gbM=
+github.com/liserjrqlxue/libIM v0.0.0-20200427023653-4b3b858990af h1:5cXEqfk47T1pqmbmy8MPVSM2q1uvwAlgCsopSUuncHs=
+github.com/liserjrqlxue/libIM v0.0.0-20200427023653-4b3b858990af/go.mod h1:nCHm/SrQy4GlgasFCkZdel0iS3edc3V3QbBhV5O2gbM=
 github.com/liserjrqlxue/simple-util v1.0.1 h1:ay04pE53DBlEfOZs2hVc9740IWPraENT5K9O3phAERs=
 github.com/liserjrqlxue/simple-util v1.0.1/go.mod h1:ey/p7J5Alkog8G2E6vRIea4DkvJQc1ibRXzNbrYuEUI=
 github.com/mohae/deepcopy v0.0.0-20170929034955-c48cc78d4826 h1:RWengNIwukTxcDr9M+97sNutRR1RKhG96O6jWumTTnw=
