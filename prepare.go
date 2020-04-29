@@ -133,18 +133,6 @@ func checkTitle(title []string) {
 	}
 }
 
-func linkSteps(stepMap map[string]*libIM.Step) {
-	for stepName, step := range stepMap {
-		for _, prior := range strings.Split(step.Prior, ",") {
-			priorStep, ok := stepMap[prior]
-			if ok {
-				step.PriorStep = append(step.PriorStep, prior)
-				priorStep.NextStep = append(priorStep.NextStep, stepName)
-			}
-		}
-	}
-}
-
 func parseStepCfg(cfg string, infoList map[string]libIM.Info, familyList map[string]libIM.FamilyInfo) (map[string]*libIM.Step, []*libIM.Step) {
 	var stepList, _ = textUtil.File2MapArray(cfg, "\t", nil)
 
@@ -152,15 +140,14 @@ func parseStepCfg(cfg string, infoList map[string]libIM.Info, familyList map[str
 	var allSteps []*libIM.Step
 	for _, item := range stepList {
 		var step = libIM.NewStep(item)
-		step.CreateJobs(familyList, infoList, ProductTrio, *workDir, *pipeline)
-		if step.JobSh != nil {
+		if step.CreateJobs(familyList, infoList, ProductTrio, *workDir, *pipeline) > 0 {
 			stepMap[step.Name] = &step
 			allSteps = append(allSteps, &step)
 		}
 	}
 
 	// link Prior and Next
-	linkSteps(stepMap)
+	libIM.LinkSteps(stepMap)
 
 	// set first step
 	stepMap["first"].First = 1

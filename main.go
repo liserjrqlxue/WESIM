@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"log"
 	"os"
 	"path/filepath"
 
@@ -46,6 +47,11 @@ var (
 		"force",
 		false,
 		"if not check input title",
+	)
+	submit = flag.String(
+		"submit",
+		"",
+		"submit wrap script if submit jobs",
 	)
 )
 
@@ -94,7 +100,7 @@ var ProductTrio = map[string]bool{
 
 func main() {
 	flag.Parse()
-	if *input == "" {
+	if *input == "" || *workDir == "" {
 		flag.Usage()
 		os.Exit(0)
 	}
@@ -117,4 +123,15 @@ func main() {
 
 	// write workDir/allSteps.json
 	simpleUtil.CheckErr(jsonUtil.Json2File(filepath.Join(*workDir, "allSteps.json"), allSteps))
+
+	for _, step := range allSteps {
+		for _, job := range step.JobSh {
+			go submitJob(job)
+		}
+	}
+
+	for i := 0; i < libIM.Threshold; i++ {
+		libIM.Throttle <- true
+	}
+	log.Printf("All Done!")
 }

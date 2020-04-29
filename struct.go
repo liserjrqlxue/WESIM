@@ -1,6 +1,14 @@
 package main
 
-import "github.com/liserjrqlxue/libIM"
+import (
+	"log"
+	"strings"
+	"time"
+
+	"github.com/liserjrqlxue/goUtil/sge"
+	"github.com/liserjrqlxue/libIM"
+	//"github.com/liserjrqlxue/goUtil/sge"
+)
 
 func NewInfo(item map[string]string) libIM.Info {
 	return libIM.Info{
@@ -16,4 +24,18 @@ func NewInfo(item map[string]string) libIM.Info {
 		RelationShip: item["relationship"],
 		QChistory:    item["QChistory"],
 	}
+}
+
+func submitJob(job *libIM.Job) {
+	libIM.Throttle <- true
+	log.Printf("submit\t[%s]:[%s]", job.Step.Name, job.Id)
+	var hjid = job.WaitPriorChan()
+	log.Printf("start\t[%s]:[%s]:[%s]", job.Step.Name, job.Id, job.Sh)
+	if *submit != "" {
+		sge.WrapSubmit("submit.sh", job.Sh, strings.Join(hjid, ","), nil)
+	}
+	time.Sleep(10 * time.Second)
+	job.Done(job.Id)
+	log.Printf("finish\t[%s]:[%s]", job.Step.Name, job.Id)
+	<-libIM.Throttle
 }
