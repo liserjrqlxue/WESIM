@@ -97,8 +97,6 @@ func main() {
 		libIM.LaneInput = *lane
 	}
 
-	simpleUtil.CheckErr(os.MkdirAll(*workDir, 0755))
-
 	var infoList, familyList = parserInput(*input)
 
 	simpleUtil.CheckErr(createWorkDir(*workDir, infoList, batchDirList, sampleDirList, laneDirList))
