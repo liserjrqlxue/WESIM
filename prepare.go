@@ -64,10 +64,12 @@ func createSampleInfo(infoList map[string]libIM.Info, workDir string) {
 func parserInput(input string) (infoList map[string]libIM.Info, familyList map[string]libIM.FamilyInfo) {
 	// parser input list
 	sampleList, title := textUtil.File2MapArray(input, "\t", nil)
-	checkTitle(title)
+	if !*force {
+		checkTitle(title)
+	}
 
-	infoList = make(map[string]libIM.Info)
-	familyList = make(map[string]libIM.FamilyInfo)
+	infoMap = make(map[string]libIM.Info)
+	familyMap = make(map[string]libIM.FamilyInfo)
 	// ProbandID -> FamilyInfo
 	for _, item := range sampleList {
 		var sampleID = item["main_sample_num"]
@@ -75,9 +77,9 @@ func parserInput(input string) (infoList map[string]libIM.Info, familyList map[s
 		var probandID = item["proband_number"]
 		var relationShip = item["relationship"]
 
-		sampleInfo, ok := infoList[sampleID]
+		sampleInfo, ok := infoMap[sampleID]
 		if !ok {
-			sampleInfo = libIM.NewInfo(item)
+			sampleInfo = NewInfo(item)
 		}
 		var pe = strings.Split(item["FQ_path"], ",")
 		if len(pe) != 2 {
@@ -97,7 +99,7 @@ func parserInput(input string) (infoList map[string]libIM.Info, familyList map[s
 
 		// FamilyInfo
 		if ProductTrio[productCode] {
-			familyInfo, ok := familyList[probandID]
+			familyInfo, ok := familyMap[probandID]
 			if ok {
 				familyInfo.FamilyMap[relationShip] = sampleID
 			} else {
@@ -106,12 +108,12 @@ func parserInput(input string) (infoList map[string]libIM.Info, familyList map[s
 					FamilyMap: map[string]string{relationShip: sampleID},
 				}
 			}
-			familyList[probandID] = familyInfo
+			familyMap[probandID] = familyInfo
 		} else {
 			sampleInfo.ProbandID = sampleID
 		}
 		// Should update data of hash if we do not use points as value of hash
-		infoList[sampleID] = sampleInfo
+		infoMap[sampleID] = sampleInfo
 	}
 	return
 }
@@ -144,7 +146,7 @@ func linkSteps(stepMap map[string]*libIM.Step) {
 }
 
 func parseStepCfg(cfg string, infoList map[string]libIM.Info, familyList map[string]libIM.FamilyInfo) (map[string]*libIM.Step, []*libIM.Step) {
-	stepList, _ := textUtil.File2MapArray(cfg, "\t", nil)
+	var stepList, _ = textUtil.File2MapArray(cfg, "\t", nil)
 
 	var stepMap = make(map[string]*libIM.Step)
 	var allSteps []*libIM.Step
@@ -161,7 +163,7 @@ func parseStepCfg(cfg string, infoList map[string]libIM.Info, familyList map[str
 	linkSteps(stepMap)
 
 	// set first step
-	setFirstStep(stepMap)
+	stepMap["first"].First = 1
 
 	return stepMap, allSteps
 }
