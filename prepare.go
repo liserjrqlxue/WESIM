@@ -61,7 +61,7 @@ func createSampleInfo(infoList map[string]libIM.Info, workDir string) {
 	}
 }
 
-func parserInput(input string) (infoList map[string]libIM.Info, familyList map[string]libIM.FamilyInfo) {
+func parserInput(input string) (infoMap map[string]libIM.Info, familyMap map[string]libIM.FamilyInfo) {
 	// parser input list
 	sampleList, title := textUtil.File2MapArray(input, "\t", nil)
 	if !*force {

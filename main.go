@@ -29,8 +29,8 @@ var (
 	)
 	workDir = flag.String(
 		"workdir",
-		filepath.Join(exPath, "test", "workdir"),
-		"workdir",
+		"",
+		"workDir",
 	)
 	pipeline = flag.String(
 		"pipeline",
@@ -41,6 +41,11 @@ var (
 		"stepscfg",
 		filepath.Join(exPath, "etc", "allSteps.tsv"),
 		"steps config",
+	)
+	force = flag.Bool(
+		"force",
+		false,
+		"if not check input title",
 	)
 )
 
@@ -108,6 +113,7 @@ func main() {
 	createSampleInfo(infoList, *workDir)
 
 	var _, allSteps = parseStepCfg(*stepsCfg, infoList, familyList)
+	allSteps[0].First = 1
 
 	// write workDir/allSteps.json
 	simpleUtil.CheckErr(jsonUtil.Json2File(filepath.Join(*workDir, "allSteps.json"), allSteps))
