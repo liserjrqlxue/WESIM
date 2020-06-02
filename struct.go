@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"math/rand"
 	"strings"
 	"time"
 
@@ -27,15 +28,16 @@ func NewInfo(item map[string]string) libIM.Info {
 }
 
 func submitJob(job *libIM.Job, throttle chan bool) {
-	throttle <- true
 	log.Printf("submit\t[%s]:[%s]", job.Step.Name, job.Id)
 	var hjid = job.WaitPriorChan()
 	log.Printf("start\t[%s]:[%s]:[%s]", job.Step.Name, job.Id, job.Sh)
+	var jid = job.Id
 	if *submit != "" {
-		sge.WrapSubmit("submit.sh", job.Sh, strings.Join(hjid, ","), nil)
+		jid = sge.WrapSubmit(*submit, job.Sh, strings.Join(hjid, ","), nil)
+	} else {
+		time.Sleep(time.Duration(rand.Int63n(10)) * time.Second)
 	}
-	time.Sleep(10 * time.Second)
-	job.Done(job.Id)
-	log.Printf("finish\t[%s]:[%s]", job.Step.Name, job.Id)
+	job.Done(jid)
+	log.Printf("finish\t[%s]:[%s]:[%s]", job.Step.Name, job.Id, jid)
 	<-throttle
 }
