@@ -124,9 +124,11 @@ func main() {
 	// write workDir/allSteps.json
 	simpleUtil.CheckErr(jsonUtil.Json2File(filepath.Join(*workDir, "allSteps.json"), allSteps))
 
+	var throttle = make(chan bool, libIM.Threshold)
+
 	for _, step := range allSteps {
 		for _, job := range step.JobSh {
-			go submitJob(job)
+			go submitJob(job, throttle)
 		}
 	}
 

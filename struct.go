@@ -26,8 +26,8 @@ func NewInfo(item map[string]string) libIM.Info {
 	}
 }
 
-func submitJob(job *libIM.Job) {
-	libIM.Throttle <- true
+func submitJob(job *libIM.Job, throttle chan bool) {
+	throttle <- true
 	log.Printf("submit\t[%s]:[%s]", job.Step.Name, job.Id)
 	var hjid = job.WaitPriorChan()
 	log.Printf("start\t[%s]:[%s]:[%s]", job.Step.Name, job.Id, job.Sh)
@@ -37,5 +37,5 @@ func submitJob(job *libIM.Job) {
 	time.Sleep(10 * time.Second)
 	job.Done(job.Id)
 	log.Printf("finish\t[%s]:[%s]", job.Step.Name, job.Id)
-	<-libIM.Throttle
+	<-throttle
 }
