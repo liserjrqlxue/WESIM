@@ -33,7 +33,7 @@ func submitJob(job *libIM.Job, throttle chan bool) {
 	log.Printf("start\t[%s]:[%s]:[%s]", job.Step.Name, job.Id, job.Sh)
 	var jid = job.Id
 	if *submit != "" {
-		jid = sge.WrapSubmit(*submit, job.Sh, strings.Join(hjid, ","), nil)
+		jid = sge.WrapSubmit(*submit, job.Sh, strings.Join(hjid, ","), job.SubmitArgs)
 	} else {
 		time.Sleep(time.Duration(rand.Int63n(10)) * time.Second)
 	}
