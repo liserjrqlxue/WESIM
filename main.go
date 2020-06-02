@@ -133,7 +133,7 @@ func main() {
 	}
 
 	for i := 0; i < libIM.Threshold; i++ {
-		libIM.Throttle <- true
+		throttle <- true
 	}
 	log.Printf("All Done!")
 }
