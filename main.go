@@ -20,7 +20,7 @@ var (
 var (
 	input = flag.String(
 		"input",
-		filepath.Join(exPath, "test", "input.list"),
+		"",
 		"input samples info",
 	)
 	lane = flag.String(
