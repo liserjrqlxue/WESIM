@@ -1,0 +1,40 @@
+digraph G {
+    subgraph cluster_0{
+        rank=same
+        filter->bwaMem
+        rankdir=LR
+        label="lane"
+    }
+    first -> filter 
+    subgraph cluster_1{
+        rank=same
+        rankdir=LR
+        label="sample"
+        bwaMem -> G4MSF -> dupMark -> BQSR -> AppBQSR -> dSurvey
+         dSurvey->{HC4,TCcnn,ATCcnn,eDepth,SMA}
+             HC4->GeGVCFs->filtVcf->bgiAnno->fixAnno
+             bgiAnno->SQC
+             {TCcnn,ATCcnn}->CNVkit
+
+    }
+    subgraph cluster_2{
+        rank=same
+        rankdir=LR
+        label="single"
+            {fixAnno,eDepth,CNVkit,SMA}->eReport->score
+
+    }
+    subgraph cluster_3{
+        rank=same
+        rankdir=LR
+        label="trio"
+         trio [label="trio(include score)"]
+    {fixAnno,eDepth,CNVkit,SMA}->trio 
+    }
+    subgraph cluster_4{
+        rank=same
+        rankdir=LR
+        label="batch"
+        SQC->fQC
+    }
+}
