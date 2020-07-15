@@ -3,7 +3,7 @@ workdir=$1
 pipeline=$2
 
 export PATH=$pipeline/tools:$PATH
-getFinalQC=$pipeline/getQC/get.final.QC.pl
+getFinalQC=$pipeline/tools/getQC/get.final.QC.pl
 
 echo `date` final QC
 echo perl $getFinalQC $workdir/sample.info $workdir/result/standard.QC.txt $workdir

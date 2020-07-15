@@ -12,7 +12,7 @@ export PATH=$pipeline/tools:$PATH
 #Bam2depths=$pipeline/bam2depths_shiquan_mgiseq2000.pl
 
 GenderCorrect=$pipeline/tools/XY_gender_correct.pl
-GetQC=$pipeline/getQC/get.QC.WESIM.pl
+GetQC=$pipeline/tools/getQC/get.QC.WESIM.pl
 RegionDir=$pipeline/config/coverage_region_hg19_bychr/
 Region=$RegionDir/for500_all_region
 tag=BGI59M
