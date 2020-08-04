@@ -57,10 +57,10 @@ func WrapSubmit(submit, script, hjid string, submitArgs []string) (jid string) {
 	log.Printf("%s [%s]", submit, strings.Join(cmds, "]["))
 	var submitLogBytes, err = c.CombinedOutput()
 	if err != nil {
-		log.Fatalf("Error: %v:[%v]", err, submitLogBytes)
+		log.Fatalf("Error: %v:[%v]", err, string(submitLogBytes))
 	}
 	// Your job (\d+) \("script"\) has been submitted
-	log.Printf("[%x]", submitLogBytes)
+	log.Print(string(submitLogBytes))
 	var submitLogs = sgeJobId.FindStringSubmatch(string(submitLogBytes))
 	if len(submitLogs) == 2 {
 		jid = submitLogs[1]
