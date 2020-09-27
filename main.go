@@ -2,26 +2,25 @@ package main
 
 import (
 	"flag"
-	"github.com/liserjrqlxue/simple-util"
 	"log"
 	"os"
 	"path/filepath"
-	"strings"
+
+	"github.com/liserjrqlxue/goUtil/jsonUtil"
+	"github.com/liserjrqlxue/goUtil/simpleUtil"
+	"github.com/liserjrqlxue/libIM"
 )
 
 // os
 var (
 	ex, _  = os.Executable()
 	exPath = filepath.Dir(ex)
-	//pSep   = string(os.PathSeparator)
-	//dbPath       = exPath + pSep + "db" + pSep
-	//templatePath = exPath + pSep + "template" + pSep
 )
 
 var (
 	input = flag.String(
 		"input",
-		filepath.Join(exPath, "test", "input.list"),
+		"",
 		"input samples info",
 	)
 	lane = flag.String(
@@ -31,8 +30,8 @@ var (
 	)
 	workDir = flag.String(
 		"workdir",
-		filepath.Join(exPath, "test", "workdir"),
-		"workdir",
+		"",
+		"workDir",
 	)
 	pipeline = flag.String(
 		"pipeline",
@@ -43,6 +42,16 @@ var (
 		"stepscfg",
 		filepath.Join(exPath, "etc", "allSteps.tsv"),
 		"steps config",
+	)
+	force = flag.Bool(
+		"force",
+		false,
+		"if not check input title",
+	)
+	submit = flag.String(
+		"submit",
+		"",
+		"submit wrap script if submit jobs",
 	)
 )
 
@@ -91,55 +100,41 @@ var ProductTrio = map[string]bool{
 
 func main() {
 	flag.Parse()
-	if *input == "" {
+	if *input == "" || *workDir == "" {
 		flag.Usage()
 		os.Exit(0)
 	}
-
-	simple_util.CheckErr(os.MkdirAll(*workDir, 0755))
-	infoList, familyList := parserInput(*input)
-
-	// step0 create workDir
-	simple_util.CheckErr(createWorkdir(*workDir, infoList, batchDirList, sampleDirList, laneDirList))
-	for probandID, familyInfo := range familyList {
-		_, ok := infoList[probandID]
-		if !ok {
-			log.Fatalf("Error: can nnot find sample info of proband[%s]", probandID)
-		}
-		createTiroInfo(familyInfo, filepath.Join(*workDir, probandID))
+	if *lane != "" {
+		libIM.LaneInput = *lane
 	}
+
+	var infoList, familyList = parserInput(*input)
+
+	simpleUtil.CheckErr(createWorkDir(*workDir, infoList, batchDirList, sampleDirList, laneDirList))
+
+	// write workDir/probandID/trio.info
+	createTrioInfos(familyList, *workDir)
+
+	// write workDir/sample.info
 	createSampleInfo(infoList, *workDir)
 
-	stepList, _ := simple_util.File2MapArray(*stepsCfg, "\t", nil)
+	var _, allSteps = parseStepCfg(*stepsCfg, infoList, familyList)
+	allSteps[0].First = 1
 
-	var allSteps []*PStep
-	var stepMap = make(map[string]*PStep)
-	for _, item := range stepList {
-		var step = newPStep(item)
-		if step.CreateJobs(item, familyList, infoList, *workDir, *pipeline) {
-			stepMap[step.Name] = step
-			allSteps = append(allSteps, step)
-		}
-	}
-
-	for stepName, step := range stepMap {
-		for _, prior := range strings.Split(step.prior, ",") {
-			priorStep, ok := stepMap[prior]
-			if ok {
-				step.PriorStep = append(step.PriorStep, prior)
-				priorStep.NextStep = append(priorStep.NextStep, stepName)
-			}
-		}
-	}
-
-	// set first step
-	for name, step := range stepMap {
-		switch name {
-		case "first":
-			step.First = 1
-		default:
-		}
-	}
 	// write workDir/allSteps.json
-	simple_util.CheckErr(simple_util.Json2File(filepath.Join(*workDir, "allSteps.json"), allSteps))
+	simpleUtil.CheckErr(jsonUtil.Json2File(filepath.Join(*workDir, "allSteps.json"), allSteps))
+
+	var throttle = make(chan bool, libIM.Threshold)
+
+	for _, step := range allSteps {
+		for _, job := range step.JobSh {
+			throttle <- true
+			go submitJob(job, throttle)
+		}
+	}
+
+	for i := 0; i < libIM.Threshold; i++ {
+		throttle <- true
+	}
+	log.Printf("All Done!")
 }
