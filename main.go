@@ -2,19 +2,22 @@ package main
 
 import (
 	"flag"
+	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
 
 	"github.com/liserjrqlxue/goUtil/jsonUtil"
+	"github.com/liserjrqlxue/goUtil/osUtil"
 	"github.com/liserjrqlxue/goUtil/simpleUtil"
 	"github.com/liserjrqlxue/libIM"
 )
 
 // os
 var (
-	ex, _  = os.Executable()
-	exPath = filepath.Dir(ex)
+	ex, _   = os.Executable()
+	exPath  = filepath.Dir(ex)
+	etcPath = filepath.Join(exPath, "etc")
 )
 
 var (
@@ -39,8 +42,8 @@ var (
 		"pipeline dir",
 	)
 	stepsCfg = flag.String(
-		"stepscfg",
-		filepath.Join(exPath, "etc", "allSteps.tsv"),
+		"steps",
+		filepath.Join(etcPath, "allSteps.tsv"),
 		"steps config",
 	)
 	force = flag.Bool(
@@ -52,6 +55,16 @@ var (
 		"submit",
 		"",
 		"submit wrap script if submit jobs",
+	)
+	header = flag.String(
+		"header",
+		filepath.Join(etcPath, "script.header.sh"),
+		"change script header",
+	)
+	footer = flag.String(
+		"footer",
+		filepath.Join(etcPath, "script.footer.sh"),
+		"change script footer",
 	)
 )
 
@@ -107,7 +120,12 @@ func main() {
 	if *lane != "" {
 		libIM.LaneInput = *lane
 	}
-
+	if *header != "" && osUtil.FileExists(*header) {
+		libIM.ScriptHeader = string(simpleUtil.HandleError(ioutil.ReadFile(*header)).([]byte))
+	}
+	if *footer != "" && osUtil.FileExists(*footer) {
+		libIM.ScriptFooter = string(simpleUtil.HandleError(ioutil.ReadFile(*footer)).([]byte))
+	}
 	var infoList, familyList = parserInput(*input)
 
 	simpleUtil.CheckErr(createWorkDir(*workDir, infoList, batchDirList, sampleDirList, laneDirList))
