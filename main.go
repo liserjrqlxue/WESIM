@@ -137,7 +137,6 @@ func main() {
 	createSampleInfo(infoList, *workDir)
 
 	var _, allSteps = parseStepCfg(*stepsCfg, infoList, familyList)
-	allSteps[0].First = 1
 
 	// write workDir/allSteps.json
 	simpleUtil.CheckErr(jsonUtil.Json2File(filepath.Join(*workDir, "allSteps.json"), allSteps))

@@ -149,8 +149,13 @@ func parseStepCfg(cfg string, infoList map[string]libIM.Info, familyList map[str
 	// link Prior and Next
 	libIM.LinkSteps(stepMap)
 
-	// set first step
-	stepMap["first"].First = 1
+	var first = false
+	for _, step := range allSteps {
+		if !first && len(step.PriorStep) == 0 {
+			step.First = 1
+			first = true
+		}
+	}
 
 	return stepMap, allSteps
 }
