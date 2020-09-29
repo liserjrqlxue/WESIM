@@ -4,6 +4,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 
 	"github.com/liserjrqlxue/goUtil/fmtUtil"
@@ -61,9 +62,11 @@ func createSampleInfo(infoList map[string]libIM.Info, workDir string) {
 	}
 }
 
+var sharp = regexp.MustCompile(`^#`)
+
 func parserInput(input string) (infoMap map[string]libIM.Info, familyMap map[string]libIM.FamilyInfo) {
 	// parser input list
-	sampleList, title := textUtil.File2MapArray(input, "\t", nil)
+	sampleList, title := textUtil.File2MapArray(input, "\t", sharp)
 	if !*force {
 		checkTitle(title)
 	}
