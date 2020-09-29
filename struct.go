@@ -2,14 +2,13 @@ package main
 
 import (
 	"log"
-	"math/rand"
 	"os/exec"
 	"path"
 	"regexp"
 	"strings"
-	"time"
 
 	"github.com/liserjrqlxue/libIM"
+	simple_util "github.com/liserjrqlxue/simple-util"
 	//"github.com/liserjrqlxue/goUtil/sge"
 )
 
@@ -37,7 +36,7 @@ func submitJob(job *libIM.Job, throttle chan bool) {
 	if *submit != "" {
 		jid = WrapSubmit(*submit, job.Sh, strings.Join(hjid, ","), job.SubmitArgs)
 	} else {
-		time.Sleep(time.Duration(rand.Int63n(10)) * time.Second)
+		simple_util.CheckErr(simple_util.RunCmd("bash", job.Sh))
 	}
 	job.Done(jid)
 	log.Printf("finish\t[%s]:[%s]:[%s]", job.Step.Name, job.Id, jid)

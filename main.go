@@ -66,6 +66,11 @@ var (
 		filepath.Join(etcPath, "script.footer.sh"),
 		"change script footer",
 	)
+	run = flag.Bool(
+		"run",
+		false,
+		"if run or submit",
+	)
 )
 
 var keyTitle = []string{
@@ -141,6 +146,9 @@ func main() {
 	// write workDir/allSteps.json
 	simpleUtil.CheckErr(jsonUtil.Json2File(filepath.Join(*workDir, "allSteps.json"), allSteps))
 
+	if !*run {
+		return
+	}
 	var throttle = make(chan bool, libIM.Threshold)
 
 	for _, step := range allSteps {
