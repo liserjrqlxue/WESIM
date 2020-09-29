@@ -35,11 +35,17 @@ func submitJob(job *libIM.Job, throttle chan bool) {
 	var jid = job.Id
 	if *submit != "" {
 		jid = WrapSubmit(*submit, job.Sh, strings.Join(hjid, ","), job.SubmitArgs)
+		job.Done(jid)
+		log.Printf("finish\t[%s]:[%s]:[%s]", job.Step.Name, job.Id, jid)
 	} else {
-		simple_util.CheckErr(simple_util.RunCmd("bash", job.Sh))
+		var err = simple_util.RunCmd("bash", job.Sh)
+		if err == nil {
+			job.Done(jid)
+			log.Printf("finish\t[%s]:[%s]:[%s]", job.Step.Name, job.Id, jid)
+		} else {
+			log.Printf("error\t[%s]:[%s]:[%s]\t%v", job.Step.Name, job.Id, jid, err)
+		}
 	}
-	job.Done(jid)
-	log.Printf("finish\t[%s]:[%s]:[%s]", job.Step.Name, job.Id, jid)
 	<-throttle
 }
 
