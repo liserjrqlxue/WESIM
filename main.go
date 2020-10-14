@@ -149,6 +149,10 @@ func main() {
 	if !*run {
 		return
 	}
+
+	// copy -input to -workdir/input.list
+	simpleUtil.CheckErr(osUtil.CopyFile(filepath.Join(*workDir, "input.list"), *input))
+
 	var throttle = make(chan bool, libIM.Threshold)
 	var jobChan = make(chan bool, 1024)
 
