@@ -31,11 +31,12 @@ func NewInfo(item map[string]string) libIM.Info {
 func submitJob(job *libIM.Job, throttle chan bool) {
 	log.Printf("submit\t[%s]:[%s]", job.Step.Name, job.Id)
 	if simple_util.FileExists(job.Sh + ".complete") {
+		log.Printf("skip\t[%s]:[%s]", job.Step.Name, job.Id)
 		job.Done("")
-		<-throttle
 		return
 	}
 	var hjid = job.WaitPriorChan()
+	throttle <- true
 	log.Printf("start\t[%s]:[%s]:[%s]", job.Step.Name, job.Id, job.Sh)
 	var jid = job.Id
 	if *submit != "" {

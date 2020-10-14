@@ -150,12 +150,17 @@ func main() {
 		return
 	}
 	var throttle = make(chan bool, libIM.Threshold)
+	var jobChan = make(chan bool, 1024)
 
 	for _, step := range allSteps {
 		for _, job := range step.JobSh {
-			throttle <- true
+			jobChan <- true
 			go submitJob(job, throttle)
 		}
+	}
+
+	for i := 0; i < 1024; i++ {
+		jobChan <- true
 	}
 
 	for i := 0; i < libIM.Threshold; i++ {
