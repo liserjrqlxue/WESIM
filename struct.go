@@ -33,6 +33,7 @@ func submitJob(job *libIM.Job, throttle, jobChan chan bool) {
 	if simple_util.FileExists(job.Sh + ".complete") {
 		log.Printf("skip\t[%s]:[%s]", job.Step.Name, job.Id)
 		job.Done("")
+		<-jobChan
 		return
 	}
 	var hjid = job.WaitPriorChan()
