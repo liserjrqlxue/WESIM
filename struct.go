@@ -28,7 +28,7 @@ func NewInfo(item map[string]string) libIM.Info {
 	}
 }
 
-func submitJob(job *libIM.Job, throttle chan bool) {
+func submitJob(job *libIM.Job, throttle, jobChan chan bool) {
 	log.Printf("submit\t[%s]:[%s]", job.Step.Name, job.Id)
 	if simple_util.FileExists(job.Sh + ".complete") {
 		log.Printf("skip\t[%s]:[%s]", job.Step.Name, job.Id)
@@ -53,6 +53,7 @@ func submitJob(job *libIM.Job, throttle chan bool) {
 		}
 	}
 	<-throttle
+	<-jobChan
 }
 
 var sgeJobId = regexp.MustCompile(`^Your job (\d+) \("\S+"\) has been submitted\n$`)

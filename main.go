@@ -155,7 +155,7 @@ func main() {
 	for _, step := range allSteps {
 		for _, job := range step.JobSh {
 			jobChan <- true
-			go submitJob(job, throttle)
+			go submitJob(job, throttle, jobChan)
 		}
 	}
 
