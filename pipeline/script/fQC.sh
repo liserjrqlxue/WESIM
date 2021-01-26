@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+set -euo pipefail
+
 workdir=$1
 pipeline=$2
 
@@ -7,7 +9,6 @@ getFinalQC=$pipeline/tools/getQC/get.final.QC.pl
 
 echo `date` final QC
 echo perl $getFinalQC $workdir/sample.info $workdir/result/standard.QC.txt $workdir
-perl $getFinalQC $workdir/sample.info $workdir/result/standard.QC.txt $workdir \
-&& echo success \
-|| { echo error;exit 1; }
+\time -v perl $getFinalQC $workdir/sample.info $workdir/result/standard.QC.txt $workdir
+
 echo `date` Done

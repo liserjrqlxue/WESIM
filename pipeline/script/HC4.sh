@@ -1,10 +1,15 @@
 #!/usr/bin/env bash
+set -euo pipefail
+
 workdir=$1
 pipeline=$2
 sampleID=$3
 
-grep -P "$sampleID\tpass" $workdir/$sampleID/$sampleID.QC.txt \
-|| { echo `date` sample QC not pass, skip $0;exit 0; }
+complete=$workdir/$sampleID/shell/AppBQSR.sh.complete
+if [ -e "$complete" ];then
+	echo "$complete and skip"
+	exit 0
+fi
 
 Workdir=$workdir/$sampleID
 export PATH=$pipeline/tools:$PATH
@@ -14,16 +19,16 @@ gvcf_basename=$Workdir/gatk/$sampleID.gvcf
 in_bam=$Workdir/bwa/$sampleID.bqsr.bam
 
 echo `date` Start G4HaplotypeCaller
-time gatk \
+\time -v gatk \
   HaplotypeCaller \
-  --tmp-dir=$workdir/javatmp \
+  --tmp_dir $workdir/javatmp \
   -R $ref_fasta \
   -O $gvcf_basename.vcf.gz \
   -I $in_bam \
   -L $interval_list \
   -ERC GVCF \
   --showHidden \
-&& echo success \
-|| { echo error;exit 1; }
 
 echo `date` Done
+
+touch $complete

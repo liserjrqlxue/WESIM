@@ -1,15 +1,19 @@
 #!/usr/bin/env bash
+set -euo pipefail
+
 workdir=$1
 pipeline=$2
 sampleID=$3
 QChistory=$4
 
+complete=$workdir/$sampleID/shell/dSurvey.sh.complete
+if [ -e "$complete" ];then
+	echo "$complete and skip"
+	exit 0
+fi
+
 Workdir=$workdir/$sampleID
 export PATH=$pipeline/tools:$PATH
-
-#Bin=$pipeline/bin
-#UncoverdRegionSjt=$Bin/uncovered_region_sjt.pl
-#Bam2depths=$pipeline/bam2depths_shiquan_mgiseq2000.pl
 
 GenderCorrect=$pipeline/tools/XY_gender_correct.pl
 GetQC=$pipeline/tools/getQC/get.QC.WESIM.pl
@@ -19,25 +23,17 @@ tag=BGI59M
 
 
 echo `date` Start depthSurvey
-#samtools rmdup $Workdir/bwa/$sampleID.bqsr.bam $Workdir/bwa/$sampleID.rmdup_final.bam
-#samtools view -u $Workdir/bwa/$sampleID.bqsr.bam chrX >$Workdir/bwa/chrX.sort.bam
-#samtools view -u $Workdir/bwa/$sampleID.bqsr.bam chrY >$Workdir/bwa/chrY.sort.bam
 
 echo `date` bamdst -p $Region --uncover 5 -o $Workdir/coverage $Workdir/bwa/$sampleID.bqsr.bam --cutoffdepth 20
-time bamdst -p $Region --uncover 5 -o $Workdir/coverage $Workdir/bwa/$sampleID.bqsr.bam --cutoffdepth 20 \
-&& echo success || (echo error && exit 1)
+\time -v bamdst -p $Region --uncover 5 -o $Workdir/coverage $Workdir/bwa/$sampleID.bqsr.bam --cutoffdepth 20 
 
-#$Bam2depths --bamdir=$Workdir/bwa --region=$RegionDir --out=$Workdir/coverage --flank=100
-#$pipeline/Rscript $Bin/dis.R  $Workdir/coverage/dis_target.plot  $sampleID $workdir/graph_sigleBaseDepth/$sampleID_perBase.png
-#$pipeline/Rscript $Bin/cumn.R $Workdir/coverage/cumu_target.plot $sampleID $workdir/graph_sigleBaseDepth/$sampleID_Cumu.png
-#$pipeline/perl $UncoverdRegionSjt $RegionDir/all_region  $Workdir/coverage/target.detail $Workdir/coverage
-#$pipeline/gzip -f $Workdir/coverage/target.detail
 echo `date` perl $GenderCorrect $Workdir/coverage/chromosomes.report $tag
-time perl $GenderCorrect $Workdir/coverage/chromosomes.report $tag \
-&& echo success || (echo error && exit 1)
+\time -v perl $GenderCorrect $Workdir/coverage/chromosomes.report $tag
 
 echo `date` perl $GetQC $sampleID $Workdir $Workdir $QChistory
-time perl $GetQC $sampleID $Workdir $Workdir $QChistory \
-&& echo success || (echo error && exit 1)
+
+\time -v perl $GetQC $sampleID $Workdir $Workdir $QChistory 
 
 echo `date` Done
+
+touch $complete

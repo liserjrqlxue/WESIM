@@ -1,10 +1,15 @@
 #!/usr/bin/env bash
+set -euo pipefail
+
 workdir=$1
 pipeline=$2
 sampleID=$3
 
-grep -P "$sampleID\tpass" $workdir/$sampleID/$sampleID.QC.txt \
-|| { echo `date` sample QC not pass, skip $0;exit 0; }
+complete=$workdir/$sampleID/shell/AppBQSR.sh.complete
+if [ -e "$complete" ];then
+	echo "$complete and skip"
+	exit 0
+fi
 
 Workdir=$workdir/$sampleID
 export PATH=$pipeline/tools:$PATH
@@ -14,15 +19,15 @@ gvcf_basename=$Workdir/gatk/$sampleID.gvcf
 vcf_basename=$Workdir/gatk/$sampleID.vcf
 
 echo `date` Start GenotypeGVCFs
-time gatk \
+\time -v gatk \
   GenotypeGVCFs \
-  --tmp-dir=$workdir/javatmp \
+  --tmp_dir $workdir/javatmp \
   -R $ref_fasta \
   -O $vcf_basename.vcf.gz \
   -V $gvcf_basename.vcf.gz \
   -L $interval_list \
   --showHidden \
-&& echo success \
-|| { echo error;exit 1; }
 
 echo `date` Done
+
+touch $complete

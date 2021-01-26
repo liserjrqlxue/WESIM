@@ -1,7 +1,15 @@
 #!/usr/bin/env bash
+set -euo pipefail
+
 workdir=$1
 pipeline=$2
 sampleID=$3
+
+complete=$workdir/$sampleID/shell/BQSR.sh.complete
+if [ -e "$complete" ];then
+	echo "$complete and skip"
+	exit 0
+fi
 
 Workdir=$workdir/$sampleID/bwa
 export PATH=$pipeline/tools:$PATH
@@ -12,16 +20,17 @@ hg19=$pipeline/hg19/hg19_chM_male_mask.fa
 
 echo `date` Start BQSR $sampleID
 mkdir -p $workdir/javatmp
-time gatk \
+\time -v gatk \
   BaseRecalibrator \
-  --tmp-dir=$workdir/javatmp \
+  --tmp-dir $workdir/javatmp \
   -I $Workdir/$sampleID.dup.bam \
   -O $Workdir/$sampleID.recal_data.grp \
   --known-sites $DbSNP \
   --known-sites $GoldIndels \
   -R $hg19 \
   -L $Bed \
-  --showHidden \
-&& echo success || echo error
+  --showHidden 
 
 echo `date` Done
+
+touch $complete

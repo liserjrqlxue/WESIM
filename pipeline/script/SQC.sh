@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+set -euo pipefail
+
 workdir=$1
 pipeline=$2
 sampleID=$3
@@ -10,7 +12,5 @@ export PATH=$pipeline/tools:$PATH
 
 if [ $StandardTag == "Y" ];then
 	grep -P "$sampleID\tpass" $workdir/$sampleID/$sampleID.QC.txt && tag="PASS" || tag="FAIL"
-	echo -e "$sampleID\t$tag\t$chipCode" >> $Workdir/standard.QC.txt \
-	&& echo success \
-	|| { echo error;exit 1; }
+	echo -e "$sampleID\t$tag\t$chipCode" >> $Workdir/standard.QC.txt 
 fi

@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+set -euo pipefail
+
 workdir=$1
 pipeline=$2
 laneInput=${3:-null}
@@ -7,8 +9,7 @@ Workdir=$workdir/result
 export PATH=$pipeline/tools:$PATH
 GetLaneQC=$pipeline/tools/getQC/get.lane.QC.batch.pl
 
-echo -e "sampleID\tQC\tchip_code" > $Workdir/standard.QC.txt \
-|| { echo error;exit 1; }
+echo -e "sampleID\tQC\tchip_code" > $Workdir/standard.QC.txt 
 
 if [ $laneInput == "null" ];then
 	echo no laneInput
@@ -16,7 +17,7 @@ if [ $laneInput == "null" ];then
 fi
 
 echo `date` Start GetLaneQC
-time perl $GetLaneQC $laneInput $Workdir \
-&& echo success \
-|| { echo error;exit 1; }
+
+\time -v perl $GetLaneQC $laneInput $Workdir
+
 echo `date` Done
