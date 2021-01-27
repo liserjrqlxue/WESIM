@@ -20,4 +20,5 @@ echo `date` Start GetLaneQC
 
 \time -v perl $GetLaneQC $laneInput $Workdir
 
+touch $workdir/shell/first.sh.complete
 echo `date` Done
