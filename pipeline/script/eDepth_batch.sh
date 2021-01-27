@@ -21,7 +21,7 @@ mkdir -p $outdir
 
 \time -v perl $Bin/createScript.batch.pl $workdir $input $outdir
 cd $outdir
-time -v sh $outdir/run.sh
+\time -v sh $outdir/run.sh
 
 echo `date` Done
 
