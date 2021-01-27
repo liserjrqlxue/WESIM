@@ -4,7 +4,7 @@ pipeline=$2
 sampleID=$3
 HPO=$4
 
-complete=$workdir/$sampleID/shell/AppBQSR.sh.complete
+complete=$workdir/$sampleID/shell/score.sh.complete
 if [ -e "$complete" ];then
 	echo "$complete and skip"
 	exit 0
