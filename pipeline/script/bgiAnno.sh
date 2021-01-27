@@ -19,10 +19,17 @@ prefix=$Workdir/annotation/$sampleID
 
 echo `date` Start Annotation
 
+echo perl \
+    $anno \
+    $cfg \
+    -t vcf -n 16 -b 20000 -q \
+    -o $prefix.out \
+    $Workdir/gatk/$sampleID.filter.vcf.gz
+
 \time -v perl \
     $anno \
     $cfg \
-    -t vcf -n 13 -b 10000 -q \
+    -t vcf -n 16 -b 20000 -q \
     -o $prefix.out \
     $Workdir/gatk/$sampleID.filter.vcf.gz
 
