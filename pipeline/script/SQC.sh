@@ -14,3 +14,6 @@ if [ $StandardTag == "Y" ];then
 	grep -P "$sampleID\tpass" $workdir/$sampleID/$sampleID.QC.txt && tag="PASS" || tag="FAIL"
 	echo -e "$sampleID\t$tag\t$chipCode" >> $Workdir/standard.QC.txt 
 fi
+
+touch $workdir/$sampleID/shell/SQC.sh.complete
+echo `date` Done
