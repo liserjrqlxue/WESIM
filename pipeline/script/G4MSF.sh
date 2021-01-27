@@ -32,6 +32,8 @@ done
   -SO coordinate \
   --showHidden true 
 
+rm -rvf $inputBams
+
 echo `date` Done
 
 touch $complete
