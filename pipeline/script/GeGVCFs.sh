@@ -5,7 +5,7 @@ workdir=$1
 pipeline=$2
 sampleID=$3
 
-complete=$workdir/$sampleID/shell/AppBQSR.sh.complete
+complete=$workdir/$sampleID/shell/GeGVCFs.sh.complete
 if [ -e "$complete" ];then
 	echo "$complete and skip"
 	exit 0
@@ -21,7 +21,7 @@ vcf_basename=$Workdir/gatk/$sampleID.vcf
 echo `date` Start GenotypeGVCFs
 \time -v gatk \
   GenotypeGVCFs \
-  --tmp_dir $workdir/javatmp \
+  --tmp-dir $workdir/javatmp \
   -R $ref_fasta \
   -O $vcf_basename.vcf.gz \
   -V $gvcf_basename.vcf.gz \
