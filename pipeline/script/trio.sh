@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+set -euo pipefail
+
 
 workdir=$1
 pipeline=$2
@@ -21,7 +23,7 @@ cfg=$pipeline/config/config_BGI59M_CG_single.2019.pl
 family=$pipeline/Family_anno/bin/family.plus.pl
 
 subdir=annotation
-suffix=out.updateFunc
+suffix=out
 qc=coverage/coverage.report
 CNVkit=cnv/CNVkit_cnv_gene_BGI160_Decipher_DGV_Pathogenicity.xls
 aneuploid=cnv/sample_aneuploid.xls
