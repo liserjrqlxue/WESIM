@@ -20,7 +20,7 @@ echo `date` Start ApplyBQSR $sampleID
 
 \time -v gatk \
   ApplyBQSR \
-  --tmp_dir $workdir/javatmp \
+  --tmp-dir $workdir/javatmp \
   -R $hg19 \
   -I $Workdir/$sampleID.dup.bam \
   -O $Workdir/$sampleID.bqsr.bam \
