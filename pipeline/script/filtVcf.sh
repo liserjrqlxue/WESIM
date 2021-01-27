@@ -5,7 +5,7 @@ workdir=$1
 pipeline=$2
 sampleID=$3
 
-complete=$workdir/$sampleID/shell/AppBQSR.sh.complete
+complete=$workdir/$sampleID/shell/filtVcf.sh.complete
 if [ -e "$complete" ];then
 	echo "$complete and skip"
 	exit 0
@@ -20,7 +20,7 @@ filterExpressionINDEL="QD<2.0 || ReadPosRankSum<-20.0 || InbreedingCoeff<-0.8 ||
 echo `date` Start SelectVariantsSNP
 \time -v gatk \
   SelectVariants \
-  --tmp_dir $workdir/javatmp \
+  --tmp-dir $workdir/javatmp \
   -O $Workdir/$sampleID.snp.raw.vcf \
   -V $Workdir/$sampleID.vcf.vcf.gz \
   -R $hg19 \
@@ -41,7 +41,7 @@ echo `date` Start VariantFiltrationSNP
 echo `date` Start SelectVariantsINDEL
 \time -v gatk \
   SelectVariants \
-  --tmp_dir $workdir/javatmp \
+  --tmp-dir $workdir/javatmp \
   -O $Workdir/$sampleID.indel.raw.vcf \
   -V $Workdir/$sampleID.vcf.vcf.gz \
   -R $hg19 \
