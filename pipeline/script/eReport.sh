@@ -6,7 +6,7 @@ pipeline=$2
 sampleID=$3
 productCode=$4
 
-complete=$workdir/$sampleID/shell/AppBQSR.sh.complete
+complete=$workdir/$sampleID/shell/eReport.sh.complete
 if [ -e "$complete" ];then
 	echo "$complete and skip"
 	exit 0
@@ -31,7 +31,7 @@ echo $filterStatJoin
 echo `date` Start anno2xlsx
 \time -v anno2xlsx \
   -prefix    $Workdir/$sampleID \
-  -snv       $Workdir/annotation/$sampleID.out.updateFunc \
+  -snv       $Workdir/annotation/$sampleID.out \
   -qc        $Workdir/coverage/coverage.report \
   -large     $workdir/CNVkit/CNVkit_cnv_gene_BGI160_Decipher_DGV_Pathogenicity.xls \
   -karyotype $workdir/CNVkit/sample_aneuploid.xls \
@@ -40,9 +40,9 @@ echo `date` Start anno2xlsx
   -filterStat $filterStatJoin \
   -wesim \
   -acmg \
-  -redis -redisAddr 127.0.0.1:6380 \
   -list $sampleID \
-  -product $productCode
+  -product $productCode \
+  #-redis -redisAddr 10.2.1.5:6380 \
 
 echo cp -v $Workdir/$sampleID.qc.tsv $workdir/result/$sampleID/
 cp -v $Workdir/$sampleID.qc.tsv $workdir/result/$sampleID/
