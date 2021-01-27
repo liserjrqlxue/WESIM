@@ -5,7 +5,7 @@ workdir=$1
 pipeline=$2
 sampleID=$3
 
-complete=$workdir/$sampleID/shell/AppBQSR.sh.complete
+complete=$workdir/$sampleID/shell/HC4.sh.complete
 if [ -e "$complete" ];then
 	echo "$complete and skip"
 	exit 0
@@ -21,7 +21,7 @@ in_bam=$Workdir/bwa/$sampleID.bqsr.bam
 echo `date` Start G4HaplotypeCaller
 \time -v gatk \
   HaplotypeCaller \
-  --tmp_dir $workdir/javatmp \
+  --tmp-dir $workdir/javatmp \
   -R $ref_fasta \
   -O $gvcf_basename.vcf.gz \
   -I $in_bam \
