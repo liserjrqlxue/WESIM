@@ -11,4 +11,5 @@ echo `date` final QC
 echo perl $getFinalQC $workdir/sample.info $workdir/result/standard.QC.txt $workdir
 \time -v perl $getFinalQC $workdir/sample.info $workdir/result/standard.QC.txt $workdir
 
+touch $workdir/shell/fQC.sh.complete
 echo `date` Done
