@@ -1,22 +1,24 @@
 name	mem	thread	time	type	prior	args	submitArgs
 first	1	1	1m	batch		laneInput	-l vf=1G,p=1
-filter	1	6	30/5m	lane	first	laneName,fq1,fq2	-l vf=1G,p=1
-bwaMem	8	8	250/30m	lane	filter	laneName	-l vf=8G,p=1
-G4MSF	13	1	102/67m	sample	bwaMem	laneName	-l vf=13G,p=1
-dupMark	30	4	290/82m	sample	G4MSF		-l vf=30G,p=1
-BQSR	3	1	61/55m	sample	dupMark		-l vf=3G,p=1
-AppBQSR	3	1	97/89m	sample	BQSR		-l vf=3G,p=1
-dSurvey	1	1	12m	sample	AppBQSR	QChistory	-l vf=1G,p=1
-HC4	13	2	360/210m	sample	AppBQSR		-l vf=13G,p=1
+filter	1	3	143/55m	lane	first	laneName,fq1,fq2	-l vf=1G,p=2
+bwaMem	8	8	424/60m	lane	filter	laneName	-l vf=8G,p=7
+G4MSF	13	1	114/154m	sample	bwaMem	laneName	-l vf=13G,p=1
+dupMark	30	4	822/109m	sample	G4MSF		-l vf=30G,p=8
+BQSR	3	1	107/129m	sample	dupMark		-l vf=3G,p=1
+AppBQSR	3	1	84/56m	sample	BQSR		-l vf=3G,p=1
+dSurvey	1	1	8/9m	sample	AppBQSR	QChistory	-l vf=1G,p=1
+SQC	1	1	1s	sample	dSurvey	chip_code,StandardTag	-l vf=1G,p=1
+fQC	1	1	1s	batch	SQC		-l vf=1G,p=1
+HC4	13	2	226/144m	sample	AppBQSR		-l vf=13G,p=1
 GeGVCFs	8	1	4m	sample	HC4		-l vf=8G,p=1
 filtVcf	3	3	1m	sample	GeGVCFs		-l vf=3G,p=1
-bgiAnno	10	10	390/39m	sample	filtVcf		-l vf=10G,p=1
-fixAnno	1	1	1m	sample	bgiAnno		-l vf=1G,p=1
-SQC	1	1	1s	sample	bgiAnno	chip_code,StandardTag	-l vf=1G,p=1
-fQC	1	1	1s	batch	SQC		-l vf=1G,p=1
-CNVkit_batch	2	2	1/0.5m	batch	dSurvey		-l vf=2G,p=1
+bgiAnno	10	10	531/63m	sample	filtVcf		-l vf=10G,p=8
+CNVkit_coverage	2	2	1/0.5m	sample	AppBQSR		-l vf=2G,p=1
+CNVkit_batch	2	2	1/0.5m	batch	CNVkit_coverage,dSurvey		-l vf=2G,p=1
+CNVkit_call	2	2	1/0.5m	sample	CNVkit_batch		-l vf=2G,p=1
+CNVkit_anno	2	2	1/0.5m	batch	CNVkit_call		-l vf=2G,p=1
 eDepth_batch	2	1	22m	batch	dSurvey		-l vf=2G,p=1
 SMA	1	1	16m	sample	dSurvey		-l vf=1G,p=1
-eReport	10	1	1m	sample	fixAnno,eDepth,CNVkit,SMA	product_code	-l vf=10G,p=1
-score	10	4	2m	single	eReport	HPO	-l vf=1G,p=1
-trio	10	4	3m	trio	fixAnno,eDepth,CNVkit,SMA	product_code,list,HPO	-l vf=1G,p=1
+eReport	10	1	1m	sample	bgiAnno,eDepth_batch,CNVkit_anno,SMA	product_code	-l vf=10G,p=1
+score	10	4	2m	sample	eReport	HPO	-l vf=1G,p=1
+trio	10	4	3m	trio	bgiAnno,eDepth_batch,CNVkit_anno,SMA	product_code,list,HPO	-l vf=1G,p=1
