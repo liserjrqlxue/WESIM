@@ -1,8 +1,9 @@
 #!/bin/bash
+
 workdir=$1
 pipeline=$2
 sampleID=$3
-HPO=$4
+HPO=${4:-"HP:0000113,HP:0000356"}
 
 complete=$workdir/$sampleID/shell/score.sh.complete
 if [ -e "$complete" ];then
@@ -10,39 +11,58 @@ if [ -e "$complete" ];then
 	exit 0
 fi
 
+source /ifs7/B2C_RD_P2/USER/wangzhonghua/miniconda3/etc/profile.d/conda.sh
+conda activate wes-sort-report
+set -euo pipefail
+
+export PYTHONPATH=/ifs7/B2C_RD_P2/USER/wangzhonghua/workspace/sort-report/autopvs1:$PYTHONPATH
+export PYTHONPATH=/ifs7/B2C_RD_P2/USER/wangzhonghua/workspace/sort-report/auto_cnv:$PYTHONPATH
+export PYTHONPATH=/ifs7/B2C_RD_P2/USER/wangzhonghua/workspace/sort-report/wes-auto-report:$PYTHONPATH
+export PYTHONPATH=/ifs7/B2C_RD_P2/USER/wangzhonghua/workspace/sort-report/bio_toolkit:$PYTHONPATH
+export PYTHONPATH=/ifs7/B2C_RD_P2/USER/wangzhonghua/workspace/sort-report/auto_prioritize:$PYTHONPATH
+
+
+
+
 Workdir=$workdir/$sampleID
-export PATH=$pipeline/tools:$PATH
+vcf=$Workdir/gatk/$sampleID.filter.vcf.gz
+tier1=$Workdir/score/$sampleID.Tier1.xlsx
+cnv=$workdir/CNVkit/CNVkit_cnv.xls
+score=$Workdir/score
 
-export PATH=/home/uploader/anaconda3/bin:$PATH
-source /home/uploader/anaconda3/etc/profile.d/conda.sh
-conda activate base
+report=/ifs7/B2C_RD_P2/USER/wangzhonghua/miniconda3/envs/wes-sort-report/bin/cnvkit.py
 
-echo `date` Start
-mkdir -p $Workdir/score/inputData/file
 
-gzip -dc $Workdir/gatk/$sampleID.filter.vcf.gz > $Workdir/score/inputData/file/$sampleID.filter.vcf
-
+mkdir -p $score
 for i in $Workdir/$sampleID.Tier1*.xlsx;do
-  echo cp $i $Workdir/score/inputData/file/$sampleID.Tier1.xlsx
-  rm -rvf $Workdir/score/inputData/file/$sampleID.Tier1.xlsx && cp -v $i $Workdir/score/inputData/file/$sampleID.Tier1.xlsx
+  echo cp $i $tier1
+  rm -rvf $tier1 && cp -v $i $tier1
 done
 
-echo $HPO > $Workdir/score/inputData/file/hpo.txt 
-cat <<< "{\"input_files\":[\"$sampleID.Tier1.xlsx\",\"$sampleID.filter.vcf\"],\"action_type\":4,\"project_name\":\"test\",\"sample_name\":\"$sampleID\"}" >$Workdir/score/input.json
+echo single variants sort
+\time -v \
+	python \
+	-m auto_prioritize \
+	-hpo "$HPO" \
+	-tier1 $tier1 \
+	-sample_id $sampleID \
+	-vcf $vcf \
+	-cnv $cnv \
+	-o $score
 
-echo `date` python /home/uploader/uploader-WES/score/sample_score/run_three_uploader.py -i $Workdir/score/input.json
-\time -v python /home/uploader/uploader-WES/score/sample_score/run_three_uploader.py -i $Workdir/score/input.json
-
-echo `date` create appendix
-echo `date` python3 $pipeline/wes-auto-report/generate-report.py $sampleID $workdir/sample.info $Workdir/score/outputData/file $workdir/result/$sampleID
-\time -v python3 $pipeline/wes-auto-report/generate-report.py $sampleID $workdir/sample.info $Workdir/score/outputData/file $workdir/result/$sampleID
+echo single report
+\time -v \
+	python \
+	$report \
+	$score/$sampleID.info \
+	$score
+	$score
 
 echo `date` create $sampleID.reult.tsv
 \time -v Tier1toResult -xlsx $Workdir/score/outputData/file/Result_new_$sampleID.Tier1.xlsx -prefix $workdir/result/$sampleID/$sampleID
 
 echo cp -v $Workdir/score/outputData/file/Result_new_$sampleID.Tier1.xlsx $workdir/result/$sampleID/$sampleID.score.Tier1.xlsx 
 cp -v $Workdir/score/outputData/file/Result_new_$sampleID.Tier1.xlsx $workdir/result/$sampleID/$sampleID.score.Tier1.xlsx
-
 
 echo xlsx2txt -xlsx $workdir/result/$sampleID/$sampleID.score.Tier1.xlsx
 \time -v xlsx2txt -xlsx $workdir/result/$sampleID/$sampleID.score.Tier1.xlsx
