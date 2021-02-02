@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-set -euo pipefail
 
 workdir=$1
 pipeline=$2
@@ -12,12 +11,9 @@ if [ -e "$complete" ];then
 fi
 
 export PATH=$pipeline/tools:$PATH
-export PATH=/share/backup/zhongwenwei/app/R-3.2.1/bin:$PATH
-export R_LIBS_USER=/share/backup/zhongwenwei/app/R-3.2.1/library
-export PATH=/share/backup/zhongwenwei/app/Python-2.7.13/bin:$PATH
-export CPATH=/share/backup/zhongwenwei/app/Python-2.7.13/include:$CPATH
-export LD_LIBRARY_PATH=/share/backup/zhongwenwei/app/Python-2.7.13/lib:$LD_LIBRARY_PATH
-export PYTHONIOENCODING=UTF-8
+source /home/bgi902/miniconda3/etc/profile.d/conda.sh
+conda activate wzh
+set -euo pipefail
 
 genderFix=$pipeline/CNVkit/bin/gender_fix.pl
 Workdir=$workdir/CNVkit
@@ -34,7 +30,7 @@ perl \
 	1> $Workdir/$sampleID.fix.sh.o \
 	2> $Workdir/$sampleID.fix.sh.e 
 
-\time -v \
+echo \time -v \
         cnvkit.py \
 	segment \
 	-m cbs \
@@ -43,6 +39,14 @@ perl \
 	-o $Workdir/$sampleID.cbs.cns
 
 \time -v \
+        cnvkit.py \
+	segment \
+	-m cbs \
+	-p 12 \
+	$Workdir/$sampleID.cnr \
+	-o $Workdir/$sampleID.cbs.cns
+
+echo \time -v \
 	cnvkit.py \
 	segmetrics \
 	$Workdir/$sampleID.cnr \
@@ -52,10 +56,25 @@ perl \
 
 \time -v \
 	cnvkit.py \
+	segmetrics \
+	$Workdir/$sampleID.cnr \
+	-s $Workdir/$sampleID.cbs.cns \
+	--sem --ci \
+	-o $Workdir/$sampleID.cbs.segmetrics.cns
+
+echo \time -v \
+	cnvkit.py \
 	call \
 	--filter cn \
 	$Workdir/$sampleID.cbs.segmetrics.cns \
-	-o $Workdir/$sampleID.cbs.call.cn
+	-o $Workdir/$sampleID.cbs.call.cns
+
+\time -v \
+	cnvkit.py \
+	call \
+	--filter cn \
+	$Workdir/$sampleID.cbs.segmetrics.cns \
+	-o $Workdir/$sampleID.cbs.call.cns
 
 echo `date` Done
 
