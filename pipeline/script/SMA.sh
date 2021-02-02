@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-set -euo pipefail
 
 workdir=$1
 pipeline=$2
@@ -13,6 +12,9 @@ fi
 
 Workdir=$workdir/$sampleID
 export PATH=$pipeline/tools:$PATH
+source /home/bgi902/miniconda3/etc/profile.d/conda.sh
+conda activate py2
+set -euo pipefail
 
 hg19=$pipeline/hg19/hg19_chM_male_mask.fa
 bed=$pipeline/SMA_WES/PP100.gene.info.bed
