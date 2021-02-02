@@ -27,10 +27,11 @@ echo `date` Start SOAPnuke
     --adapter2 AAGTCGGATCGTAGCCATGTCGTTCTGTGAGCCAAGGAGTTG \
     --cleanFq1 $sampleID.$laneName.filter_1.fq.gz \
     --cleanFq2 $sampleID.$laneName.filter_2.fq.gz \
-    --nRate 0.05 --lowQual 10  --seqType 0 --qualRate 0.5 -Q 2 -G -T 4
+    --nRate 0.05 --lowQual 10 --qualRate 0.5 -T 4
 
 echo `date` Start FQstat
-\time -v perl $stat \
+perl \
+    $stat \
     $Workdir/Basic_Statistics_of_Sequencing_Quality.txt \
     $Workdir/Statistics_of_Filtered_Reads.txt \
     >$Workdir/$laneName.filter.stat 
