@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-set -euo pipefail
 
 workdir=$1
 pipeline=$2
@@ -12,6 +11,9 @@ if [ -e "$complete" ];then
 fi
 
 export PATH=$pipeline/tools:$PATH
+source /home/bgi902/miniconda3/etc/profile.d/conda.sh
+conda activate wzh
+set -euo pipefail
 batchControl=$pipeline/CNVkit/bin/batch_control.pl
 ref=$pipeline/CNVkit/bin/data/hg19_chM_male_mask.fa
 CNVkitControl=$pipeline/CNVkit/control/MGISEQ_2000_control/201906/MGISEQ-2000_201906
@@ -28,6 +30,14 @@ ln -sf $CNVkitControl\_Male.antitargets.bed $cnvkitControl\_Male.antitargets.bed
 ln -sf $CNVkitControl\_Female.targets.bed $cnvkitControl\_Female.targets.bed
 ln -sf $CNVkitControl\_Female.antitargets.bed $cnvkitControl\_Female.antitargets.bed
 
+echo perl \
+	$batchControl \
+	$input \
+	$ref \
+	$Workdir \
+	$Workdir/Control \
+	$cnvkitControl
+
 perl \
 	$batchControl \
 	$input \
@@ -35,6 +45,12 @@ perl \
 	$Workdir \
 	$Workdir/Control \
 	$cnvkitControl
+
+echo \time -v \
+	sh \
+	$Workdir/Control/CNVkit_control.sh \
+	1>$Workdir/Control/CNVkit_control.sh.o \
+	2>$Workdir/Control/CNVkit_control.sh.e \
 
 \time -v \
 	sh \
