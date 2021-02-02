@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-set -euo pipefail
 
 workdir=$1
 pipeline=$2
@@ -12,10 +11,9 @@ if [ -e "$complete" ];then
 fi
 
 export PATH=$pipeline/tools:$PATH
-export PATH=/share/backup/zhongwenwei/app/Python-2.7.13/bin:$PATH
-export CPATH=/share/backup/zhongwenwei/app/Python-2.7.13/include:$CPATH
-export LD_LIBRARY_PATH=/share/backup/zhongwenwei/app/Python-2.7.13/lib:$LD_LIBRARY_PATH
-export PYTHONIOENCODING=UTF-8
+source /home/bgi902/miniconda3/etc/profile.d/conda.sh
+conda activate wzh
+set -euo pipefail
 
 CNVkitControl=$pipeline/CNVkit/control/MGISEQ_2000_control/201906/MGISEQ-2000_201906
 genderCoverage=$pipeline/CNVkit/bin/gender_coverage.pl 
