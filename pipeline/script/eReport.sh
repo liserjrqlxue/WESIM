@@ -42,7 +42,7 @@ echo `date` Start anno2xlsx
   -acmg \
   -list $sampleID \
   -product $productCode \
-  #-redis -redisAddr 10.2.1.5:6380 \
+  -redis -redisAddr 127.0.0.1:6380 \
 
 echo cp -v $Workdir/$sampleID.qc.tsv $workdir/result/$sampleID/
 cp -v $Workdir/$sampleID.qc.tsv $workdir/result/$sampleID/
