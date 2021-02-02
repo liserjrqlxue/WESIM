@@ -21,4 +21,3 @@ eDepth_batch	2	1	22m	batch	dSurvey		-l vf=2G,p=1
 SMA	1	1	16m	sample	dSurvey		-l vf=1G,p=1
 eReport	10	1	1m	sample	bgiAnno,eDepth_batch,CNVkit_anno,SMA	product_code	-l vf=10G,p=1
 score	10	4	2m	sample	eReport	HPO	-l vf=1G,p=1
-trio	10	4	3m	trio	bgiAnno,eDepth_batch,CNVkit_anno,SMA	product_code,list,HPO	-l vf=1G,p=1
