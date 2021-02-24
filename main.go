@@ -11,6 +11,7 @@ import (
 	"github.com/liserjrqlxue/goUtil/osUtil"
 	"github.com/liserjrqlxue/goUtil/simpleUtil"
 	"github.com/liserjrqlxue/libIM"
+	"github.com/liserjrqlxue/version"
 )
 
 // os
@@ -71,6 +72,11 @@ var (
 		false,
 		"if run or submit",
 	)
+	pe = flag.Bool(
+		"pe",
+		true,
+		"if must pair end",
+	)
 )
 
 var keyTitle = []string{
@@ -117,6 +123,7 @@ var ProductTrio = map[string]bool{
 }
 
 func main() {
+	version.LogVersion()
 	flag.Parse()
 	if *input == "" || *workDir == "" {
 		flag.Usage()
@@ -131,7 +138,7 @@ func main() {
 	if *footer != "" && osUtil.FileExists(*footer) {
 		libIM.ScriptFooter = string(simpleUtil.HandleError(ioutil.ReadFile(*footer)).([]byte))
 	}
-	var infoList, familyList = parserInput(*input)
+	var infoList, familyList = parserInput(*input, *pe)
 
 	simpleUtil.CheckErr(createWorkDir(*workDir, infoList, batchDirList, sampleDirList, laneDirList))
 
