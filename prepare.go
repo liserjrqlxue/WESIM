@@ -64,7 +64,7 @@ func createSampleInfo(infoList map[string]libIM.Info, workDir string) {
 
 var sharp = regexp.MustCompile(`^#`)
 
-func parserInput(input string) (infoMap map[string]libIM.Info, familyMap map[string]libIM.FamilyInfo) {
+func parserInput(input string, isPE bool) (infoMap map[string]libIM.Info, familyMap map[string]libIM.FamilyInfo) {
 	// parser input list
 	sampleList, title := textUtil.File2MapArray(input, "\t", sharp)
 	if !*force {
@@ -85,7 +85,7 @@ func parserInput(input string) (infoMap map[string]libIM.Info, familyMap map[str
 			sampleInfo = NewInfo(item)
 		}
 		var pe = strings.Split(item["FQ_path"], ",")
-		if len(pe) != 2 {
+		if isPE && len(pe) != 2 {
 			log.Fatalf(
 				"can not parse pair end in lane(%s) of sample(%s):[%s]\n",
 				item["lane_code"],
