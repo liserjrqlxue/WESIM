@@ -17,8 +17,7 @@ export PATH=$pipeline/tools:$PATH
 
 GenderCorrect=$pipeline/tools/XY_gender_correct.pl
 GetQC=$pipeline/tools/getQC/get.QC.WESIM.pl
-RegionDir=$pipeline/config/coverage_region_hg19_bychr/
-Region=$RegionDir/for500_all_region
+bed=$pipeline/config/V4.coverage.bed
 tag=BGI59M
 
 
@@ -28,8 +27,8 @@ bamdstComplete=$workdir/$sampleID/coverage/bamdst.complete
 if [ -e "$bamdstComplete" ];then
 	echo "$bamdstComplete and skip"
 else
-	echo `date` bamdst -p $Region --uncover 5 -o $Workdir/coverage $Workdir/bwa/$sampleID.bqsr.bam --cutoffdepth 20
-	\time -v bamdst -p $Region --uncover 5 -o $Workdir/coverage $Workdir/bwa/$sampleID.bqsr.bam --cutoffdepth 20 
+	echo `date` bamdst -p $bed --uncover 5 -o $Workdir/coverage $Workdir/bwa/$sampleID.bqsr.bam --cutoffdepth 20
+	\time -v bamdst -p $bed --uncover 5 -o $Workdir/coverage $Workdir/bwa/$sampleID.bqsr.bam --cutoffdepth 20 
 	touch $bamdstComplete
 fi
 
