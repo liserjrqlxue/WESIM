@@ -13,7 +13,7 @@ fi
 
 Workdir=$workdir/$sampleID
 export PATH=$pipeline/tools:$PATH
-cfg=$pipeline/config/config_BGI59M_CG_single.2019.pl
+cfg=$pipeline/config/V4.cfg.pl
 anno=$pipeline/bgi_anno/bin/bgicg_anno.pl
 prefix=$Workdir/annotation/$sampleID
 
