@@ -12,8 +12,8 @@ fi
 
 Workdir=$workdir/$sampleID
 export PATH=$pipeline/tools:$PATH
-source /home/bgi902/miniconda3/etc/profile.d/conda.sh
-conda activate py2
+source /ifs7/B2C_RD_P2/USER/wangzhonghua/miniconda3/etc/profile.d/conda.sh
+conda activate wes-sort-report
 set -euo pipefail
 
 hg19=$pipeline/hg19/hg19_chM_male_mask.fa
@@ -45,7 +45,8 @@ if [ ! -s "$Workdir/cnv/$sampleID.bqsr.bam.depth" ];then
 fi
 
 echo `date` Start SMA
-\time -v python2 $pipeline/SMA_WES/v1/SMN_copy_number_detection_v3.single.py \
+
+\time -v python3 $pipeline/SMA_WES/SMN_copy_number_detection_v3.single.py \
   -b $pipeline/SMA_WES/PP100.gene.info.bed \
   -o $Workdir/cnv/$sampleID.SMA_v2.txt \
   -l $Workdir/cnv/$sampleID.bqsr.bam \
