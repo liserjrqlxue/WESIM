@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+source $(conda info --base)/etc/profile.d/conda.sh
+conda activate cnvkit
+set -euo pipefail
 
 workdir=$1
 pipeline=$2
@@ -11,9 +14,6 @@ if [ -e "$complete" ];then
 fi
 
 export PATH=$pipeline/tools:$PATH
-source /home/bgi902/miniconda3/etc/profile.d/conda.sh
-conda activate wzh
-set -euo pipefail
 
 genderFix=$pipeline/CNVkit/bin/gender_fix.pl
 Workdir=$workdir/CNVkit
