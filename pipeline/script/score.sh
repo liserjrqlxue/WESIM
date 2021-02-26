@@ -18,7 +18,7 @@ export PYTHONPATH=$pipeline/sort-report/autopvs1:$PYTHONPATH
 export PYTHONPATH=$pipeline/sort-report/auto_cnv:$PYTHONPATH
 export PYTHONPATH=$pipeline/sort-report/wes-auto-report:$PYTHONPATH
 export PYTHONPATH=$pipeline/sort-report/bio_toolkit:$PYTHONPATH
-export PYTHONPATH=$pipelinesort-report/auto_prioritize:$PYTHONPATH
+export PYTHONPATH=$pipeline/sort-report/auto_prioritize:$PYTHONPATH
 set -euo pipefail
 
 Workdir=$workdir/$sampleID
