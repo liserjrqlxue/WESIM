@@ -1,4 +1,7 @@
 #!/bin/bash
+source $(conda info --base)/etc/profile.d/conda.sh
+conda activate wzh
+set -euo pipefail
 
 workdir=$1
 pipeline=$2
@@ -12,14 +15,11 @@ if [ -e "$complete" ];then
 fi
 
 export PATH=$pipeline/tools:$PATH
-source /home/bgi902/miniconda3/etc/profile.d/conda.sh
-conda activate wzh
-export PYTHONPATH=/mnt/wangzhonghua/workspace/sort-report/autopvs1:$PYTHONPATH
-export PYTHONPATH=/mnt/wangzhonghua/workspace/sort-report/auto_cnv:$PYTHONPATH
-export PYTHONPATH=/mnt/wangzhonghua/workspace/sort-report/wes-auto-report:$PYTHONPATH
-export PYTHONPATH=/mnt/wangzhonghua/workspace/sort-report/bio_toolkit:$PYTHONPATH
-export PYTHONPATH=/mnt/wangzhonghua/workspace/sort-report/auto_prioritize:$PYTHONPATH
-set -euo pipefail
+export PYTHONPATH=$pipeline/sort-report/autopvs1:$PYTHONPATH
+export PYTHONPATH=$pipeline/sort-report/auto_cnv:$PYTHONPATH
+export PYTHONPATH=$pipeline/sort-report/wes-auto-report:$PYTHONPATH
+export PYTHONPATH=$pipeline/sort-report/bio_toolkit:$PYTHONPATH
+export PYTHONPATH=$pipelinesort-report/auto_prioritize:$PYTHONPATH
 
 Workdir=$workdir/$sampleID
 vcf=$Workdir/gatk/$sampleID.filter.vcf.gz
@@ -27,7 +27,7 @@ tier1=$Workdir/score/$sampleID.Tier1.xlsx
 cnv=$workdir/CNVkit/CNVkit_cnv.xls
 score=$Workdir/score
 
-report=/mnt/wangzhonghua/workspace/sort-report/wes-auto-report/generate-report-add-intro.py
+report=$pipeline/wes-auto-report/generate-report-add-intro.py
 
 
 mkdir -p $score
@@ -67,14 +67,6 @@ echo `date` create appendix
 echo `date` python3 $pipeline/wes-auto-report/generate-report.py $sampleID $workdir/sample.info $Workdir/score $workdir/result/$sampleID
 python3 $pipeline/wes-auto-report/generate-report.py $sampleID $workdir/sample.info $Workdir/score $workdir/result/$sampleID \
 
-
-#echo single report
-#\time -v \
-#	python \
-#	$report \
-#	$score/$sampleID.info \
-#	$score
-#	$score
 
 echo `date` create $sampleID.reult.tsv
 \time -v Tier1toResult -xlsx $Workdir/score/$sampleID.rank.xlsx -prefix $workdir/result/$sampleID/$sampleID
