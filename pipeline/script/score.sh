@@ -1,7 +1,6 @@
 #!/bin/bash
 source $(conda info --base)/etc/profile.d/conda.sh
 conda activate wzh
-set -euo pipefail
 
 workdir=$1
 pipeline=$2
@@ -20,6 +19,7 @@ export PYTHONPATH=$pipeline/sort-report/auto_cnv:$PYTHONPATH
 export PYTHONPATH=$pipeline/sort-report/wes-auto-report:$PYTHONPATH
 export PYTHONPATH=$pipeline/sort-report/bio_toolkit:$PYTHONPATH
 export PYTHONPATH=$pipelinesort-report/auto_prioritize:$PYTHONPATH
+set -euo pipefail
 
 Workdir=$workdir/$sampleID
 vcf=$Workdir/gatk/$sampleID.filter.vcf.gz
