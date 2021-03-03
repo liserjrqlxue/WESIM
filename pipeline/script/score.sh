@@ -5,7 +5,7 @@ conda activate wzh
 workdir=$1
 pipeline=$2
 sampleID=$3
-HPO=${4:-"HP:0000113,HP:0000356"}
+HPO=${4:-"HP:0000001"}
 
 complete=$workdir/$sampleID/shell/score.sh.complete
 if [ -e "$complete" ];then
