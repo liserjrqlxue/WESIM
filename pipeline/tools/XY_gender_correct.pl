@@ -51,7 +51,7 @@ if (exists $chromosomes_report{chrY} and exists $chromosomes_report{chrX} ) {
 }
 #========================get Q30============================
 my @stat;
-@stat = glob "$sample_dir/filter/*/filter.stat";
+@stat = glob "$sample_dir/filter/*/*.filter.stat";
 my $fq_n = 0;
 my $q30  = 0;
 for my $stat (@stat) {
