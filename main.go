@@ -81,16 +81,12 @@ var (
 
 var keyTitle = []string{
 	"main_sample_num",
-	"library_num",
 	"index_num",
-	"pooling_library_num",
 	"product_code",
 	"FQ_path",
 	"platform",
 	"lane_code",
 	"chip_code",
-	"sequencer",
-	"hybrid_library_num",
 	"gender",
 	"proband_number",
 	"relationship",
