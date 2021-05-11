@@ -139,7 +139,7 @@ func main() {
 	simpleUtil.CheckErr(createWorkDir(*workDir, infoList, batchDirList, sampleDirList, laneDirList))
 
 	// write workDir/probandID/trio.info
-	createTrioInfos(familyList, *workDir)
+	// createTrioInfos(familyList, *workDir)
 
 	// write workDir/sample.info
 	createSampleInfo(infoList, *workDir)

@@ -112,6 +112,7 @@ func parserInput(input string, isPE bool) (infoMap map[string]libIM.Info, family
 				}
 			}
 			familyMap[probandID] = familyInfo
+			sampleInfo.ProbandID = sampleID
 		} else {
 			sampleInfo.ProbandID = sampleID
 		}
@@ -143,6 +144,7 @@ func parseStepCfg(cfg string, infoList map[string]libIM.Info, familyList map[str
 	var allSteps []*libIM.Step
 	for _, item := range stepList {
 		var step = libIM.NewStep(item)
+		// use familyList only for type trio
 		if step.CreateJobs(familyList, infoList, ProductTrio, *workDir, *pipeline) > 0 {
 			stepMap[step.Name] = &step
 			allSteps = append(allSteps, &step)

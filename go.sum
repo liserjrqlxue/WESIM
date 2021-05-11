@@ -1,4 +1,3 @@
-github.com/360EntSecGroup-Skylar/excelize/v2 v2.0.2 h1:StMrA6UQ5Cm6206DxXGuV/NMqSIOIDoMXMYt8JPe1lE=
 github.com/360EntSecGroup-Skylar/excelize/v2 v2.0.2/go.mod h1:EfRHD2k+Kd7ijnqlwOrH1IifwgWB9yYJ0pdXtBZmlpU=
 github.com/360EntSecGroup-Skylar/excelize/v2 v2.1.0 h1:g22IKKDIvUqtxOBXUxDlSHcGNX8yi/EEuxxjex+uskk=
 github.com/360EntSecGroup-Skylar/excelize/v2 v2.1.0/go.mod h1:NRW1nxuHjsv3AUisgUneVjItiDPsxKSBBypDwX46bf4=
@@ -20,7 +19,6 @@ github.com/kr/text v0.1.0/go.mod h1:4Jbv+DJW3UT/LiOwJeYQe1efqtUx/iVham/4vfdArNI=
 github.com/kr/text v0.2.0/go.mod h1:eLer722TekiGuMkidMxC/pM04lWEeraHUUmBw8l2grE=
 github.com/liserjrqlxue/crypto v0.0.0-20181031021947-e63cf1f4c48a h1:X426M/nxnJCn+oldhp46t0d32tPbe45nceknkNHJPZw=
 github.com/liserjrqlxue/crypto v0.0.0-20181031021947-e63cf1f4c48a/go.mod h1:qvcMQlmh7T1pUIMd+yApE6UStkSRNMy2XGpYl4/lP7w=
-github.com/liserjrqlxue/goUtil v0.0.30 h1:Rfyw4w6yjk0H7LQdmNwZ/mFccYZKJMFwxHjN1Cgp0mg=
 github.com/liserjrqlxue/goUtil v0.0.30/go.mod h1:rxhQWtOnbopNW69w6pASO7MQ3pDXdDKWyg/VDAY7w04=
 github.com/liserjrqlxue/goUtil v0.0.32 h1:e5WYur6GHwVgpOeL9d7CTPc3SqkTI89pbKqnOqWTweI=
 github.com/liserjrqlxue/goUtil v0.0.32/go.mod h1:rxhQWtOnbopNW69w6pASO7MQ3pDXdDKWyg/VDAY7w04=
@@ -45,7 +43,6 @@ github.com/tealeg/xlsx/v3 v3.2.0/go.mod h1:7f/AUBopI/mmALW47XgPOxEgi/pZ6/mgtVSqa
 golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=
 golang.org/x/image v0.0.0-20190910094157-69e4b8554b2a h1:gHevYm0pO4QUbwy8Dmdr01R5r1BuKtfYqRqF0h/Cbh0=
 golang.org/x/image v0.0.0-20190910094157-69e4b8554b2a/go.mod h1:FeLwcggjj3mMvU+oOTbSwawSJRM1uh48EjtB4UJZlP0=
-golang.org/x/net v0.0.0-20191209160850-c0dbc17a3553 h1:efeOvDhwQ29Dj3SdAV/MJf8oukgn+8D8WgaCaRMchF8=
 golang.org/x/net v0.0.0-20191209160850-c0dbc17a3553/go.mod h1:z5CRVTTTmAJ677TzLLGU+0bjPO0LkuOLi4/5GtJWs/s=
 golang.org/x/net v0.0.0-20200425230154-ff2c4b7c35a0 h1:Jcxah/M+oLZ/R4/z5RzfPzGbPXnVDPkEDtf2JnuxN+U=
 golang.org/x/net v0.0.0-20200425230154-ff2c4b7c35a0/go.mod h1:qpuaurCH72eLCgpAm/N6yyVIVM9cpaDIP3A8BGJEC5A=
