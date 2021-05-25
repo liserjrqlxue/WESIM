@@ -20,4 +20,6 @@ CNVkit_anno	2	2	1/0.5m	batch	CNVkit_call		-l vf=2G,p=1
 eDepth_batch	2	1	22m	batch	dSurvey		-l vf=2G,p=1
 SMA	1	1	16m	sample	dSurvey		-l vf=1G,p=1
 eReport	10	1	1m	sample	bgiAnno,eDepth_batch,CNVkit_anno,SMA	product_code	-l vf=10G,p=1
-score	10	4	2m	sample	eReport	HPO	-l vf=1G,p=1
+plotReads	8	1	1m	sample	eReport		-l vf=4G,p=8
+plotCNVkitChr	8	1	1m	sample	eReport		-l vf=4G,p=8
+plotCNVkitCNV	8	1	1m	sample	eReport		-l vf=4G,p=8
