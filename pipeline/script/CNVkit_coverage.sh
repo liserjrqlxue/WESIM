@@ -15,7 +15,7 @@ fi
 
 export PATH=$pipeline/tools:$PATH
 
-CNVkitControl=$pipeline/CNVkit/control/MGISEQ_2000_control/201906/MGISEQ-2000_201906
+CNVkitControl=$pipeline/CNVkit/control/MGISEQ_2000_control/20210302/MGISEQ-2000_201811
 genderCoverage=$pipeline/CNVkit/bin/gender_coverage.pl 
 targetsBed=$CNVkitControl.targets.bed
 antitargetsBed=$CNVkitControl.antitargets.bed
@@ -24,8 +24,7 @@ mkdir -p $Workdir
 
 bam=$workdir/$sampleID/bwa/$sampleID.bqsr.bam
 
-\time -v \
-	cnvkit.py \
+cnvkit.py \
 	coverage \
 	-p 12 \
 	$bam \
@@ -33,8 +32,7 @@ bam=$workdir/$sampleID/bwa/$sampleID.bqsr.bam
 	-o $Workdir/$sampleID.targetcoverage.cnn
 	#-o $bam.targetcoverage.cnn \
 
-\time -v \
-	cnvkit.py \
+cnvkit.py \
 	coverage \
 	-p 12 \
 	$bam \
