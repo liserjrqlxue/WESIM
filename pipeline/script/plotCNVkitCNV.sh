@@ -19,7 +19,7 @@ export PATH=$pipeline/tools:$PATH
 
 outDir=$Workdir/cnv_area_graph
 prefix=$outDir/$sampleID
-lst=$Workdir/$sampleID.score.Tier1.xlsx.large_cnv.txt
+lst=$workdir/$sampleID/$sampleID.Tier1.xlsx.large_cnv.txt
 vcf=$workdir/$sampleID/gatk/$sampleID.vcf.vcf.gz
 
 mkdir -p $outDir

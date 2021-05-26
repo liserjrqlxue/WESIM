@@ -17,12 +17,12 @@ export PERL5LIB=$pipeline/perl5/lib64/perl5:$PERL5LIB
 
 ref=$pipeline/hg19/hg19_chM_male_mask.fa
 bam=$workdir/$sampleID/bwa/$sampleID.bqsr.bam
-lst=$Workdir/$sampleID.score.Tier1.xlsx.filter_variants.txt
+lst=$workdir/$sampleID/$sampleID.Tier1.xlsx.filter_variants.txt
 outDir=$Workdir/reads_graph
 
 mkdir -p $outDir
 
-awk 'NR>1{print $2,$3,$4}' $lst|sort -V|uniq |gargs -p 8 -l $outDir/log -v "perl $pipeline/reads_graph/reads_graph.pl $outDir -b $bam -c {0} -p {1}to{2} -prefix $sampleID -t $pipeline/tools/samtools -refdir $ref -r $ref -f 20 -d -a -l 100"
+awk 'NR>1{print $2,$3,$4}' $lst|sort -V|uniq |gargs -p 8 -l $outDir/log -v "perl $pipeline/reads_graph/reads_graph.pl -b $bam -c {0} -p {1}to{2} -prefix $outDir/$sampleID -t $pipeline/tools/samtools -refdir $ref -r $ref -f 20 -d -a -l 100"
 
 tail -n1 $outDir/log|grep -w SUCCESS
 
