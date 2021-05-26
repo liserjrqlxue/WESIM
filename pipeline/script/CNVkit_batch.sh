@@ -16,7 +16,7 @@ fi
 export PATH=$pipeline/tools:$PATH
 batchControl=$pipeline/CNVkit/bin/batch_control.pl
 ref=$pipeline/hg19/hg19_chM_male_mask.fa
-CNVkitControl=$pipeline/CNVkit/control/MGISEQ_2000_control/201906/MGISEQ-2000_201906
+CNVkitControl=$pipeline/CNVkit/control/MGISEQ_2000_control/20210302/MGISEQ-2000_201811
 Workdir=$workdir/CNVkit
 
 mkdir -p $Workdir/Control
@@ -46,13 +46,9 @@ perl \
 	$Workdir/Control \
 	$cnvkitControl
 
-echo "\\time -v sh $Workdir/Control/CNVkit_control.sh 1>$Workdir/Control/CNVkit_control.sh.o 2>$Workdir/Control/CNVkit_control.sh.e"
+echo "sh $Workdir/Control/CNVkit_control.sh 1>$Workdir/Control/CNVkit_control.sh.o 2>$Workdir/Control/CNVkit_control.sh.e"
 
-\time -v \
-	sh \
-	$Workdir/Control/CNVkit_control.sh \
-	1>$Workdir/Control/CNVkit_control.sh.o \
-	2>$Workdir/Control/CNVkit_control.sh.e \
+sh $Workdir/Control/CNVkit_control.sh 1>$Workdir/Control/CNVkit_control.sh.o 2>$Workdir/Control/CNVkit_control.sh.e 
 
 echo `date` Done
 
